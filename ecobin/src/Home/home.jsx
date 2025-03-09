@@ -537,7 +537,7 @@ const Home = () => {
 
           {/* Copyright Notice */}
           <div className="border-t border-gray-800 mt-8 pt-8 text-center">
-            <p>&copy; 2023 Ecobin. All rights reserved.</p>
+            <p>&copy; 2025 Ecobin. All rights reserved.</p>
           </div>
         </div>
       </footer>
