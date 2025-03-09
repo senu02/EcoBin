@@ -13,7 +13,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { motion } from "framer-motion";
 
-const WastinWebsite = () => {
+const Home = () => {
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
 
   const toggleNavbar = () => {
@@ -545,4 +545,4 @@ const WastinWebsite = () => {
   );
 };
 
-export default WastinWebsite;
+export default Home;
