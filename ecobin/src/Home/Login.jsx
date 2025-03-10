@@ -1,49 +1,74 @@
 import { useState } from "react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import companyLogo from "../Home/images/Logo.png"; // Import company logo
-import backgroundImage from "../Home/images/back2.jpeg"; // Import background image
+import companyLogo from "../Home/images/Logo.png"; 
+import { useNavigate } from 'react-router-dom';
+import UserService from "./UserService";
 
 export default function LoginForm() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); 
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login Attempt:", formData);
+    setLoading(true); 
+
+    setTimeout(async () => {
+      try {
+        const userData = await UserService.login(email, password);
+        console.log(userData);
+
+        if (userData.token) {
+          localStorage.setItem('token', userData.token);
+          localStorage.setItem('role', userData.role);
+          localStorage.setItem("name", userData.name);
+          localStorage.setItem('email', userData.email);
+
+          if (userData.role === "USER") {
+            navigate("/");
+          } else if (userData.role === "ADMIN") {
+            navigate("/admin");
+          }
+        } else {
+          setError(userData.message);
+        }
+      } catch (error) {
+        setError("An error occurred while logging in. Please try again.");
+      } finally {
+        setLoading(false); 
+      }
+    }, 2000); 
   };
 
-  // Handle Google Login Success
+ 
   const handleGoogleSuccess = (response) => {
     console.log("Google Login Success:", response);
   };
 
-  // Handle Google Login Failure
+
   const handleGoogleFailure = (error) => {
     console.log("Google Login Failed:", error);
   };
 
   return (
     <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
-      <div
-        className="flex justify-center items-center min-h-screen bg-gray-100"
-        style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: "cover", backgroundPosition: "center" }}
-      >
-        <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md backdrop-blur-md bg-opacity-80">
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
           {/* Company Logo */}
           <div className="flex justify-center mb-4">
-            <img src={companyLogo} alt="Company Logo" className="w-24 h-auto" />
+            <img src={companyLogo} alt="Company Logo" className="w-24 h-30" />
           </div>
 
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">
             Welcome Back!
           </h2>
           <p className="text-center text-gray-600 mb-5">Login to your account</p>
+
+         
+          {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email Input */}
@@ -52,8 +77,8 @@ export default function LoginForm() {
               name="email"
               placeholder="✉️ Email"
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-400"
-              value={formData.email}
-              onChange={handleChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
 
@@ -63,8 +88,8 @@ export default function LoginForm() {
               name="password"
               placeholder="🔒 Password"
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-400"
-              value={formData.password}
-              onChange={handleChange}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
 
@@ -72,8 +97,9 @@ export default function LoginForm() {
             <button
               type="submit"
               className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
+              disabled={loading} 
             >
-              Login
+              {loading ? "Logging in..." : "Login"} 
             </button>
           </form>
 
