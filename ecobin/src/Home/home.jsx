@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import heroImage from '../Home/images/home5.jpg'; 
 import Image1 from '../Home/images/home4.jpeg';
+import BannerImage from '../Home/images/praveen2.png';
 import heroVideo from "../Home/images/video1.mp4";  // Replace with the actual path to your image
 import { IoSearchOutline, IoMenuOutline, IoCloseOutline } from 'react-icons/io5';
 import { FaFacebook, FaTwitter, FaPinterest, FaLinkedin } from 'react-icons/fa';
@@ -20,48 +21,37 @@ const Home = () => {
     setIsNavbarOpen(!isNavbarOpen);
   };
 
+  const reviews = [
+    {
+      id: 1,
+      name: "John Doe",
+      review: "Great service! Very efficient and eco-friendly.",
+      rating: 5,
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      review: "Highly recommend their dumpster rental service.",
+      rating: 4,
+    },
+    {
+      id: 3,
+      name: "Alice Johnson",
+      review: "Excellent customer support and timely service.",
+      rating: 5,
+    },
+  ];
+
   return (
     <div className="flex flex-col min-h-screen font-sans">
       {/* Header */}
       <header className="relative">
-        {/* Header Top */}
-        <div className="bg-gray-800 py-2">
-          <div className="container mx-auto px-4 flex justify-between items-center">
-            <div className="text-white text-sm">
-              Exclusive Offer! <span className="bg-green-500 px-2 py-1 ml-2">Save 10%</span>
-            </div>
-            <div className="flex items-center">
-              <p className="text-white text-sm mr-4">Follow us:</p>
-              <ul className="flex space-x-4">
-                <li>
-                  <a href="#" className="text-white hover:text-green-500">
-                    <FaFacebook className="w-6 h-6" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white hover:text-green-500">
-                    <FaTwitter className="w-6 h-6" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white hover:text-green-500">
-                    <FaPinterest className="w-6 h-6" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white hover:text-green-500">
-                    <FaLinkedin className="w-6 h-6" />
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
+      
 
         {/* Header Bottom */}
         <div className="bg-white py-4 shadow-md">
           <div className="container mx-auto px-4 flex justify-between items-center">
-            <a href="#" className="text-green-500-2xl font-bold uppercase">
+            <a href="#" className="text-green-500 text-2xl font-bold uppercase">
               Ecobin
             </a>
 
@@ -121,156 +111,151 @@ const Home = () => {
         </div>
       </header>
 
-       {/* Hero Section */}
-    <section className="relative h-screen flex items-center justify-center overflow-hidden">
-      {/* Video Background */}
-      <video
-        autoPlay
-        loop
-        muted
-        className="absolute inset-0 w-full h-full object-cover"
-      >
-        <source src={heroVideo} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+      <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
+  {/* Video Background */}
+  <video
+    autoPlay
+    loop
+    muted
+    className="absolute inset-0 w-full h-full object-cover"
+  >
+    <source src={heroVideo} type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
 
-      {/* Dark overlay for better text visibility */}
-      <div className="absolute inset-0 bg-black opacity-40"></div>
+  {/* Dark overlay for better text visibility */}
+  <div className="absolute inset-0 bg-black opacity-40"></div>
 
-      {/* Content */}
-      <div className="container mx-auto px-4 text-center z-10">
-        {/* Heading */}
-        <motion.h1
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.5 }}
-          className="text-5xl font-bold text-white leading-tight mb-4"
-        >
-          Save costs and time
-          <br />
-          on your waste collection
-        </motion.h1>
-
-        {/* Paragraph */}
-        <motion.p
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1 }}
-          className="text-white text-lg mb-8"
-        >
-          Efficient and eco-friendly waste management solutions tailored for you.
-        </motion.p>
-
-        {/* Button */}
-        <motion.button
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 1.5, type: "spring", stiffness: 100 }}
-          className="mt-8 bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-medium py-3 px-6 rounded-md"
-        >
-          Contact us
-        </motion.button>
-      </div>
-    </section>
-
-    
-
-      
-
-{/* Services Section */}
-<section className="py-16 bg-white">
-  <div className="container mx-auto px-4">
-    {/* Section Heading */}
-    <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="text-center mb-8"
+  {/* Content */}
+  <div className="container mx-auto px-4 text-center z-10">
+    {/* Heading */}
+    <motion.h1
+      initial={{ opacity: 0, y: -50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1, delay: 0.5 }}
+      className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight mb-4"
     >
-      <p className="text-gray-600 uppercase text-sm tracking-wider">What We're Offering</p>
-      <h2 className="text-3xl font-light mt-2">The Services We're Providing</h2>
-    </motion.div>
+      Save costs and time
+      <br />
+      on your waste collection
+    </motion.h1>
 
-    {/* Service Cards */}
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-      {/* Zero Waste Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className="bg-gray-50 p-8 rounded-lg"
-      >
-        <div className="bg-white p-3 rounded-lg inline-block mb-4">
-          <svg width="40" height="40" viewBox="0 0 40 40" className="fill-green-600">
-            <circle cx="20" cy="25" r="10" className="fill-yellow-400 opacity-40" />
-            <path d="M18,15 L22,15 L23,18 L17,18 Z" />
-            <path d="M16,18 L24,18 L26,22 L14,22 Z" />
-            <path d="M10,22 L30,22 L28,30 L12,30 Z" />
-          </svg>
+          {/* Paragraph */}
+          <motion.p
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1 }}
+            className="text-white text-lg mb-8"
+          >
+            Efficient and eco-friendly waste management solutions tailored for you.
+          </motion.p>
+
+          <motion.button
+  initial={{ opacity: 0, scale: 0.8 }}
+  animate={{ opacity: 1, scale: 1 }}
+  transition={{ duration: 0.8, delay: 1.5, type: "spring", stiffness: 100 }}
+  className="mt-8 bg-green-500 hover:bg-green-600 text-gray-800 font-medium py-3 px-6 rounded-md"
+>
+  Contact us
+</motion.button>
+
         </div>
-        <h3 className="text-lg font-medium mb-2">Zero Waste</h3>
-        <p className="text-sm text-gray-500">Lorem ipsum dolor sit amet, adipisci do.</p>
-      </motion.div>
+      </section>
 
-      {/* Dumpster Rental Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-        className="bg-gray-50 p-8 rounded-lg"
-      >
-        <div className="bg-white p-3 rounded-lg inline-block mb-4">
-          <svg width="40" height="40" viewBox="0 0 40 40" className="fill-green-600">
-            <path d="M15,15 L25,15 L30,25 L10,25 Z" />
-            <rect x="15" y="25" width="10" height="8" />
-            <path d="M18,15 L22,15 L22,10 L18,10 Z" />
-          </svg>
+      {/* Services Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          {/* Section Heading */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-8"
+          >
+            <p className="text-gray-600 uppercase text-sm tracking-wider">What We're Offering</p>
+            <h2 className="text-3xl font-light mt-2">The Services We're Providing</h2>
+          </motion.div>
+
+          {/* Service Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {/* Zero Waste Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="bg-gray-50 p-8 rounded-lg"
+            >
+              <div className="bg-white p-3 rounded-lg inline-block mb-4">
+                <svg width="40" height="40" viewBox="0 0 40 40" className="fill-green-600">
+                  <circle cx="20" cy="25" r="10" className="fill-yellow-400 opacity-40" />
+                  <path d="M18,15 L22,15 L23,18 L17,18 Z" />
+                  <path d="M16,18 L24,18 L26,22 L14,22 Z" />
+                  <path d="M10,22 L30,22 L28,30 L12,30 Z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium mb-2">Zero Waste</h3>
+              <p className="text-sm text-gray-500">Lorem ipsum dolor sit amet, adipisci do.</p>
+            </motion.div>
+
+            {/* Dumpster Rental Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="bg-gray-50 p-8 rounded-lg"
+            >
+              <div className="bg-white p-3 rounded-lg inline-block mb-4">
+                <svg width="40" height="40" viewBox="0 0 40 40" className="fill-green-600">
+                  <path d="M15,15 L25,15 L30,25 L10,25 Z" />
+                  <rect x="15" y="25" width="10" height="8" />
+                  <path d="M18,15 L22,15 L22,10 L18,10 Z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium mb-2">Dumpster Rental</h3>
+              <p className="text-sm text-gray-500">Lorem ipsum dolor sit amet, adipisci do.</p>
+            </motion.div>
+
+            {/* Portable Toilet Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="bg-gray-50 p-8 rounded-lg"
+            >
+              <div className="bg-white p-3 rounded-lg inline-block mb-4">
+                <svg width="40" height="40" viewBox="0 0 40 40" className="fill-green-600">
+                  <rect x="12" y="15" width="16" height="15" rx="2" />
+                  <rect x="15" y="17" width="4" height="6" rx="1" />
+                  <rect x="21" y="17" width="4" height="6" rx="1" />
+                  <path d="M16,10 L24,10 L26,15 L14,15 Z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium mb-2">Portable Toilet</h3>
+              <p className="text-sm text-gray-500">Lorem ipsum dolor sit amet, adipisci do.</p>
+            </motion.div>
+
+            {/* Recycling Service Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+              className="bg-gray-50 p-8 rounded-lg"
+            >
+              <div className="bg-white p-3 rounded-lg inline-block mb-4">
+                <svg width="40" height="40" viewBox="0 0 40 40" className="fill-green-600">
+                  <path d="M20,10 L30,20 L25,25 L20,20 L15,25 L10,20 Z" />
+                  <path d="M20,20 L20,30" strokeWidth="2" />
+                  <path d="M15,25 L25,25" strokeWidth="2" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium mb-2">Recycling Service</h3>
+              <p className="text-sm text-gray-500">Lorem ipsum dolor sit amet, adipisci do.</p>
+            </motion.div>
+          </div>
         </div>
-        <h3 className="text-lg font-medium mb-2">Dumpster Rental</h3>
-        <p className="text-sm text-gray-500">Lorem ipsum dolor sit amet, adipisci do.</p>
-      </motion.div>
+      </section>
 
-      {/* Portable Toilet Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.6 }}
-        className="bg-gray-50 p-8 rounded-lg"
-      >
-        <div className="bg-white p-3 rounded-lg inline-block mb-4">
-          <svg width="40" height="40" viewBox="0 0 40 40" className="fill-green-600">
-            <rect x="12" y="15" width="16" height="15" rx="2" />
-            <rect x="15" y="17" width="4" height="6" rx="1" />
-            <rect x="21" y="17" width="4" height="6" rx="1" />
-            <path d="M16,10 L24,10 L26,15 L14,15 Z" />
-          </svg>
-        </div>
-        <h3 className="text-lg font-medium mb-2">Portable Toilet</h3>
-        <p className="text-sm text-gray-500">Lorem ipsum dolor sit amet, adipisci do.</p>
-      </motion.div>
-
-      {/* Recycling Service Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.8 }}
-        className="bg-gray-50 p-8 rounded-lg"
-      >
-        <div className="bg-white p-3 rounded-lg inline-block mb-4">
-          <svg width="40" height="40" viewBox="0 0 40 40" className="fill-green-600">
-            <path d="M20,10 L30,20 L25,25 L20,20 L15,25 L10,20 Z" />
-            <path d="M20,20 L20,30" strokeWidth="2" />
-            <path d="M15,25 L25,25" strokeWidth="2" />
-          </svg>
-        </div>
-        <h3 className="text-lg font-medium mb-2">Recycling Service</h3>
-        <p className="text-sm text-gray-500">Lorem ipsum dolor sit amet, adipisci do.</p>
-      </motion.div>
-    </div>
-  </div>
-</section>
-
-   {/* About Section */}
+      {/* About Section */}
 <section className="bg-gradient-to-r from-blue-50 to-purple-50 py-20">
   <div className="container mx-auto px-4">
     <div className="flex flex-col md:flex-row items-center">
@@ -293,20 +278,62 @@ const Home = () => {
       {/* Text Section */}
       <div className="md:w-2/3 md:pl-12">
         <h2 className="text-4xl font-bold text-gray-800 mb-6">About Our Company</h2>
-        <p className="text-sm text-gray-600 mb-6"> {/* Changed to text-sm */}
+        <p className="text-sm text-gray-600 mb-6">
           Founded in 2017, Ecobin has undergone an impressive journey from a startup into a global leader in smart waste solutions. Our goal from the beginning has been to help cities, businesses, and countries cope with the biggest challenges of waste management – lack of efficiency and transparency.
         </p>
-        <p className="text-sm text-gray-600 mb-6"> {/* Changed to text-sm */}
+        <p className="text-sm text-gray-600 mb-6">
           We started with one product: a waste fill-level monitoring solution that consisted of sensors measuring waste levels in bins and a smart waste management software system. Over the years, we have been expanding and perfecting our portfolio of services, which now range from waste and collection monitoring, route planning, factory waste management, to take-back systems and deposit return scheme integration.
         </p>
-        <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300">
+        <button className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300">
           Learn More
         </button>
       </div>
     </div>
   </div>
 </section>
-{/* Contact Us Section */}
+
+
+      {/* Testimonials Section */}
+      <section className="w-full py-12 bg-gray-100">
+        <div className="max-w-4xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-6">
+            What Our Customers Say
+          </h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            {reviews.map((review) => (
+              <div key={review.id} className="bg-white p-6 rounded-lg shadow-md">
+                <p className="text-gray-700 mb-2">{review.review}</p>
+                <div className="flex items-center space-x-1">
+                  {Array.from({ length: review.rating }).map((_, index) => (
+                    <span key={index} className="text-yellow-500 text-lg">⭐</span>
+                  ))}
+                </div>
+                <p className="mt-2 font-semibold text-gray-800">- {review.name}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+{/* Banner Section */}
+<section
+  className="relative bg-cover bg-center h-72" // Adjust the height to 'h-72' or any desired value
+  style={{ backgroundImage: `url(${BannerImage})` }} // Use the imported image
+>
+  <div className="absolute inset-0 bg-black bg-opacity-40"></div> {/* Dark overlay for text contrast */}
+  <div className="container mx-auto px-4 relative z-10 text-center text-white">
+    <h1 className="text-4xl font-bold mb-4">Welcome to EcoWaste Solutions</h1>
+    <p className="text-lg mb-6">We provide sustainable waste management solutions for a cleaner, greener world.</p>
+    <button
+      className="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300"
+      onClick={() => window.location.href = "#learn-more"}
+    >
+      Learn More
+    </button>
+  </div>
+</section>
+
+
+      {/* Contact Us Section */}
 <section className="bg-gradient-to-r from-blue-50 to-purple-50 py-20">
   <div className="container mx-auto px-4">
     {/* Heading */}
@@ -364,7 +391,7 @@ const Home = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300"
+            className="w-full bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300"
           >
             Send Message
           </button>
@@ -461,86 +488,83 @@ const Home = () => {
     </div>
   </div>
 </section>
-      {/* Advanced Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Quick Links */}
-            <div>
-              <h3 className="text-lg font-bold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li><a href="#home" className="hover:text-green-500">Home</a></li>
-                <li><a href="#services" className="hover:text-green-500">Services</a></li>
-                <li><a href="#recycling" className="hover:text-green-500">Recycling</a></li>
-                <li><a href="#about" className="hover:text-green-500">About Us</a></li>
-                <li><a href="#contact" className="hover:text-green-500">Contact</a></li>
-              </ul>
-            </div>
 
-            {/* Contact Information */}
-            <div>
-              <h3 className="text-lg font-bold mb-4">Contact Us</h3>
-              <ul className="space-y-2">
-                <li>123 Waste Management St.</li>
-                <li>City, State, ZIP</li>
-                <li>Email: info@ecobin.com</li>
-                <li>Phone: +1 (123) 456-7890</li>
-              </ul>
-            </div>
 
-            {/* Social Media Links */}
-            <div>
-              <h3 className="text-lg font-bold mb-4">Follow Us</h3>
-              <ul className="flex space-x-4">
-                <li>
-                  <a href="#" className="text-white hover:text-green-500">
-                    <FaFacebook className="w-6 h-6" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white hover:text-green-500">
-                    <FaTwitter className="w-6 h-6" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white hover:text-green-500">
-                    <FaPinterest className="w-6 h-6" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white hover:text-green-500">
-                    <FaLinkedin className="w-6 h-6" />
-                  </a>
-                </li>
-              </ul>
-            </div>
+      <footer className="bg-green-500 text-white py-12">
+  <div className="container mx-auto px-4">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      {/* Quick Links */}
+      <div>
+        <h3 className="text-lg font-bold mb-4">Quick Links</h3>
+        <ul className="space-y-2">
+          <li><a href="#home" className="hover:text-green-500">Home</a></li>
+          <li><a href="#services" className="hover:text-green-500">Services</a></li>
+          <li><a href="#recycling" className="hover:text-green-500">Recycling</a></li>
+          <li><a href="#about" className="hover:text-green-500">About Us</a></li>
+          <li><a href="#contact" className="hover:text-green-500">Contact</a></li>
+        </ul>
+      </div>
 
-            {/* Newsletter Subscription */}
-            <div>
-              <h3 className="text-lg font-bold mb-4">Subscribe</h3>
-              <p className="mb-4">Subscribe to our newsletter for updates and offers.</p>
-              <form className="flex">
-                <input
-                  type="email"
-                  placeholder="Your email"
-                  className="p-2 rounded-l-lg focus:outline-none text-black"
-                />
-                <button
-                  type="submit"
-                  className="bg-green-500 text-white p-2 rounded-r-lg hover:bg-green-600"
-                >
-                  Subscribe
-                </button>
-              </form>
-            </div>
-          </div>
+      {/* Contact Information */}
+      <div>
+        <h3 className="text-lg font-bold mb-4">Contact Us</h3>
+        <ul className="space-y-2">
+          <li>123 Waste Management St.</li>
+          <li>City, State, ZIP</li>
+          <li>Email: info@ecobin.com</li>
+          <li>Phone: +1 (123) 456-7890</li>
+        </ul>
+      </div>
 
-          {/* Copyright Notice */}
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center">
-            <p>&copy; 2025 Ecobin. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      {/* Social Media Links */}
+      <div>
+        <h3 className="text-lg font-bold mb-4">Follow Us</h3>
+        <ul className="flex space-x-4">
+          <li>
+            <a href="#" className="text-white hover:text-green-500">
+              <FontAwesomeIcon icon={faFacebook} className="w-6 h-6" />
+            </a>
+          </li>
+          <li>
+            <a href="#" className="text-white hover:text-green-500">
+              <FontAwesomeIcon icon={faTwitter} className="w-6 h-6" />
+            </a>
+          </li>
+          <li>
+            <a href="#" className="text-white hover:text-green-500">
+              <FontAwesomeIcon icon={faLinkedin} className="w-6 h-6" />
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      {/* Newsletter Subscription */}
+      <div>
+        <h3 className="text-lg font-bold mb-4">Subscribe</h3>
+        <p className="mb-4">Subscribe to our newsletter for updates and offers.</p>
+        <form className="flex">
+          <input
+            type="email"
+            placeholder="Your email"
+            className="p-2 rounded-l-lg focus:outline-none text-black"
+          />
+          <button
+            type="submit"
+            className="bg-green-600 text-white p-2 rounded-r-lg hover:bg-green-700"
+          >
+            Subscribe
+          </button>
+        </form>
+      </div>
+    </div>
+
+    {/* Copyright Notice */}
+    <div className="border-t border-gray-800 mt-8 pt-8 text-center">
+      <p>&copy; 2025 Ecobin. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
     </div>
   );
 };

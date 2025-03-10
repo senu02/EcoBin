@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './Home/Home';
 import SignupForm from './Home/SignUp'; 
 import Login from './Home/Login';
-import logo from './logo.svg';
+import logo from './Home/images/Logo.png';
 import './App.css';
 
 export default function App() {
