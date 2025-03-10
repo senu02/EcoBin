@@ -1,28 +1,54 @@
 import { useState } from "react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import companyLogo from "../Home/images/Logo.png"; // Import your company logo
+import companyLogo from "../Home/images/Logo.png"; 
+import { useNavigate } from 'react-router-dom';
+import UserService from "./UserService";
 
 export default function LoginForm() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); 
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login Attempt:", formData);
+    setLoading(true); 
+
+    setTimeout(async () => {
+      try {
+        const userData = await UserService.login(email, password);
+        console.log(userData);
+
+        if (userData.token) {
+          localStorage.setItem('token', userData.token);
+          localStorage.setItem('role', userData.role);
+          localStorage.setItem("name", userData.name);
+          localStorage.setItem('email', userData.email);
+
+          if (userData.role === "USER") {
+            navigate("/");
+          } else if (userData.role === "ADMIN") {
+            navigate("/admin");
+          }
+        } else {
+          setError(userData.message);
+        }
+      } catch (error) {
+        setError("An error occurred while logging in. Please try again.");
+      } finally {
+        setLoading(false); 
+      }
+    }, 2000); 
   };
 
-  // Handle Google Login Success
+ 
   const handleGoogleSuccess = (response) => {
     console.log("Google Login Success:", response);
   };
 
-  // Handle Google Login Failure
+
   const handleGoogleFailure = (error) => {
     console.log("Google Login Failed:", error);
   };
@@ -41,6 +67,9 @@ export default function LoginForm() {
           </h2>
           <p className="text-center text-gray-600 mb-5">Login to your account</p>
 
+         
+          {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email Input */}
             <input
@@ -48,8 +77,8 @@ export default function LoginForm() {
               name="email"
               placeholder="✉️ Email"
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-400"
-              value={formData.email}
-              onChange={handleChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
 
@@ -59,8 +88,8 @@ export default function LoginForm() {
               name="password"
               placeholder="🔒 Password"
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-400"
-              value={formData.password}
-              onChange={handleChange}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
 
@@ -68,8 +97,9 @@ export default function LoginForm() {
             <button
               type="submit"
               className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
+              disabled={loading} 
             >
-              Login
+              {loading ? "Logging in..." : "Login"} 
             </button>
           </form>
 
