@@ -3,6 +3,8 @@ import Home from './Home/Home';
 import SignupForm from './Home/SignUp'; 
 import Login from './Home/Login';
 import WasteReport from './Dashboard/WasteReport';
+import WasteManagementDashboard from './Dashboard/AdminDashboard';
+import WasteTrackDashboard from './Dashboard/CollectionSchedule';
 import logo from './Home/images/Logo.png';
 import './App.css';
 
@@ -14,6 +16,8 @@ export default function App() {
         <Route path="/SignupForm" element={<SignupForm/>}/>
         <Route path="/Login" element={<Login/>}/>
         <Route path="/WasteReport" element={<WasteReport/>}/>
+        <Route path="/WasteManagementDashboard" element={<WasteManagementDashboard/>}/>
+        <Route path="/WasteTrackDashboard" element={<WasteTrackDashboard/>}/>
       </Routes>
     </Router>
   );
