@@ -2,6 +2,7 @@ import { useState } from "react";
 import logo from "../Home/images/Logo.png";
 import UserService from "./UserService";
 import { useNavigate } from "react-router-dom";
+import { AiOutlineCheckCircle } from "react-icons/ai"; 
 
 export default function SignupForm() {
   const [formData, setFormData] = useState({
@@ -16,7 +17,7 @@ export default function SignupForm() {
   const [disableInputs, setDisableInputs] = useState(false);
   const [showSecretPopup, setShowSecretPopup] = useState(false);
   const [secretKey, setSecretKey] = useState("");
-
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false); 
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -24,9 +25,9 @@ export default function SignupForm() {
 
     if (name === "role") {
       if (value === "ADMIN") {
-        setShowSecretPopup(true); // Show secret key popup for admin
+        setShowSecretPopup(true); 
       } else {
-        setDisableInputs(false); // Enable all inputs if "USER" is selected
+        setDisableInputs(false); 
       }
     }
 
@@ -36,11 +37,11 @@ export default function SignupForm() {
   const handleSecretSubmit = () => {
     if (secretKey === "ecopaka") {
       setShowSecretPopup(false);
-      setDisableInputs(false); // Keep inputs enabled
+      setDisableInputs(false); 
     } else {
       alert("Incorrect Secret Key! Disabling other inputs.");
       setShowSecretPopup(false);
-      setDisableInputs(true); // Disable all inputs except role
+      setDisableInputs(true); 
     }
   };
 
@@ -65,8 +66,11 @@ export default function SignupForm() {
         role: "",
       });
 
-      alert("Registration successful! Redirecting to login...");
-      navigate("/login");
+      setShowSuccessPopup(true); 
+      setTimeout(() => {
+        setShowSuccessPopup(false);
+        navigate("/login"); 
+      }, 3000); 
     } catch (error) {
       console.error("Error registering user", error);
       alert("An error occurred while registering user");
@@ -175,6 +179,23 @@ export default function SignupForm() {
         </form>
       </div>
 
+      {/* Success Popup Modal */}
+      {showSuccessPopup && (
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+            <div className="flex justify-center mb-4">
+              <AiOutlineCheckCircle className="text-green-500 text-6xl" />
+            </div>
+            <h3 className="text-xl font-semibold text-center text-green-500">
+              Registration Successful!
+            </h3>
+            <p className="text-center text-gray-600 mt-2">
+              You can now log in with your credentials.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Secret Code Popup Modal */}
       {showSecretPopup && (
         <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50">
@@ -197,7 +218,7 @@ export default function SignupForm() {
               <button
                 onClick={() => {
                   setShowSecretPopup(false);
-                  setFormData({ ...formData, role: "" }); // Reset role if canceled
+                  setFormData({ ...formData, role: "" });
                 }}
                 className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
               >
