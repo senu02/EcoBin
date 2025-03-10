@@ -30,7 +30,7 @@ export default function LoginForm() {
           if (userData.role === "USER") {
             navigate("/");
           } else if (userData.role === "ADMIN") {
-            navigate("/admin");
+            navigate("/WasteManagementDashboard");
           }
         } else {
           setError(userData.message);
