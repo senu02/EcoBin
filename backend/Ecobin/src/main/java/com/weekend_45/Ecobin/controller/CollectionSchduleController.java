@@ -22,6 +22,8 @@ public class CollectionSchduleController {
             @RequestParam("wasteType")String wasteType,
             @RequestParam("collectionDate")String collectionDate,
             @RequestParam("location")String location,
+            @RequestParam("status")String status,
+            @RequestParam("remark")String remark,
             @RequestParam("truckImage")MultipartFile truckImage
             ){
         try {
@@ -30,6 +32,8 @@ public class CollectionSchduleController {
             collectionSchedule.setWasteType(wasteType);
             collectionSchedule.setCollectionDate(collectionDate);
             collectionSchedule.setLocation(location);
+            collectionSchedule.setStatus(status);
+            collectionSchedule.setRemark(remark);
             collectionSchedule.setTruckImage(truckImage.getBytes());
 
             collectionScheduleRepo.save(collectionSchedule);
@@ -58,6 +62,8 @@ public class CollectionSchduleController {
             @RequestParam("wasteType") String wasteType,
             @RequestParam("collectionDate") String collectionDate,
             @RequestParam("location") String location,
+            @RequestParam("status") String status,
+            @RequestParam("remark") String remark,
             @RequestParam(value = "truckImage",required = false) MultipartFile truckImage){
 
                 try{
@@ -67,6 +73,8 @@ public class CollectionSchduleController {
                     collectionSchedule.setWasteType(wasteType);
                     collectionSchedule.setCollectionDate(collectionDate);
                     collectionSchedule.setLocation(location);
+                    collectionSchedule.setStatus(status);
+                    collectionSchedule.setRemark(remark);
 
                     if (truckImage != null && !truckImage.isEmpty()){
                         collectionSchedule.setTruckImage((truckImage.getBytes()));
