@@ -15,6 +15,25 @@ public class CollectionSchedule {
     private String wasteType;
     private String collectionDate;
     private String location;
+    private String status;
+    private String remark;
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Lob
     private  byte[] truckImage;
 
