@@ -1,20 +1,39 @@
 import { useState } from "react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import companyLogo from "../Home/images/Logo.png"; // Import your company logo
-
+import { useNavigate } from 'react-router-dom';
+import UserService from "./UserService";
 export default function LoginForm() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+  const navigate = useNavigate();
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login Attempt:", formData);
+   try {
+    const userData = await UserService.login(email,password);
+    console.log(userData)
+
+    if(userData.token){
+      localStorage.setItem('token',userData.token);
+      localStorage.setItem('role',userData.role);
+      localStorage.setItem("name",userData.name);
+      localStorage.setItem('email',userData.email);
+
+      if(userData.role === "USER"){
+        navigate("/");
+      }else if(userData.role === "ADMIN"){
+        navigate("/admin")
+      }
+    }else{
+      setError(userData.message);
+    }
+   } catch (error) {
+    
+   }
   };
 
   // Handle Google Login Success
@@ -48,8 +67,8 @@ export default function LoginForm() {
               name="email"
               placeholder="✉️ Email"
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-400"
-              value={formData.email}
-              onChange={handleChange}
+              value={email}
+              onChange={(e)=>setEmail(e.target.value)}
               required
             />
 
@@ -59,8 +78,8 @@ export default function LoginForm() {
               name="password"
               placeholder="🔒 Password"
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-400"
-              value={formData.password}
-              onChange={handleChange}
+              value={password}
+              onChange={(e)=>setPassword(e.target.value)}
               required
             />
 
