@@ -1,5 +1,6 @@
 import { useState } from "react";
 import logo from "../Home/images/Logo.png"; // Import company logo
+import backgroundImage from "../Home/images/back7.jpeg"; // Import background image
 
 export default function SignupForm() {
   const [formData, setFormData] = useState({
@@ -21,8 +22,13 @@ export default function SignupForm() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+    <div
+      className="flex justify-center items-center min-h-screen bg-cover bg-center bg-no-repeat"
+      style={{
+        backgroundImage: `url(${backgroundImage})`, // Using imported image
+      }}
+    >
+      <div className="bg-white bg-opacity-80 backdrop-blur-md p-8 rounded-lg shadow-lg w-full max-w-md">
         {/* Logo */}
         <div className="flex justify-center mb-4">
           <img src={logo} alt="Company Logo" className="w-24" />

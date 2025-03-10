@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import companyLogo from "../Home/images/Logo.png"; // Import your company logo
+import companyLogo from "../Home/images/Logo.png"; // Import company logo
+import backgroundImage from "../Home/images/back2.jpeg"; // Import background image
 
 export default function LoginForm() {
   const [formData, setFormData] = useState({
@@ -29,11 +30,14 @@ export default function LoginForm() {
 
   return (
     <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
-      <div className="flex justify-center items-center min-h-screen bg-gray-100">
-        <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+      <div
+        className="flex justify-center items-center min-h-screen bg-gray-100"
+        style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: "cover", backgroundPosition: "center" }}
+      >
+        <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md backdrop-blur-md bg-opacity-80">
           {/* Company Logo */}
           <div className="flex justify-center mb-4">
-            <img src={companyLogo} alt="Company Logo" className="w-24 h-30" />
+            <img src={companyLogo} alt="Company Logo" className="w-24 h-auto" />
           </div>
 
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">
