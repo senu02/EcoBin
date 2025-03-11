@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './Home/Home';
+import Home from './Home/home'; // Ensure the file name matches exactly
 import SignupForm from './Home/SignUp'; 
 import Login from './Home/Login';
 import WasteReport from './Dashboard/WasteReport';
@@ -18,15 +18,15 @@ export default function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/SignupForm" element={<SignupForm/>}/>
-        <Route path="/Login" element={<Login/>}/>
-        <Route path="/WasteReport" element={<WasteReport/>}/>
-        <Route path="/WasteManagementDashboard" element={<WasteManagementDashboard/>}/>
-        <Route path="/WasteTrackDashboard" element={<WasteTrackDashboard/>}/>
-        <Route path="/Leaderboard" element={<Leaderboard/>}/>
-        <Route path="/AnalyzePage" element={<AnalyzePage/>}/>
-        <Route path="/WasteReportingTable" element={<WasteReportingTable/>}/>
-        <Route path="/AutoGenerateReport" element={<AutoGenerateReport/>}/>
+        <Route path="/SignupForm" element={<SignupForm />} />
+        <Route path="/Login" element={<Login />} />
+        <Route path="/WasteReport" element={<WasteReport />} />
+        <Route path="/WasteManagementDashboard" element={<WasteManagementDashboard />} />
+        <Route path="/WasteTrackDashboard" element={<WasteTrackDashboard />} />
+        <Route path="/Leaderboard" element={<Leaderboard />} />
+        <Route path="/AnalyzePage" element={<AnalyzePage />} />
+        <Route path="/WasteReportingTable" element={<WasteReportingTable />} />
+        <Route path="/AutoGenerateReport" element={<AutoGenerateReport />} />
       </Routes>
     </Router>
   );

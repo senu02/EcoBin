@@ -115,7 +115,7 @@ export default function WasteReport() {
 
           </a>
           <a
-            href="/AnalyzePage"
+            href="/WasteReportingTable"
             className="w-full text-left p-3 rounded-md hover:bg-green-600 hover:text-white flex items-center space-x-2"
           >
            📋  <span>Report Data</span>
