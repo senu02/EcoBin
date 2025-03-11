@@ -1,28 +1,75 @@
+import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AiOutlineCheckCircle } from "react-icons/ai";
 
 export default function WasteReport() {
-  const [image, setImage] = useState(null);
-  const [title, setTitle] = useState(""); // State for title
-  const [description, setDescription] = useState(""); // State for description
-  const [date, setDate] = useState(""); // State for date
-  const [amount, setAmount] = useState(""); // State for estimated amount (kg)
-  const [points, setPoints] = useState(0); // State for points
+  const [wasteImage, setwasteImage] = useState(null);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  let navigate = useNavigate();
+
+  const [wasteReporting, setwasteReporting] = useState({
+    wasteTitle: "",
+    date: "",
+    wasteType: "",
+    wasteWeight: "",
+    wasteLocation: "",
+    description: "",
+    reword: "",
+    customerName: "",
+    wasteImage: null,
+  });
+
+  const onInputChange = (e) => {
+    const { name, value, files, type } = e.target;
+
+    if (type === "file") {
+      setwasteReporting({ ...wasteReporting, [name]: files[0] });
+    } else {
+      setwasteReporting({ ...wasteReporting, [name]: value });
+    }
+  };
+
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
-    setImage(URL.createObjectURL(file));
+
+    if (file) {
+      setwasteImage(URL.createObjectURL(file));
+      setwasteReporting({ ...wasteReporting, wasteImage: file });
+    }
   };
 
-  const handleAmountChange = (event) => {
-    const kg = event.target.value;
-    setAmount(kg);
-    setPoints(kg); // Automatically set points as 1 point per kg
-  };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Handle form submission logic here
-    console.log({ title, description, date, image, amount, points });
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const formData = new FormData();
+      formData.append("wasteTitle", wasteReporting.wasteTitle);
+      formData.append("date", wasteReporting.date);
+      formData.append("wasteType", wasteReporting.wasteType);
+      formData.append("wasteWeight", wasteReporting.wasteWeight);
+      formData.append("wasteLocation", wasteReporting.wasteLocation);
+      formData.append("description", wasteReporting.description);
+      formData.append("reword", wasteReporting.reword);
+      formData.append("customerName", wasteReporting.customerName);
+      formData.append("wasteImage", wasteReporting.wasteImage);
+
+      await axios.post("http://localhost:8080/public/addReporting", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      setShowSuccessPopup(true); 
+      setTimeout(() => {
+        setShowSuccessPopup(false);
+        navigate("/WasteReport");
+      }, 2000);
+    } catch (error) {
+      console.error("Error submitting the form:", error.response?.data || error.message);
+    }
   };
 
   return (
@@ -65,7 +112,7 @@ export default function WasteReport() {
           </div>
         </div>
 
-        {/* Add Waste Entry Form */}
+        <form onSubmit={onSubmit}>
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold">Add New Waste Report</h2>
 
@@ -75,21 +122,25 @@ export default function WasteReport() {
               type="text"
               placeholder="📑 Waste Report Title"
               className="p-3 border rounded-md w-full bg-gray-100"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              name="wasteTitle" 
+              value={wasteReporting.wasteTitle}
+              onChange={onInputChange}
+              
             />
             <input
               type="text"
               placeholder="📝 Description"
               className="p-3 border rounded-md w-full bg-gray-100"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              name="description" 
+              value={wasteReporting.description}
+              onChange={onInputChange}
             />
             <input
               type="date"
               className="p-3 border rounded-md w-full bg-gray-100"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
+              name="date" 
+              value={wasteReporting.date}
+              onChange={onInputChange}
             />
           </div>
 
@@ -99,18 +150,18 @@ export default function WasteReport() {
               type="file"
               className="hidden"
               id="wasteImageUpload"
+              accept="image/*"
+              name="wasteImage"
               onChange={handleImageUpload}
             />
             <label htmlFor="wasteImageUpload" className="cursor-pointer flex flex-col items-center">
-              {image ? (
-                <img
-                  src={image}
-                  alt="Waste"
-                  className="w-full h-40 object-cover rounded-md"
-                />
-              ) : (
-                <span className="text-gray-500">⬆ Drop your image here or browse</span>
-              )}
+            {wasteImage ? (
+                  <img src={wasteImage} alt="Truck" className="w-60 h-40 object-cover rounded-md" />
+                ) : (
+                  <div className="flex flex-col items-center">
+                    <span className="text-gray-500">📷 Upload Truck Image</span>
+                  </div>
+                )}
             </label>
           </div>
 
@@ -120,42 +171,51 @@ export default function WasteReport() {
               type="text"
               placeholder="📍 Enter location"
               className="p-3 border rounded-md w-full bg-gray-100"
+              name="wasteLocation" 
+              value={wasteReporting.wasteLocation}
+              onChange={onInputChange}
             />
-            <select className="p-3 border rounded-md w-full bg-gray-100">
-              <option>Plastic</option>
-              <option>Paper</option>
-              <option>Metal</option>
-              <option>Organic</option>
+            <select className="p-3 border rounded-md w-full bg-gray-100" name="wasteType" value={wasteReporting.wasteType}  onChange={onInputChange}>
+              <option value="Plastic">Plastic</option>
+              <option value="Paper">Paper</option>
+              <option value="Metal">Metal</option>
+              <option value="Organic">Organic</option>
             </select>
             <input
               type="number"
               placeholder="Estimated Amount (kg)"
               className="p-3 border rounded-md w-full bg-gray-100"
-              value={amount}
-              onChange={handleAmountChange}
+              name="wasteWeight" 
+              value={wasteReporting.wasteWeight}
+              onChange={onInputChange}
             />
             <input
               type="text"
               placeholder="👤 Customer Name"
               className="p-3 border rounded-md w-full bg-gray-100"
+              name="customerName" 
+              value={wasteReporting.customerName}
+              onChange={onInputChange}
             />
             <input
               type="number"
               placeholder="💰 Points"
               className="p-3 border rounded-md w-full bg-gray-100"
-              value={points}
-              readOnly // Make it read-only as it's auto-filled
+              name="reword" 
+              value={wasteReporting.reword}
+              onChange={onInputChange}
             />
           </div>
 
           {/* Submit Button */}
           <button
-            onClick={handleSubmit}
             className="mt-4 bg-green-600 hover:bg-green-700 text-white p-3 rounded-md w-full"
           >
             Submit Entry
           </button>
         </div>
+
+        </form>
 
         {/* Recent Entries */}
         <div className="mt-6 bg-white p-6 rounded-lg shadow-md">
@@ -192,6 +252,17 @@ export default function WasteReport() {
           </table>
         </div>
       </main>
+      {showSuccessPopup && (
+              <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+                  <div className="flex justify-center mb-4">
+                    <AiOutlineCheckCircle className="text-green-500 text-6xl" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-center text-green-500">Report Added Successfully!</h3>
+                  <p className="text-center text-gray-600 mt-2">Your waste collection has been saved.</p>
+                </div>
+              </div>
+            )}
     </div>
   );
 }
