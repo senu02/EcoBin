@@ -116,7 +116,7 @@ export default function WasteManagementDashboard() {
           </Link>
 
           {/* Generate Waste Reports */}
-          <Link to="/generate-reports">
+          <Link to="/AutoGenerateReport">
             <motion.div
               className="border rounded-lg p-6 flex flex-col items-center transition-transform transform hover:scale-105 hover:shadow-lg"
               initial={{ opacity: 0, scale: 0.8 }}

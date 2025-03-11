@@ -1,44 +1,72 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar } from "recharts";
 import Calendar from 'react-calendar';
+import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Import axios for fetching data
 import 'react-calendar/dist/Calendar.css'; // Import styles for the calendar
 
 const AnalyzePage = () => {
-  // Sample data for the charts
-  const lineChartData = [
-    { name: "Jan", value: 400 },
-    { name: "Feb", value: 300 },
-    { name: "Mar", value: 500 },
-    { name: "Apr", value: 200 },
-  ];
-
-  const barChartData = [
-    { name: "A", value: 2400 },
-    { name: "B", value: 1398 },
-    { name: "C", value: 9800 },
-    { name: "D", value: 3908 },
-  ];
-
-  // State for managing the calendar
+  // State to hold fetched data for the charts
+  const [lineChartData, setLineChartData] = useState([]);
+  const [barChartData, setBarChartData] = useState([]);
   const [date, setDate] = useState(new Date());
 
-  // Handle calendar date change
+  // Fetch data for charts from the backend
+  useEffect(() => {
+    axios.get("http://localhost:8080/public/getAllReport")
+      .then((response) => {
+        const wasteReports = response.data;
+        
+        // Process line chart data (example: total waste weight by month)
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const monthlyWaste = months.map((month, index) => {
+          const monthReports = wasteReports.filter(report => new Date(report.date).getMonth() === index);
+          const totalWaste = monthReports.reduce((total, report) => total + report.wasteWeight, 0);
+          return { name: month, value: totalWaste };
+        });
+        setLineChartData(monthlyWaste);
+
+        // Process bar chart data (example: waste by type)
+        const wasteTypes = Array.from(new Set(wasteReports.map(report => report.wasteType)));
+        const wasteTypeData = wasteTypes.map(type => {
+          const typeReports = wasteReports.filter(report => report.wasteType === type);
+          return { name: type, value: typeReports.length };
+        });
+        setBarChartData(wasteTypeData);
+      })
+      .catch((error) => {
+        console.error("Error fetching waste report data:", error);
+      });
+  }, []);
+
   const onDateChange = (newDate) => setDate(newDate);
+
+  // Define colors for each bar
+  const barColors = ["#8884d8", "#82ca9d", "#ffc658", "#ff7300", "#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <aside className="w-72 bg-white p-6 shadow-md">
-        <h1 className="text-2xl font-bold text-gray-800">Leaderboard</h1>
-        <nav className="mt-6 space-y-3">
-          <button className="w-full text-left p-3 bg-green-600 text-white rounded-md flex items-center">
-            📊 <span className="ml-2">Dashboard</span>
-          </button>
-          <button className="w-full text-left p-3 rounded-md hover:bg-green-600 hover:text-white flex items-center">
-            📶 <span className="ml-2">Analyze</span>
-          </button>
-          <button className="w-full text-left p-3 rounded-md hover:bg-green-600 hover:text-white flex items-center">
-            🏆 <span className="ml-2">Rewards</span>
-          </button>
+      {/* Sidebar */}
+      <aside className="w-64 bg-white text-black p-6 shadow-md">
+        <h1 className="text-xl font-bold flex items-center space-x-2">
+          ♻ <span>WasteTrack</span>
+        </h1>
+        <nav className="mt-6 space-y-4">
+          <a href="/WasteManagementDashboard" className="w-full text-left p-3 bg-green-600 text-white rounded-md flex items-center space-x-2">
+            📊 <span>Dashboard</span>
+          </a>
+          <a href="/AnalyzePage" className="w-full text-left p-3 rounded-md hover:bg-green-600 hover:text-white flex items-center space-x-2">
+            📶 <span>Analyze</span>
+          </a>
+          <a href="/Leaderboard" className="w-full text-left p-3 rounded-md hover:bg-green-600 hover:text-white flex items-center space-x-2">
+            🏆<span>Rewards</span>
+          </a>
+          <a
+            href="/WasteReportingTable"
+            className="w-full text-left p-3 rounded-md hover:bg-green-600 hover:text-white flex items-center space-x-2"
+          >
+           📋  <span>Report Data</span>
+          </a>
         </nav>
       </aside>
 
@@ -81,7 +109,14 @@ const AnalyzePage = () => {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="value" fill="#82ca9d" />
+            {barChartData.map((entry, index) => (
+              <Bar
+                key={entry.name}
+                dataKey="value"
+                fill={barColors[index % barColors.length]} // Cycle through colors
+                name={entry.name}
+              />
+            ))}
           </BarChart>
         </div>
       </main>
