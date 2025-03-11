@@ -102,9 +102,9 @@ function CollectionSchduleReport() {
                                         <td className="py-3 px-6 text-center">
                                             {/* Centering Action Icons */}
                                             <div className="flex justify-center space-x-3">
-                                                <span className="bg-blue-500 p-3 rounded-full text-white cursor-pointer hover:bg-blue-600 transition-colors">
+                                                <Link to={`/collectionview/${schedule.id}`} className="bg-blue-500 p-3 rounded-full text-white cursor-pointer hover:bg-blue-600 transition-colors">
                                                     <FaEye />
-                                                </span>
+                                                </Link>
                                                 <span className="bg-yellow-500 p-3 rounded-full text-white cursor-pointer hover:bg-yellow-600 transition-colors">
                                                     <FaEdit />
                                                 </span>
