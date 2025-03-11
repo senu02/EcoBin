@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import heroImage from '../Home/images/home5.jpg'; 
 import Image1 from '../Home/images/home4.jpeg';
 import BannerImage from '../Home/images/praveen2.png';
@@ -13,13 +13,46 @@ import {
   faLinkedin,
 } from "@fortawesome/free-brands-svg-icons";
 import { motion } from "framer-motion";
-
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { AiOutlineCheckCircle } from "react-icons/ai";
 const Home = () => {
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
+  let navigate = useNavigate();
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const toggleNavbar = () => {
     setIsNavbarOpen(!isNavbarOpen);
   };
+
+  const[contact,setContact] = useState({
+    name:"",
+    email:"",
+    message:"",
+  })
+
+  const {name,email,message} = contact;
+
+  const onInputChange = (e) =>{
+    setContact({...contact,[e.target.name]:e.target.value})
+  }
+
+  const onSubmit =  async(e) =>{
+    e.preventDefault();
+    await axios.post("http://localhost:8080/public/addContact",contact)
+    navigate("/")
+  }
+
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("email");
+    if (storedEmail) {
+      setContact((prevData) => ({ ...prevData, email: storedEmail }));
+    }
+  }, []);
+  
+
+
 
   const reviews = [
     {
@@ -355,13 +388,15 @@ const Home = () => {
         transition={{ duration: 0.6 }}
         className="md:w-1/2 bg-white p-8 rounded-lg shadow-lg"
       >
-        <form>
+        <form onSubmit={(e)=>onSubmit(e)}>
           <div className="mb-6">
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
             <input
               type="text"
               id="name"
               name="name"
+              value={name}
+              onChange={(e)=>onInputChange(e)}
               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               placeholder="John Doe"
               required
@@ -373,6 +408,8 @@ const Home = () => {
               type="email"
               id="email"
               name="email"
+              value={email}
+              readOnly
               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               placeholder="johndoe@example.com"
               required
@@ -383,7 +420,9 @@ const Home = () => {
             <textarea
               id="message"
               name="message"
-              rows="5"
+              value={message}
+              onChange={(e)=>onInputChange(e)}
+              rows="10"
               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               placeholder="Write your message here..."
               required
@@ -490,6 +529,8 @@ const Home = () => {
 </section>
 
 
+
+
       <footer className="bg-green-500 text-white py-12">
   <div className="container mx-auto px-4">
     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -566,6 +607,7 @@ const Home = () => {
 </footer>
 
     </div>
+    
   );
 };
 
