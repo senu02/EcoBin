@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 
@@ -73,19 +73,31 @@ export default function WasteTrackDashboard() {
         <h1 className="text-xl font-bold flex items-center space-x-2">
           <span>♻️ WasteTrack</span>
         </h1>
-        <nav className="mt-6 space-y-4">
-          <button className="w-full text-left p-2 bg-green-500 text-white rounded-md">📊 Dashboard</button>
-          <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white">🗑️ Waste Records</button>
-          <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white">🎁 Rewards</button>
-          <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white">👥 Customers</button>
+        <nav className="mt-8">
+            <Link to="/WasteTrackDashboard">
+              <button className="w-full text-left p-2 bg-green-500 text-white rounded-md hover:bg-green-600">📊 Dashboard</button>
+            </Link>
+            
+            {/* Add custom margin here to increase space between the two buttons */}
+            <Link to="/collectionreport">
+              <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📄 Schedule Report</button>
+            </Link>
+            
+            <Link to="/analythics">
+              <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📈 Analytics</button>
+            </Link>
+            <Link to="/customers">
+              <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">👥 Customers</button>
+            </Link>
         </nav>
       </aside>
 
       {/* Main Content */}
       <main className="flex-1 p-6">
         {/* Dashboard Header */}
-        <h1 className="text-3xl font-bold mb-6">WasteTrack Dashboard</h1>
-
+        <h1 className="text-4xl font-extrabold bg-gradient-to-r from-green-500 to-blue-500 text-transparent bg-clip-text mb-6 shadow-lg transform transition-all hover:scale-105 hover:text-green-800 text-center">
+          WasteTrack Dashboard
+        </h1>
         {/* Waste Analytics Section */}
         <div className="grid grid-cols-2 gap-6">
           <div className="bg-white p-4 rounded-lg shadow-md">
