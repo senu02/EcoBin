@@ -5,6 +5,9 @@ import Login from './Home/Login';
 import WasteReport from './Dashboard/WasteReport';
 import WasteManagementDashboard from './Dashboard/AdminDashboard';
 import WasteTrackDashboard from './Dashboard/CollectionSchedule';
+import Leaderboard from './Dashboard/Reward';
+import AnalyzePage from './Dashboard/Analiyze';
+
 import logo from './Home/images/Logo.png';
 import './App.css';
 
@@ -18,6 +21,8 @@ export default function App() {
         <Route path="/WasteReport" element={<WasteReport/>}/>
         <Route path="/WasteManagementDashboard" element={<WasteManagementDashboard/>}/>
         <Route path="/WasteTrackDashboard" element={<WasteTrackDashboard/>}/>
+        <Route path="/Leaderboard" element={<Leaderboard/>}/>
+        <Route path="/AnalyzePage" element={<AnalyzePage/>}/>
       </Routes>
     </Router>
   );
