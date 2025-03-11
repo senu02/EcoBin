@@ -10,6 +10,7 @@ import AnalyzePage from './Dashboard/Analiyze';
 
 import logo from './Home/images/Logo.png';
 import './App.css';
+import CollectionSchduleReport from './Dashboard/CollectionSchduleReport';
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/WasteTrackDashboard" element={<WasteTrackDashboard/>}/>
         <Route path="/Leaderboard" element={<Leaderboard/>}/>
         <Route path="/AnalyzePage" element={<AnalyzePage/>}/>
+        <Route path="/collectionreport" element={<CollectionSchduleReport/>}/>
       </Routes>
     </Router>
   );
