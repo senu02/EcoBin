@@ -12,6 +12,8 @@ import logo from './Home/images/Logo.png';
 import './App.css';
 import CollectionSchduleReport from './Dashboard/CollectionSchduleReport';
 import CollectionScheduleView from './Dashboard/CollectionScheduleView';
+import CollectionScheduleUpdate from './Dashboard/CollectionScheduleUpdate';
+import CollectionSchduleAnalythics from './Dashboard/CollectionScheduleAnalythics';
 
 export default function App() {
   return (
@@ -27,6 +29,8 @@ export default function App() {
         <Route path="/AnalyzePage" element={<AnalyzePage/>}/>
         <Route path="/collectionreport" element={<CollectionSchduleReport/>}/>
         <Route path="/collectionview/:id" element={<CollectionScheduleView/>}/>
+        <Route path="/collectionupdate/:id" element={<CollectionScheduleUpdate/>}/>
+        <Route path="/analythics" element={<CollectionSchduleAnalythics/>}/>
       </Routes>
     </Router>
   );

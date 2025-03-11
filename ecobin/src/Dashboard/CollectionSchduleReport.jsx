@@ -43,18 +43,32 @@ function CollectionSchduleReport() {
                     <h1 className="text-xl font-bold flex items-center space-x-2">
                         <span>♻️ WasteTrack</span>
                     </h1>
-                    <nav className="mt-6 space-y-4">
-                        <button className="w-full text-left p-2 bg-green-500 text-white rounded-md">📊 Dashboard</button>
-                        <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white">🗑️ Waste Records</button>
-                        <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white">🎁 Rewards</button>
-                        <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white">👥 Customers</button>
+                    <nav className="mt-6">
+                        <Link to="/WasteTrackDashboard">
+                        <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📊 Dashboard</button>
+                        </Link>
+                        
+                        {/* Add custom margin here to increase space between the two buttons */}
+                        <Link to="/collectionreport">
+                        <button className="w-full text-left p-2 bg-green-500 text-white rounded-md hover:bg-green-600 mt-5">📄 Schedule Report</button>
+                        </Link>
+                        
+                        <Link to="/analythics">
+                        <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📈 Analytics</button>
+                        </Link>
+                        <Link to="/customers">
+                        <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">👥 Customers</button>
+                        </Link>
                     </nav>
                 </aside>
 
                 {/* Main Content */}
                 <main className="flex-1 p-6">
                     {/* Dashboard Header */}
-                    <h1 className="text-4xl font-extrabold text-gray-800 mb-8 text-center">WasteTrack Record</h1>
+                    <h1 className="text-5xl font-extrabold bg-gradient-to-r from-green-500 to-teal-400 text-transparent bg-clip-text mb-8 text-center shadow-xl transform transition-all hover:scale-110 hover:text-green-700">
+                        WasteTrack Record
+                    </h1>
+
                     <p className="text-lg text-gray-500 mb-6 text-center">
                         Track the progress of all waste management activities, schedules, and status updates in one place.
                     </p>
@@ -105,9 +119,9 @@ function CollectionSchduleReport() {
                                                 <Link to={`/collectionview/${schedule.id}`} className="bg-blue-500 p-3 rounded-full text-white cursor-pointer hover:bg-blue-600 transition-colors">
                                                     <FaEye />
                                                 </Link>
-                                                <span className="bg-yellow-500 p-3 rounded-full text-white cursor-pointer hover:bg-yellow-600 transition-colors">
+                                                <Link to={`/collectionupdate/${schedule.id}`} className="bg-yellow-500 p-3 rounded-full text-white cursor-pointer hover:bg-yellow-600 transition-colors">
                                                     <FaEdit />
-                                                </span>
+                                                </Link>
                                                 <button className="bg-red-500 p-3 rounded-full text-white cursor-pointer hover:bg-red-600 transition-colors" onClick={()=>deleteCollectionSchedule(schedule.id)}>
                                                     <FaTrash />
                                                 </button>
