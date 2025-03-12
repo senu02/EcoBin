@@ -67,7 +67,7 @@ export default function CollectionScheduleAnalytics() {
 
       {/* Main Content */}
       <main className="flex-1 p-6">
-      <h1 className="text-4xl font-extrabold bg-gradient-to-r from-yellow-400 to-red-500 text-transparent bg-clip-text mb-6 shadow-lg transform transition-all hover:scale-105 hover:text-red-800 text-center">
+      <h1 className="text-4xl font-extrabold  bg-clip-text mb-6 shadow-lg transform transition-all hover:scale-105 hover:text-red-800 text-center">
   Schedule Report
 </h1>
 
