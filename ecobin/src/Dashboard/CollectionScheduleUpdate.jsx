@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { FiUpload } from "react-icons/fi"; // Import Upload Icon
 import { FaCheckCircle } from "react-icons/fa"; // Import Checkmark Icon
+import UserService from "../Home/UserService";
 
 const CollectionScheduleUpdate = () => {
   let navigate = useNavigate();
@@ -75,7 +76,7 @@ const CollectionScheduleUpdate = () => {
         formData.append("truckImage", collectionSchedule.truckImage); // Include the image in form data if it's selected
       }
 
-      await axios.put(`http://localhost:8080/public/updateSchedule/${id}`, formData, {
+      await axios.put(`${UserService.BASE_URL}/public/updateSchedule/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

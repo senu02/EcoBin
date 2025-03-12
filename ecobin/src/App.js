@@ -16,6 +16,7 @@ import CollectionScheduleAnalytics from './Dashboard/CollectionScheduleAnalytics
 import CollectionScheduleUpdate from './Dashboard/CollectionScheduleUpdate';
 import CollectionScheduleView from './Dashboard/CollectionScheduleView';
 import CollectionSchduleReport from './Dashboard/CollectionSchduleReport';
+import CollectionScheduleGenarateReport from './Dashboard/CollectionScheduleGenarateReport';
 
 export default function App() {
   return (
@@ -32,7 +33,8 @@ export default function App() {
         <Route path="/collectionreport" element={<CollectionSchduleReport/>}/>
         <Route path="/collectionview/:id" element={<CollectionScheduleView/>}/>
         <Route path="/collectionupdate/:id" element={<CollectionScheduleUpdate/>}/>
-        <Route path="/analythics" element={<CollectionScheduleAnalytics/>}/>
+        <Route path="/Collectionanalythics" element={<CollectionScheduleAnalytics/>}/>
+        <Route path="/CollectionGenarateReport" element={<CollectionScheduleGenarateReport/>}/>
       </Routes>
     </Router>
   );

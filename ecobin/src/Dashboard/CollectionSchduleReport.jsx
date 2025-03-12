@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 import { Link, useParams } from 'react-router-dom';
+import UserService from '../Home/UserService';
 
 function CollectionSchduleReport() {
     const [collectionSchedule, setCollectionSchedule] = useState([]);
@@ -12,12 +13,12 @@ function CollectionSchduleReport() {
     }, []);
 
     const loadSchedule = async () => {
-        const result = await axios.get("http://localhost:8080/public/getAllSchedule");
+        const result = await axios.get(`${UserService.BASE_URL}/public/getAllSchedule`);
         setCollectionSchedule(result.data);
     };
 
     const deleteCollectionSchedule = async (id)=>{
-        await axios.delete(`http://localhost:8080/public/deleteSchedule/${id}`)
+        await axios.delete(`${UserService.BASE_URL}/public/deleteSchedule/${id}`)
         loadSchedule();
     }
 
@@ -53,11 +54,11 @@ function CollectionSchduleReport() {
                         <button className="w-full text-left p-2 bg-green-500 text-white rounded-md hover:bg-green-600 mt-5">📄 Schedule Report</button>
                         </Link>
                         
-                        <Link to="/analythics">
+                        <Link to="/Collectionanalythics">
                         <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📈 Analytics</button>
                         </Link>
-                        <Link to="/customers">
-                        <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">👥 Customers</button>
+                        <Link to="/CollectionGenarateReport">
+                        <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📝 Generate PDF Report</button>
                         </Link>
                     </nav>
                 </aside>

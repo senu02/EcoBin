@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import UserService from "../Home/UserService";
 
 export default function CollectionScheduleAnalytics() {
   let navigate = useNavigate();
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/public/getAllSchedule")
+    fetch(`${UserService.BASE_URL}/public/getAllSchedule`)
       .then((response) => response.json())
       .then((data) => setData(data))
       .catch((error) => console.error("Error fetching data:", error));
@@ -55,11 +56,11 @@ export default function CollectionScheduleAnalytics() {
               <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📄 Schedule Report</button>
             </Link>
             
-            <Link to="/analythics">
+            <Link to="/Collectionanalythics">
               <button className="w-full text-left p-2 bg-green-500 text-white rounded-md hover:bg-green-600 mt-5">📈 Analytics</button>
             </Link>
-            <Link to="/customers">
-              <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">👥 Customers</button>
+            <Link to="/CollectionGenarateReport">
+              <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📝 Generate PDF Report</button>
             </Link>
         </nav>
       </aside>

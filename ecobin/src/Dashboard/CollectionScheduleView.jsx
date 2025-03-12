@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import UserService from "../Home/UserService";
 
 const CollectionScheduleView = () => {
   let navigate = useNavigate();
@@ -16,7 +17,7 @@ const CollectionScheduleView = () => {
 
   const loadSchedule = async () => {
     try {
-      const result = await axios.get(`http://localhost:8080/public/getById/${id}`);
+      const result = await axios.get(`${UserService.BASE_URL}/public/getById/${id}`);
       console.log("Fetched Data:", result.data);
       setCollectionSchedule(result.data);
     } catch (error) {

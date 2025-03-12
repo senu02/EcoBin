@@ -4,6 +4,7 @@ import Calendar from 'react-calendar';
 import { useNavigate } from "react-router-dom";
 import axios from "axios"; // Import axios for fetching data
 import 'react-calendar/dist/Calendar.css'; // Import styles for the calendar
+import UserService from "../Home/UserService";
 
 const AnalyzePage = () => {
   // State to hold fetched data for the charts
@@ -13,7 +14,7 @@ const AnalyzePage = () => {
 
   // Fetch data for charts from the backend
   useEffect(() => {
-    axios.get("http://localhost:8080/public/getAllReport")
+    axios.get(`${UserService.BASE_URL}/public/getAllReport`)
       .then((response) => {
         const wasteReports = response.data;
         
