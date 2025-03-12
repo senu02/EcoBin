@@ -66,7 +66,7 @@ function CollectionSchduleReport() {
                 {/* Main Content */}
                 <main className="flex-1 p-6">
                     {/* Dashboard Header */}
-                    <h1 className="text-5xl font-extrabold bg-gradient-to-r from-green-500 to-teal-400 text-transparent bg-clip-text mb-8 text-center shadow-xl transform transition-all hover:scale-110 hover:text-green-700">
+                    <h1 className="text-5xl font-extrabold  bg-clip-text mb-8 text-center shadow-xl transform transition-all hover:scale-110 hover:text-green-700">
                         WasteTrack Record
                     </h1>
 

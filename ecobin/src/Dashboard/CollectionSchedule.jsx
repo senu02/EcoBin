@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AiOutlineCheckCircle } from "react-icons/ai";
+import { FaRegHourglass, FaSyncAlt, FaCheckCircle } from "react-icons/fa"; // Icons for status
 import UserService from "../Home/UserService";
 
 export default function WasteTrackDashboard() {
@@ -18,6 +19,55 @@ export default function WasteTrackDashboard() {
     remark: "",
     truckImage: null,
   });
+
+  // State for waste type counts
+  const [wasteTypeCount, setWasteTypeCount] = useState({
+    plastic: 0,
+    paper: 0,
+    metal: 0,
+    organic: 0,
+  });
+
+  const [statusCount, setStatusCount] = useState({
+    pending: 0,
+    inProgress: 0,
+    completed: 0,
+  });
+
+  useEffect(() => {
+    // Fetch schedules from the API
+    const fetchSchedules = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/public/getAllSchedule");
+        const schedules = response.data;
+
+        // Count waste types
+        const wasteCounts = { plastic: 0, paper: 0, metal: 0, organic: 0 };
+        const statusCounts = { pending: 0, inProgress: 0, completed: 0 };
+
+        schedules.forEach((schedule) => {
+          // Count waste type
+          if (schedule.wasteType === "Plastic") wasteCounts.plastic++;
+          if (schedule.wasteType === "Paper") wasteCounts.paper++;
+          if (schedule.wasteType === "Metal") wasteCounts.metal++;
+          if (schedule.wasteType === "Organic") wasteCounts.organic++;
+
+          // Count status
+          if (schedule.status === "Pending") statusCounts.pending++;
+          if (schedule.status === "In Progress") statusCounts.inProgress++;
+          if (schedule.status === "Completed") statusCounts.completed++;
+        });
+
+        // Set counts in state
+        setWasteTypeCount(wasteCounts);
+        setStatusCount(statusCounts);
+      } catch (error) {
+        console.error("Error fetching schedules:", error);
+      }
+    };
+
+    fetchSchedules();
+  }, []);
 
   const onInputChange = (e) => {
     const { name, value, files, type } = e.target;
@@ -57,7 +107,7 @@ export default function WasteTrackDashboard() {
         },
       });
 
-      setShowSuccessPopup(true); 
+      setShowSuccessPopup(true);
       setTimeout(() => {
         setShowSuccessPopup(false);
         navigate("/WasteTrackDashboard");
@@ -75,40 +125,101 @@ export default function WasteTrackDashboard() {
           <span>♻️ WasteTrack</span>
         </h1>
         <nav className="mt-8">
-            <Link to="/WasteTrackDashboard">
-              <button className="w-full text-left p-2 bg-green-500 text-white rounded-md hover:bg-green-600">📊 Dashboard</button>
-            </Link>
-            
-            {/* Add custom margin here to increase space between the two buttons */}
-            <Link to="/collectionreport">
-              <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📄 Schedule Report</button>
-            </Link>
-            
-            <Link to="/Collectionanalythics">
-              <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📈 Analytics</button>
-            </Link>
-            <Link to="/CollectionGenarateReport">
-              <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📝 Generate PDF Report</button>
-            </Link>
+          <Link to="/WasteTrackDashboard">
+            <button className="w-full text-left p-2 bg-green-500 text-white rounded-md hover:bg-green-600">📊 Dashboard</button>
+          </Link>
+
+          <Link to="/collectionreport">
+            <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📄 Schedule Report</button>
+          </Link>
+
+          <Link to="/Collectionanalythics">
+            <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📈 Analytics</button>
+          </Link>
+          <Link to="/CollectionGenarateReport">
+            <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📝 Generate PDF Report</button>
+          </Link>
         </nav>
       </aside>
 
       {/* Main Content */}
       <main className="flex-1 p-6">
         {/* Dashboard Header */}
-        <h1 className="text-4xl font-extrabold bg-gradient-to-r from-green-500 to-blue-500 text-transparent bg-clip-text mb-6 shadow-lg transform transition-all hover:scale-105 hover:text-green-800 text-center">
+        <h1 className="text-4xl font-extrabold  bg-clip-text mb-6 shadow-lg transform transition-all text-center">
           WasteTrack Dashboard
         </h1>
-        {/* Waste Analytics Section */}
-        <div className="grid grid-cols-2 gap-6">
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h2 className="font-semibold text-lg">Waste Disposal in Four Cities</h2>
-            <img src="/bar-chart.png" alt="Waste Analytics" className="mt-2 w-full h-52 object-contain"/>
+
+        {/* Display Waste Type Count Boxes */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          {/* Plastic Waste Type Count */}
+          <div className="bg-gradient-to-r from-blue-300 to-blue-500 text-white p-6 rounded-lg shadow-lg hover:scale-105 transform transition-transform ease-in-out duration-300 border-2 border-blue-700">
+            <div className="flex items-center space-x-4">
+              <span className="text-5xl">🛍️</span>
+              <div>
+                <h2 className="font-semibold text-xl">Plastic</h2>
+                <p className="text-4xl font-bold">{wasteTypeCount.plastic}</p>
+              </div>
+            </div>
           </div>
 
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h2 className="font-semibold text-lg">Pie Chart</h2>
-            <img src="/pie-chart.png" alt="Waste Distribution" className="mt-2 w-full h-52 object-contain"/>
+          {/* Paper Waste Type Count */}
+          <div className="bg-gradient-to-r from-yellow-300 to-yellow-500 text-white p-6 rounded-lg shadow-lg hover:scale-105 transform transition-transform ease-in-out duration-300 border-2 border-yellow-700">
+            <div className="flex items-center space-x-4">
+              <span className="text-5xl">📄</span>
+              <div>
+                <h2 className="font-semibold text-xl">Paper</h2>
+                <p className="text-4xl font-bold">{wasteTypeCount.paper}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Metal Waste Type Count */}
+          <div className="bg-gradient-to-r from-gray-300 to-gray-500 text-white p-6 rounded-lg shadow-lg hover:scale-105 transform transition-transform ease-in-out duration-300 border-2 border-gray-700">
+            <div className="flex items-center space-x-4">
+              <span className="text-5xl">🔩</span>
+              <div>
+                <h2 className="font-semibold text-xl">Metal</h2>
+                <p className="text-4xl font-bold">{wasteTypeCount.metal}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Organic Waste Type Count */}
+          <div className="bg-gradient-to-r from-green-300 to-green-500 text-white p-6 rounded-lg shadow-lg hover:scale-105 transform transition-transform ease-in-out duration-300 border-2 border-green-700">
+            <div className="flex items-center space-x-4">
+              <span className="text-5xl">🍃</span>
+              <div>
+                <h2 className="font-semibold text-xl">Organic</h2>
+                <p className="text-4xl font-bold">{wasteTypeCount.organic}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Status Count Box */}
+        <div className="bg-gray-100 p-6 rounded-lg shadow-lg border-4 border-gray-300 hover:scale-105 transform transition-transform ease-in-out duration-300">
+          <h2 className="font-semibold text-xl text-center mb-6 text-gray-800">Collection Status</h2>
+          <div className="flex justify-between gap-4">
+            {/* Pending Status */}
+            <div className="bg-yellow-500 text-white p-6 rounded-lg shadow-md w-1/3 hover:bg-yellow-600 transform transition-colors duration-300">
+              <FaRegHourglass className="text-5xl mb-3" />
+              <p className="font-semibold text-lg">Pending</p>
+              <p className="text-3xl font-bold">{statusCount.pending}</p>
+            </div>
+
+            {/* In Progress Status */}
+            <div className="bg-blue-500 text-white p-6 rounded-lg shadow-md w-1/3 hover:bg-blue-600 transform transition-colors duration-300">
+              <FaSyncAlt className="text-5xl mb-3" />
+              <p className="font-semibold text-lg">In Progress</p>
+              <p className="text-3xl font-bold">{statusCount.inProgress}</p>
+            </div>
+
+            {/* Completed Status */}
+            <div className="bg-green-600 text-white p-6 rounded-lg shadow-md w-1/3 hover:bg-green-700 transform transition-colors duration-300">
+              <FaCheckCircle className="text-5xl mb-3" />
+              <p className="font-semibold text-lg">Completed</p>
+              <p className="text-3xl font-bold">{statusCount.completed}</p>
+            </div>
           </div>
         </div>
 
