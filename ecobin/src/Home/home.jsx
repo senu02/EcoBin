@@ -16,6 +16,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AiOutlineCheckCircle } from "react-icons/ai";
+import UserService from './UserService';
 const Home = () => {
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   let navigate = useNavigate();
@@ -39,7 +40,7 @@ const Home = () => {
 
   const onSubmit =  async(e) =>{
     e.preventDefault();
-    await axios.post("http://localhost:8080/public/addContact",contact)
+    await axios.post(`${UserService.BASE_URL}/public/addContact`,contact)
     navigate("/")
   }
 

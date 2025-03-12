@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import UserService from "../Home/UserService";
 
 const WasteReportingTable = () => {
   const [wasteReports, setWasteReports] = useState([]);
@@ -13,7 +14,7 @@ const WasteReportingTable = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/public/getAllReport")
+      .get(`${UserService.BASE_URL}/public/getAllReport`)
       .then((response) => {
         setWasteReports(response.data);
       })
@@ -30,7 +31,7 @@ const WasteReportingTable = () => {
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this report?")) {
       axios
-        .delete(`http://localhost:8080/public/deleteReport/${id}`)
+        .delete(`${UserService.BASE_URL}/public/deleteReport/${id}`)
         .then(() => {
           setWasteReports(wasteReports.filter((report) => report.id !== id));
         })
@@ -82,7 +83,7 @@ const WasteReportingTable = () => {
     }
 
     axios
-      .put(`http://localhost:8080/public/updateReport/${editReport.id}`, formData, {
+      .put(`${UserService.BASE_URL}/public/updateReport/${editReport.id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

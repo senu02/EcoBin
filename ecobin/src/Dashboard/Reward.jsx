@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import UserService from "../Home/UserService";
 
 export default function Leaderboard() {
   const [leaderboardData, setLeaderboardData] = useState([]);
@@ -9,7 +10,7 @@ export default function Leaderboard() {
   // Fetch leaderboard data from the backend
   useEffect(() => {
     axios
-      .get("http://localhost:8080/public/getAllReport") // Replace with your API endpoint
+      .get(`${UserService.BASE_URL}/public/getAllReport`) // Replace with your API endpoint
       .then((response) => {
         // Sort the data by points in descending order
         const sortedData = response.data

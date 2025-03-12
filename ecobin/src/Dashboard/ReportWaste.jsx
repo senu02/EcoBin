@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { jsPDF } from "jspdf";
 import logo from "../Home/images/Logo.png"; // Update path if needed
+import UserService from "../Home/UserService";
 
 const AutoGenerateReport = () => {
   const [wasteReports, setWasteReports] = useState([]);
@@ -9,7 +10,7 @@ const AutoGenerateReport = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/public/getAllReport")
+      .get(`${UserService.BASE_URL}/public/getAllReport`)
       .then((response) => {
         setWasteReports(response.data);
       })

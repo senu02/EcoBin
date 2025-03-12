@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineCheckCircle } from "react-icons/ai";
+import UserService from "../Home/UserService";
 
 export default function WasteReport() {
   const [wasteImage, setWasteImage] = useState(null);
@@ -24,7 +25,7 @@ export default function WasteReport() {
   // Fetch recent entries from the backend
   useEffect(() => {
     axios
-      .get("http://localhost:8080/public/getAllReport") // Replace with your API endpoint
+      .get(`${UserService.BASE_URL}/public/getAllReport`) // Replace with your API endpoint
       .then((response) => {
         // Sort by date in descending order and get the latest 5 entries
         const sortedData = response.data
@@ -71,7 +72,7 @@ export default function WasteReport() {
       formData.append("customerName", wasteReporting.customerName);
       formData.append("wasteImage", wasteReporting.wasteImage);
 
-      await axios.post("http://localhost:8080/public/addReporting", formData, {
+      await axios.post(`${UserService.BASE_URL}/public/addReporting`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

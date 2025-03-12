@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AiOutlineCheckCircle } from "react-icons/ai";
+import UserService from "../Home/UserService";
 
 export default function WasteTrackDashboard() {
   const [truckImage, setTruckImage] = useState(null);
@@ -50,7 +51,7 @@ export default function WasteTrackDashboard() {
       formData.append("remark", collectionSchedule.remark);
       formData.append("truckImage", collectionSchedule.truckImage);
 
-      await axios.post("http://localhost:8080/public/addSchedule", formData, {
+      await axios.post(`${UserService.BASE_URL}/public/addSchedule`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -83,11 +84,11 @@ export default function WasteTrackDashboard() {
               <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📄 Schedule Report</button>
             </Link>
             
-            <Link to="/analythics">
+            <Link to="/Collectionanalythics">
               <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📈 Analytics</button>
             </Link>
-            <Link to="/customers">
-              <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">👥 Customers</button>
+            <Link to="/CollectionGenarateReport">
+              <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📝 Generate PDF Report</button>
             </Link>
         </nav>
       </aside>
