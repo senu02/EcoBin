@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './Home/Home'; // Ensure the file name matches exactly
+import Home from './Home/home'; // Ensure the file name matches exactly
 import SignupForm from './Home/SignUp'; 
 import Login from './Home/Login';
 import WasteReport from './Dashboard/WasteReport';
@@ -10,7 +10,7 @@ import AnalyzePage from './Dashboard/Analiyze';
 import WasteReportingTable from './Dashboard/WasteReportingTable';
 import AutoGenerateReport from './Dashboard/ReportWaste';
 
-import logo from './Home/images/Logo.png';
+
 import './App.css';
 import CollectionScheduleAnalytics from './Dashboard/CollectionScheduleAnalytics';
 import CollectionScheduleUpdate from './Dashboard/CollectionScheduleUpdate';
@@ -29,6 +29,9 @@ export default function App() {
         <Route path="/WasteTrackDashboard" element={<WasteTrackDashboard/>}/>
         <Route path="/Leaderboard" element={<Leaderboard/>}/>
         <Route path="/AnalyzePage" element={<AnalyzePage/>}/>
+        <Route path="/WasteReportingTable" element={<WasteReportingTable/>}/>
+        <Route path="/AutoGenerateReport" element={<AutoGenerateReport/>}/>
+        
         <Route path="/collectionreport" element={<CollectionSchduleReport/>}/>
         <Route path="/collectionview/:id" element={<CollectionScheduleView/>}/>
         <Route path="/collectionupdate/:id" element={<CollectionScheduleUpdate/>}/>
