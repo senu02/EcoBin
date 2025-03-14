@@ -78,73 +78,7 @@ const Home = () => {
 
   return (
     <div className="flex flex-col min-h-screen font-sans">
-      {/* Header */}
-      <header className="relative">
-      
-
-        {/* Header Bottom */}
-        <div className="bg-white py-4 shadow-md">
-          <div className="container mx-auto px-4 flex justify-between items-center">
-            <a href="#" className="text-green-500 text-2xl font-bold uppercase">
-              Ecobin
-            </a>
-
-            {/* Navbar */}
-            <nav className={`absolute top-full right-0 bg-white w-full max-w-[350px] transition-all duration-300 overflow-hidden ${isNavbarOpen ? 'max-h-[275px]' : 'max-h-0'}`}>
-              <ul>
-                <li className="border-b border-gray-200">
-                  <a href="#home" className="block px-6 py-3 text-black hover:bg-gray-100">
-                    Home
-                  </a>
-                </li>
-                <li className="border-b border-gray-200">
-                  <a href="#services" className="block px-6 py-3 text-black hover:bg-gray-100">
-                    Services
-                  </a>
-                </li>
-                <li className="border-b border-gray-200">
-                  <a href="#recycling" className="block px-6 py-3 text-black hover:bg-gray-100">
-                    Recycling
-                  </a>
-                </li>
-                <li className="border-b border-gray-200">
-                  <a href="#dumpster" className="block px-6 py-3 text-black hover:bg-gray-100">
-                    Dumpster Rental
-                  </a>
-                </li>
-                <li className="border-b border-gray-200">
-                  <a href="#about" className="block px-6 py-3 text-black hover:bg-gray-100">
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a href="#contact" className="block px-6 py-3 text-black hover:bg-gray-100">
-                    Contact
-                  </a>
-                </li>
-              </ul>
-            </nav>
-
-            {/* Header Actions */}
-            <div className="flex items-center space-x-4">
-              <button className="text-green-500 p-2 rounded-lg shadow-md hover:bg-green-500 hover:text-white">
-                <IoSearchOutline className="w-6 h-6" />
-              </button>
-              <button
-                className="text-black p-2 border border-black rounded-lg"
-                onClick={toggleNavbar}
-              >
-                {isNavbarOpen ? (
-                  <IoCloseOutline className="w-6 h-6" />
-                ) : (
-                  <IoMenuOutline className="w-6 h-6" />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
+       
       <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
   {/* Video Background */}
   <video

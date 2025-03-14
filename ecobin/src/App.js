@@ -17,12 +17,21 @@ import CollectionScheduleUpdate from './Dashboard/CollectionScheduleUpdate';
 import CollectionScheduleView from './Dashboard/CollectionScheduleView';
 import CollectionSchduleReport from './Dashboard/CollectionSchduleReport';
 import CollectionScheduleGenarateReport from './Dashboard/CollectionScheduleGenarateReport';
+import Navbar from './Navbar/NavBar';
 
 export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+      <Route
+          path="/"
+          element={
+            <>
+              <Navbar /> {/* Navbar will only appear on the Home page */}
+              <Home />
+            </>
+          }
+        />
         <Route path="/SignupForm" element={<SignupForm/>}/>
         <Route path="/Login" element={<Login/>}/>
         <Route path="/WasteReport" element={<WasteReport/>}/>
