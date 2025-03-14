@@ -7,7 +7,7 @@ import { AiOutlineCheckCircle } from "react-icons/ai";
 export default function SignupForm() {
   const [formData, setFormData] = useState({
     role: "",
-    fullName: "",
+    name: "",
     email: "",
     gender: "",
     age: "",
@@ -58,7 +58,7 @@ export default function SignupForm() {
       }
 
       setFormData({
-        fullName: "",
+        name: "",
         email: "",
         age: "",
         gender: "",
@@ -109,10 +109,10 @@ export default function SignupForm() {
           {/* Full Name */}
           <input
             type="text"
-            name="fullName"
+            name="name"
             placeholder="👤 Full Name"
             className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-400"
-            value={formData.fullName}
+            value={formData.name}
             onChange={handleInputChange}
             required
             disabled={disableInputs}
