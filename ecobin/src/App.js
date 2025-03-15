@@ -18,6 +18,8 @@ import CollectionScheduleView from './Dashboard/CollectionScheduleView';
 import CollectionSchduleReport from './Dashboard/CollectionSchduleReport';
 import CollectionScheduleGenarateReport from './Dashboard/CollectionScheduleGenarateReport';
 import Navbar from './Navbar/NavBar';
+ 
+import WastePickupRequest from './Home/RequestWaste';
 
 export default function App() {
   return (
@@ -29,9 +31,25 @@ export default function App() {
             <>
               <Navbar /> {/* Navbar will only appear on the Home page */}
               <Home />
+              
+              
             </>
+            
           }
         />
+         <Route
+          path="/WastePickupRequest"
+          element={
+            <>
+              <Navbar /> {/* Navbar will only appear on the Home page */}
+              <WastePickupRequest />
+              
+              
+            </>
+            
+          }
+        />
+         
         <Route path="/SignupForm" element={<SignupForm/>}/>
         <Route path="/Login" element={<Login/>}/>
         <Route path="/WasteReport" element={<WasteReport/>}/>
@@ -47,6 +65,9 @@ export default function App() {
         <Route path="/collectionupdate/:id" element={<CollectionScheduleUpdate/>}/>
         <Route path="/Collectionanalythics" element={<CollectionScheduleAnalytics/>}/>
         <Route path="/CollectionGenarateReport" element={<CollectionScheduleGenarateReport/>}/>
+
+
+        <Route path="/WastePickupRequest"  element={<WastePickupRequest/>}/>
       </Routes>
     </Router>
   );
