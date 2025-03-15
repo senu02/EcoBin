@@ -1,22 +1,73 @@
+import axios from "axios";
 import { useState } from "react";
-import {
-  FaBars,
-  FaBell,
-  FaUser,
-  FaHome,
-  FaTrash,
-  FaPhone,
-  FaCalendar,
-  FaFacebook,
-  FaTwitter,
-  FaLinkedin,
-} from "react-icons/fa";
+import { FaBars, FaBell, FaUser, FaHome, FaPhone } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { AiOutlineCheckCircle } from "react-icons/ai";
+import UserService from "./UserService";
 
 export default function WastePickupRequest() {
-  const [quantity, setQuantity] = useState(5);
+  let navigate = useNavigate();
+
+  const [wasteRequest, setWasteRequest] = useState({
+    name: "",
+    address: "",
+    mobile: "",
+    wasteType: "",
+    quantity: 1,
+    frequencyPickup: "",
+  });
+
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+
+  const { name, address, mobile, wasteType, quantity, frequencyPickup } = wasteRequest;
+
+  // Handle input changes
+  const onInputChange = (e) => {
+    setWasteRequest({ ...wasteRequest, [e.target.name]: e.target.value });
+  };
+
+  // Handle quantity increment and decrement
+  const increaseQuantity = () => {
+    setWasteRequest((prev) => ({ ...prev, quantity: prev.quantity + 1 }));
+  };
+
+  const decreaseQuantity = () => {
+    setWasteRequest((prev) => ({
+      ...prev,
+      quantity: Math.max(1, prev.quantity - 1),
+    }));
+  };
+
+  // Submit form
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`${UserService.BASE_URL}/public/addRequest`, wasteRequest);
+      setShowSuccessPopup(true); // Show success popup
+      setTimeout(() => {
+        setShowSuccessPopup(false); // Hide success popup after 3 seconds
+        navigate("/"); // Navigate to home page
+      }, 3000); // Adjust this timeout value as needed
+    } catch (error) {
+      console.error("Error submitting waste pickup request:", error);
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-green-50">
+      {/* Success Popup */}
+      {showSuccessPopup && (
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+            <div className="flex justify-center mb-4">
+              <AiOutlineCheckCircle className="text-green-500 text-6xl" />
+            </div>
+            <h3 className="text-xl font-semibold text-center text-green-500">Request Added Successfully!</h3>
+            <p className="text-center text-gray-600 mt-2">Your Request has been saved.</p>
+          </div>
+        </div>
+      )}
+
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-y-auto">
         {/* Header */}
@@ -30,7 +81,7 @@ export default function WastePickupRequest() {
 
         {/* Form */}
         <div className="bg-white shadow-lg rounded-lg p-6">
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={onSubmit}>
             {/* Input Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="relative">
@@ -38,6 +89,10 @@ export default function WastePickupRequest() {
                   type="text"
                   placeholder="Name"
                   className="w-full p-3 pl-10 border border-green-300 rounded-md focus:border-green-500 focus:ring-2 focus:ring-green-200"
+                  name="name"
+                  value={name}
+                  onChange={onInputChange}
+                  required
                 />
                 <FaUser className="absolute left-3 top-3.5 text-green-500" />
               </div>
@@ -46,6 +101,10 @@ export default function WastePickupRequest() {
                   type="text"
                   placeholder="Address"
                   className="w-full p-3 pl-10 border border-green-300 rounded-md focus:border-green-500 focus:ring-2 focus:ring-green-200"
+                  name="address"
+                  value={address}
+                  onChange={onInputChange}
+                  required
                 />
                 <FaHome className="absolute left-3 top-3.5 text-green-500" />
               </div>
@@ -54,30 +113,34 @@ export default function WastePickupRequest() {
                   type="text"
                   placeholder="Mobile Number"
                   className="w-full p-3 pl-10 border border-green-300 rounded-md focus:border-green-500 focus:ring-2 focus:ring-green-200"
+                  name="mobile"
+                  value={mobile}
+                  onChange={onInputChange}
+                  required
                 />
                 <FaPhone className="absolute left-3 top-3.5 text-green-500" />
               </div>
             </div>
 
-            {/* Waste Type */}
-            <fieldset className="border border-green-300 p-4 rounded-md">
-              <legend className="font-semibold text-green-900 px-2">Select Waste Type</legend>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                {[
-                  "Organic Waste",
-                  "Recyclable Waste (Paper, Plastic, Metal, Glass, etc.)",
-                  "Hazardous Waste (Batteries, Chemicals, Medical Waste, etc.)",
-                  "Electronic Waste (E-waste)",
-                  "General Waste",
-                  "Other",
-                ].map((waste, index) => (
-                  <label key={index} className="flex items-center space-x-2">
-                    <input type="checkbox" className="h-5 w-5 accent-green-500" />
-                    <span className="text-green-900">{waste}</span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
+            {/* Waste Type (Dropdown) */}
+            <div className="relative">
+              <label className="font-semibold text-green-900">Select Waste Type:</label>
+              <select
+                name="wasteType"
+                value={wasteType}
+                onChange={onInputChange}
+                className="w-full p-3 border border-green-300 rounded-md focus:border-green-500 focus:ring-2 focus:ring-green-200 mt-2"
+                required
+              >
+                <option value="" disabled>Select waste type</option>
+                <option value="Organic Waste">Organic Waste</option>
+                <option value="Recyclable Waste">Recyclable Waste</option>
+                <option value="Hazardous Waste">Hazardous Waste</option>
+                <option value="Electronic Waste">Electronic Waste</option>
+                <option value="General Waste">General Waste</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
 
             {/* Estimated Quantity */}
             <div className="flex items-center space-x-4">
@@ -86,7 +149,7 @@ export default function WastePickupRequest() {
                 <button
                   type="button"
                   className="px-3 py-1 border border-green-300 rounded-md bg-green-200 text-green-900 hover:bg-green-300 transition-colors"
-                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  onClick={decreaseQuantity}
                 >
                   -
                 </button>
@@ -94,7 +157,7 @@ export default function WastePickupRequest() {
                 <button
                   type="button"
                   className="px-3 py-1 border border-green-300 rounded-md bg-green-200 text-green-900 hover:bg-green-300 transition-colors"
-                  onClick={() => setQuantity((q) => q + 1)}
+                  onClick={increaseQuantity}
                 >
                   +
                 </button>
@@ -106,104 +169,36 @@ export default function WastePickupRequest() {
               <legend className="font-semibold text-green-900 px-2">Frequency of Pickup</legend>
               <div className="mt-2 space-y-2">
                 <label className="flex items-center space-x-2">
-                  <input type="checkbox" className="h-5 w-5 accent-green-500" />
+                  <input
+                    type="radio"
+                    name="frequencyPickup"
+                    value="One-Time"
+                    checked={frequencyPickup === "One-Time"}
+                    onChange={onInputChange}
+                  />
                   <span className="text-green-900">One-Time Request</span>
                 </label>
                 <label className="flex items-center space-x-2">
-                  <input type="checkbox" className="h-5 w-5 accent-green-500" />
-                  <span className="text-green-900">Recurring Request (Daily/Weekly/Monthly)</span>
+                  <input
+                    type="radio"
+                    name="frequencyPickup"
+                    value="Recurring"
+                    checked={frequencyPickup === "Recurring"}
+                    onChange={onInputChange}
+                  />
+                  <span className="text-green-900">
+                    Recurring Request (Daily/Weekly/Monthly)
+                  </span>
                 </label>
               </div>
             </fieldset>
 
-            {/* Terms & Submit Button */}
-            <div className="flex items-center space-x-2">
-              <input type="checkbox" className="h-5 w-5 accent-green-500" />
-              <span className="text-green-900">I agree to the terms & conditions of the waste management service.</span>
-            </div>
-
-            <button className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-3 rounded-md hover:from-green-700 hover:to-green-800 transition-all">
+            <button className="w-full bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition-all">
               Submit
             </button>
           </form>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-green-500 text-white py-12 mt-auto">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Quick Links */}
-            <div>
-              <h3 className="text-lg font-bold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li><a href="#home" className="hover:text-green-200">Home</a></li>
-                <li><a href="#services" className="hover:text-green-200">Services</a></li>
-                <li><a href="#recycling" className="hover:text-green-200">Recycling</a></li>
-                <li><a href="#about" className="hover:text-green-200">About Us</a></li>
-                <li><a href="#contact" className="hover:text-green-200">Contact</a></li>
-              </ul>
-            </div>
-
-            {/* Contact Information */}
-            <div>
-              <h3 className="text-lg font-bold mb-4">Contact Us</h3>
-              <ul className="space-y-2">
-                <li>123 Waste Management St.</li>
-                <li>City, State, ZIP</li>
-                <li>Email: info@ecobin.com</li>
-                <li>Phone: +1 (123) 456-7890</li>
-              </ul>
-            </div>
-
-            {/* Social Media Links */}
-            <div>
-              <h3 className="text-lg font-bold mb-4">Follow Us</h3>
-              <ul className="flex space-x-4">
-                <li>
-                  <a href="#" className="text-white hover:text-green-200">
-                    <FaFacebook className="w-6 h-6" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white hover:text-green-200">
-                    <FaTwitter className="w-6 h-6" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white hover:text-green-200">
-                    <FaLinkedin className="w-6 h-6" />
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* Newsletter Subscription */}
-            <div>
-              <h3 className="text-lg font-bold mb-4">Subscribe</h3>
-              <p className="mb-4">Subscribe to our newsletter for updates and offers.</p>
-              <form className="flex">
-                <input
-                  type="email"
-                  placeholder="Your email"
-                  className="p-2 rounded-l-lg focus:outline-none text-black"
-                />
-                <button
-                  type="submit"
-                  className="bg-green-600 text-white p-2 rounded-r-lg hover:bg-green-700"
-                >
-                  Subscribe
-                </button>
-              </form>
-            </div>
-          </div>
-
-          {/* Copyright Notice */}
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center">
-            <p>&copy; 2025 Ecobin. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
