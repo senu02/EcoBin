@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { jsPDF } from "jspdf";
+import QRCode from "qrcode"; // Import QRCode library
 import logo from "../Home/images/Logo.png"; // Update path if needed
 import UserService from "../Home/UserService";
+import { FaShareAlt, FaEnvelope, FaLink } from "react-icons/fa"; // Icons for sharing
 
 const AutoGenerateReport = () => {
   const [wasteReports, setWasteReports] = useState([]);
@@ -64,6 +66,83 @@ const AutoGenerateReport = () => {
 
     // Save the PDF
     doc.save(`WasteReport_${report.id}.pdf`);
+  };
+
+  // Function to generate and download QR code with waste details
+  const generateQRCode = (report) => {
+    // Create a string with the waste details
+    const wasteDetails = `
+      Waste Details
+      -------------
+      Title: ${report.wasteTitle}
+      Description: ${report.description}
+      Date: ${report.date}
+      Location: ${report.wasteLocation}
+      Weight: ${report.wasteWeight} kg
+    `;
+
+    // Generate QR code as a data URL
+    QRCode.toDataURL(wasteDetails, { width: 300, margin: 2 }, (err, url) => {
+      if (err) {
+        console.error("Error generating QR code:", err);
+        return;
+      }
+
+      // Create a temporary link to trigger the download
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `QRCode_${report.id}.png`; // File name for download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  };
+
+  // Function to share waste details
+  const shareWasteDetails = (report) => {
+    // Create a string with the waste details
+    const wasteDetails = `
+      Waste Details
+      -------------
+      Title: ${report.wasteTitle}
+      Description: ${report.description}
+      Date: ${report.date}
+      Location: ${report.wasteLocation}
+      Weight: ${report.wasteWeight} kg
+    `;
+
+    if (navigator.share) {
+      // Use the Web Share API if available (for mobile devices)
+      navigator
+        .share({
+          title: `Waste Details: ${report.wasteTitle}`,
+          text: wasteDetails,
+        })
+        .then(() => console.log("Shared successfully"))
+        .catch((error) => console.error("Error sharing:", error));
+    } else {
+      // Fallback for desktop or unsupported browsers
+      alert(`Waste Details:\n${wasteDetails}`);
+    }
+  };
+
+  // Function to copy waste details to clipboard
+  const copyWasteDetails = (report) => {
+    // Create a string with the waste details
+    const wasteDetails = `
+      Waste Details
+      -------------
+      Title: ${report.wasteTitle}
+      Description: ${report.description}
+      Date: ${report.date}
+      Location: ${report.wasteLocation}
+      Weight: ${report.wasteWeight} kg
+    `;
+
+    navigator.clipboard
+      .writeText(wasteDetails)
+      .then(() => alert("Waste details copied to clipboard!"))
+      .catch((error) => console.error("Error copying details:", error));
   };
 
   return (
@@ -137,12 +216,36 @@ const AutoGenerateReport = () => {
               </p>
 
               {/* Download Report Button */}
-              <div className="mt-3">
+              <div className="mt-3 flex space-x-2">
                 <button
                   onClick={() => downloadReport(report)}
                   className="bg-green-500 text-white px-3 py-1 rounded-md shadow-md text-xs hover:bg-green-600 transition"
                 >
                   📥 Download Report
+                </button>
+
+                {/* Generate QR Code Button */}
+                <button
+                  onClick={() => generateQRCode(report)}
+                  className="bg-blue-500 text-white px-3 py-1 rounded-md shadow-md text-xs hover:bg-blue-600 transition"
+                >
+                  📲 Generate QR Code
+                </button>
+
+                {/* Share Waste Details Button */}
+                <button
+                  onClick={() => shareWasteDetails(report)}
+                  className="bg-purple-500 text-white px-3 py-1 rounded-md shadow-md text-xs hover:bg-purple-600 transition"
+                >
+                  <FaShareAlt className="inline-block" /> Share Details
+                </button>
+
+                {/* Copy Waste Details Button */}
+                <button
+                  onClick={() => copyWasteDetails(report)}
+                  className="bg-gray-500 text-white px-3 py-1 rounded-md shadow-md text-xs hover:bg-gray-600 transition"
+                >
+                  <FaLink className="inline-block" /> Copy Details
                 </button>
               </div>
             </div>
