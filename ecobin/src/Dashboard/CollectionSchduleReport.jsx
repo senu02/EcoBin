@@ -1,11 +1,12 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
+import { FaEye, FaEdit, FaTrash, FaSearch } from 'react-icons/fa';  // Importing the search icon
 import { Link, useParams } from 'react-router-dom';
 import UserService from '../Home/UserService';
 
 function CollectionSchduleReport() {
     const [collectionSchedule, setCollectionSchedule] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");  // State for search query
     const { id } = useParams();
 
     useEffect(() => {
@@ -17,8 +18,8 @@ function CollectionSchduleReport() {
         setCollectionSchedule(result.data);
     };
 
-    const deleteCollectionSchedule = async (id)=>{
-        await axios.delete(`${UserService.BASE_URL}/public/deleteSchedule/${id}`)
+    const deleteCollectionSchedule = async (id) => {
+        await axios.delete(`${UserService.BASE_URL}/public/deleteSchedule/${id}`);
         loadSchedule();
     }
 
@@ -36,6 +37,14 @@ function CollectionSchduleReport() {
         }
     };
 
+    // Filter collectionSchedule based on search query
+    const filteredSchedules = collectionSchedule.filter(schedule => 
+        schedule.id.toString().includes(searchQuery) ||  // Search by Truck ID
+        schedule.driverName.toLowerCase().includes(searchQuery.toLowerCase()) ||  // Search by Driver Name
+        schedule.wasteType.toLowerCase().includes(searchQuery.toLowerCase()) ||  // Search by Waste Type
+        schedule.collectionDate.toLowerCase().includes(searchQuery.toLowerCase())  // Search by Collection Date
+    );
+
     return (
         <div>
             <div className="flex min-h-screen bg-gray-100">
@@ -46,19 +55,18 @@ function CollectionSchduleReport() {
                     </h1>
                     <nav className="mt-6">
                         <Link to="/WasteTrackDashboard">
-                        <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📊 Dashboard</button>
+                            <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📊 Dashboard</button>
                         </Link>
-                        
-                        {/* Add custom margin here to increase space between the two buttons */}
+
                         <Link to="/collectionreport">
-                        <button className="w-full text-left p-2 bg-green-500 text-white rounded-md hover:bg-green-600 mt-5">📄 Schedule Report</button>
+                            <button className="w-full text-left p-2 bg-green-500 text-white rounded-md hover:bg-green-600 mt-5">📄 Schedule Report</button>
                         </Link>
-                        
+
                         <Link to="/Collectionanalythics">
-                        <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📈 Analytics</button>
+                            <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📈 Analytics</button>
                         </Link>
                         <Link to="/CollectionGenarateReport">
-                        <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📝 Generate PDF Report</button>
+                            <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📝 Generate PDF Report</button>
                         </Link>
                     </nav>
                 </aside>
@@ -73,6 +81,23 @@ function CollectionSchduleReport() {
                     <p className="text-lg text-gray-500 mb-6 text-center">
                         Track the progress of all waste management activities, schedules, and status updates in one place.
                     </p>
+
+                    {/* Search Bar with Icon */}
+                    <div className="mb-6 flex justify-center">
+                        <div className="relative w-80">
+                            <input
+                                type="text"
+                                className="w-full p-3 pl-10 pr-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                placeholder="Search by Truck ID, Driver Name, Waste Type, or Date"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                            <FaSearch 
+                                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
+                                size={20} 
+                            />
+                        </div>
+                    </div>
 
                     {/* Table Section */}
                     <div className="overflow-x-auto rounded-lg shadow-lg bg-white">
@@ -89,7 +114,7 @@ function CollectionSchduleReport() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {collectionSchedule.map((schedule) => (
+                                {filteredSchedules.map((schedule) => (
                                     <tr key={schedule.id} className="hover:bg-gray-200 cursor-pointer">
                                         <td className="py-3 px-6 text-center">{schedule.id}</td>
                                         <td className="py-3 px-6 text-center">{schedule.driverName}</td>
@@ -123,7 +148,7 @@ function CollectionSchduleReport() {
                                                 <Link to={`/collectionupdate/${schedule.id}`} className="bg-yellow-500 p-3 rounded-full text-white cursor-pointer hover:bg-yellow-600 transition-colors">
                                                     <FaEdit />
                                                 </Link>
-                                                <button className="bg-red-500 p-3 rounded-full text-white cursor-pointer hover:bg-red-600 transition-colors" onClick={()=>deleteCollectionSchedule(schedule.id)}>
+                                                <button className="bg-red-500 p-3 rounded-full text-white cursor-pointer hover:bg-red-600 transition-colors" onClick={() => deleteCollectionSchedule(schedule.id)}>
                                                     <FaTrash />
                                                 </button>
                                             </div>
