@@ -20,6 +20,7 @@ import CollectionScheduleGenarateReport from './Dashboard/CollectionScheduleGena
 import Navbar from './Navbar/NavBar';
  
 import WastePickupRequest from './Home/RequestWaste';
+import ProfileHeader from './UserProfile/UserProfile';
 
 export default function App() {
   return (
@@ -68,6 +69,8 @@ export default function App() {
 
 
         <Route path="/WastePickupRequest"  element={<WastePickupRequest/>}/>
+
+        <Route path="/ProfileHeader" element={<ProfileHeader/>}/>
       </Routes>
     </Router>
   );
