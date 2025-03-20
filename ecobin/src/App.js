@@ -21,6 +21,8 @@ import Navbar from './Navbar/NavBar';
  
 import WastePickupRequest from './Home/RequestWaste';
 import ProfileHeader from './UserProfile/UserProfile';
+import ViewRequestPickup from './ViewRequestPickup/ViewRequestPickup';
+import EditeRequestPickup from './ViewRequestPickup/EditeRequestPickup';
 
 export default function App() {
   return (
@@ -69,7 +71,8 @@ export default function App() {
 
 
         <Route path="/WastePickupRequest"  element={<WastePickupRequest/>}/>
-
+        <Route path="/ViewPickup"  element={<ViewRequestPickup/>}/>
+        <Route path="/editepickup/:id"  element={<EditeRequestPickup/>}/>
         <Route path="/ProfileHeader" element={<ProfileHeader/>}/>
       </Routes>
     </Router>

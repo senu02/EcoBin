@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, ChevronUp, Settings, LogOut } from "lucide-react";
+import { Menu, X, ChevronUp, Settings, LogOut,User, List } from "lucide-react";
 import companyLogo from "../Home/images/Logo.png";
 
 function Navbar() {
@@ -94,6 +94,16 @@ function Navbar() {
                     <li>
                       <Link to="/settings" className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">
                         <Settings className="mr-2" size={18} /> Settings
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/ProfileHeader" className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">
+                        <User className="mr-2" size={18} /> View Profile
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/ViewPickup" className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-md">
+                        <List className="mr-2" size={18} /> View Requests
                       </Link>
                     </li>
                     <li>
