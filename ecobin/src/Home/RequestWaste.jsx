@@ -1,9 +1,9 @@
-import axios from "axios";
-import { useState } from "react";
-import { FaBars, FaBell, FaUser, FaHome, FaPhone } from "react-icons/fa";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AiOutlineCheckCircle } from "react-icons/ai";
+import axios from "axios";
 import UserService from "./UserService";
+import { FaUser, FaHome, FaPhone } from "react-icons/fa";
+import { AiOutlineCheckCircle } from "react-icons/ai";
 
 export default function WastePickupRequest() {
   let navigate = useNavigate();
@@ -20,6 +20,19 @@ export default function WastePickupRequest() {
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const { name, address, mobile, wasteType, quantity, frequencyPickup } = wasteRequest;
+
+  // Set initial values from localStorage
+  useEffect(() => {
+    const userName = localStorage.getItem('name');
+    const userAddress = localStorage.getItem('address');
+    
+    // Pre-fill the form with the name and address from localStorage if available
+    setWasteRequest((prev) => ({
+      ...prev,
+      name: userName || '',
+      address: userAddress || '',
+    }));
+  }, []);
 
   // Handle input changes
   const onInputChange = (e) => {
@@ -73,10 +86,6 @@ export default function WastePickupRequest() {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-semibold text-green-900">Waste Pickup Request Form</h1>
-          <div className="flex items-center space-x-4">
-            <FaBell className="text-2xl text-green-900" />
-            <FaUser className="text-2xl text-green-900" />
-          </div>
         </div>
 
         {/* Form */}
