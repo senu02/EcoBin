@@ -3,6 +3,13 @@ import profilePhoto from '../Home/images/Premium Vector _ Young man Face Avater 
 import coverPhoto from '../Home/images/p1.jpeg'; // Import cover photo
 
 const ProfileHeader = () => {
+
+  const name = localStorage.getItem('name');
+    const email = localStorage.getItem('email');
+    const gender = localStorage.getItem('gender');
+    const age = localStorage.getItem('age');
+    const role = localStorage.getItem('role');
+
   return (
     <div className="bg-white rounded-lg shadow-md max-w-2xl mx-auto overflow-hidden">
       {/* Cover Photo */}
@@ -24,18 +31,18 @@ const ProfileHeader = () => {
 
       {/* Profile Header */}
       <div className="text-center mt-16">
-        <h1 className="text-3xl font-bold text-gray-800">Emma Smith</h1>
+        <h1 className="text-3xl font-bold text-gray-800 uppercase">{name}</h1>
         
         {/* Age, Gender, and Email */}
         <div className="mt-4 space-y-1">
           <p className="text-gray-600">
-            <span className="font-semibold">Age:</span> 28
+            <span className="font-semibold">Age:</span> {age}
           </p>
           <p className="text-gray-600">
-            <span className="font-semibold">Gender:</span> Female
+            <span className="font-semibold">Gender:</span>{gender}
           </p>
           <p className="text-gray-600">
-            <span className="font-semibold">Email:</span> emma.smith@example.com
+            <span className="font-semibold">Email:</span> {email}
           </p>
         </div>
       </div>
