@@ -28,7 +28,7 @@ export default function EditRequestPickup() {
 
   const loadUpdateRequest = async () => {
     try {
-      const result = await axios.get(`http://localhost:8080/public/getIdByRequest/${id}`);
+      const result = await axios.get(`${UserService.BASE_URL}/public/getIdByRequest/${id}`);
       setUpdateWasteRequest(result.data);
     } catch (error) {
       console.error("Error loading request:", error);
@@ -50,44 +50,19 @@ export default function EditRequestPickup() {
     }
   };
 
-
-  const onSubmit = async (e)=>{
+  const onSubmit = async (e) => {
     e.preventDefault();
-    await axios.put(`http://localhost:8080/public/updateWasteRequest/${id}`, updateWasteRequest);
-    navigate("/ViewPickup")
-}
-
-const handleSubmit = async (e) => {
-    e.preventDefault();
-
     try {
-      const formData = new FormData();
-      formData.append("name", updateWasteRequest.name);
-      formData.append("address", updateWasteRequest.address);
-      formData.append("mobile", updateWasteRequest.mobile);
-      formData.append("wasteType", updateWasteRequest.wasteType);
-      formData.append("quantity", updateWasteRequest.quantity);
-      formData.append("frequencyPickup", updateWasteRequest.frequencyPickup);
-
-
-      await axios.put(`${UserService.BASE_URL}/public/updateWasteRequest/${id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      // Show success modal
-     
-
-      // Redirect after a brief delay to show the success message
+      await axios.put(`${UserService.BASE_URL}/public/updateWasteRequest/${id}`, updateWasteRequest);
+      setShowSuccessPopup(true);
       setTimeout(() => {
-        navigate("/collectionreport");
-      }, 2000);
+        setShowSuccessPopup(false); // Hide popup after 3 seconds
+        navigate("/ViewPickup");
+      }, 3000); // Timeout duration of 3 seconds
     } catch (error) {
-      console.error("Error submitting the form:", error.response?.data || error.message);
+      console.error("Error updating request:", error);
     }
   };
-  
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-r from-green-50 to-green-100">

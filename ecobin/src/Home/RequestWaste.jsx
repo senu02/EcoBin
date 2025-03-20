@@ -21,12 +21,12 @@ export default function WastePickupRequest() {
 
   const { name, address, mobile, wasteType, quantity, frequencyPickup } = wasteRequest;
 
-  // Set initial values from localStorage
+  
   useEffect(() => {
     const userName = localStorage.getItem('name');
     const userAddress = localStorage.getItem('address');
     
-    // Pre-fill the form with the name and address from localStorage if available
+    
     setWasteRequest((prev) => ({
       ...prev,
       name: userName || '',
@@ -34,12 +34,12 @@ export default function WastePickupRequest() {
     }));
   }, []);
 
-  // Handle input changes
+
   const onInputChange = (e) => {
     setWasteRequest({ ...wasteRequest, [e.target.name]: e.target.value });
   };
 
-  // Handle quantity increment and decrement
+
   const increaseQuantity = () => {
     setWasteRequest((prev) => ({ ...prev, quantity: prev.quantity + 1 }));
   };
@@ -51,16 +51,16 @@ export default function WastePickupRequest() {
     }));
   };
 
-  // Submit form
+
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
       await axios.post(`${UserService.BASE_URL}/public/addRequest`, wasteRequest);
-      setShowSuccessPopup(true); // Show success popup
+      setShowSuccessPopup(true); 
       setTimeout(() => {
-        setShowSuccessPopup(false); // Hide success popup after 3 seconds
-        navigate("/"); // Navigate to home page
-      }, 3000); // Adjust this timeout value as needed
+        setShowSuccessPopup(false); 
+        navigate("/"); 
+      }, 3000);
     } catch (error) {
       console.error("Error submitting waste pickup request:", error);
     }
