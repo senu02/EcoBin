@@ -38,7 +38,7 @@ public class WasteClassifierController {
     // Simulated model classification (randomly returns plastic, metal, or organic)
     private String runModelClassification(byte[] imageBytes) {
         // Simulate classification logic (replace with actual model inference)
-        String[] wasteTypes = {"Plastic", "Metal", "Organic","Glass","Pepar","Human"};
+        String[] wasteTypes = {"Plastic", "Metal", "Organic","Glass","Paper","Human"};
         return wasteTypes[new Random().nextInt(wasteTypes.length)];
     }
 }

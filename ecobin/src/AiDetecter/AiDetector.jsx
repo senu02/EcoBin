@@ -51,7 +51,7 @@ const AiDetector = () => {
                     />
                 </div>
             </div>
-          <Link to="/" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
+          <Link to="/WasteManagementDashboard" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
             <FaHome className="mr-2" /> Dashboard
           </Link>
           <Link to="/account" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
