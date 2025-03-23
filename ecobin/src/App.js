@@ -24,6 +24,8 @@ import ProfileHeader from './UserProfile/UserProfile';
 import ViewRequestPickup from './ViewRequestPickup/ViewRequestPickup';
 import EditeRequestPickup from './ViewRequestPickup/EditeRequestPickup';
 
+import ContactDetails from './Dashboard/Contact';
+
 export default function App() {
   return (
     <Router>
@@ -74,6 +76,8 @@ export default function App() {
         <Route path="/ViewPickup"  element={<ViewRequestPickup/>}/>
         <Route path="/editepickup/:id"  element={<EditeRequestPickup/>}/>
         <Route path="/ProfileHeader" element={<ProfileHeader/>}/>
+
+        <Route path="/ContactDetails" element={<ContactDetails/>}/>
       </Routes>
     </Router>
   );

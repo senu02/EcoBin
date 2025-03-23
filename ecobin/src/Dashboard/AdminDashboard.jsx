@@ -2,6 +2,7 @@ import { Link } from "react-router-dom"; // Import Link for navigation
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import { motion } from "framer-motion";
 import "react-circular-progressbar/dist/styles.css";
+import { FaPhoneAlt } from "react-icons/fa";
 import {
   FaHome,
   FaUser,
@@ -142,17 +143,18 @@ export default function WasteManagementDashboard() {
           </Link>
 
           {/* Monitor Disposal Efficiency */}
-          <Link to="/monitor-disposal">
-            <motion.div
-              className="border rounded-lg p-6 flex flex-col items-center transition-transform transform hover:scale-105 hover:shadow-lg"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.7 }}
-            >
-              <FaIndustry className="text-green-600 text-4xl mb-2" />
-              <p className="font-bold text-gray-700">Monitor Disposal Efficiency</p>
-            </motion.div>
-          </Link>
+          <Link to="/ContactDetails">
+      <motion.div
+        className="border rounded-lg p-6 flex flex-col items-center transition-transform transform hover:scale-105 hover:shadow-lg"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, delay: 0.7 }}
+      >
+        {/* Use FaPhoneAlt or any other contact icon */}
+        <FaPhoneAlt className="text-green-600 text-4xl mb-2" />
+        <p className="font-bold text-gray-700">Contact Details</p>
+      </motion.div>
+    </Link>
         </div>
       </main>
     </div>
