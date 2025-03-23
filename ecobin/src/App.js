@@ -25,6 +25,7 @@ import ViewRequestPickup from './ViewRequestPickup/ViewRequestPickup';
 import EditeRequestPickup from './ViewRequestPickup/EditeRequestPickup';
 
 import ContactDetails from './Dashboard/Contact';
+import AiDetector from './AiDetecter/AiDetector';
 
 export default function App() {
   return (
@@ -78,6 +79,8 @@ export default function App() {
         <Route path="/ProfileHeader" element={<ProfileHeader/>}/>
 
         <Route path="/ContactDetails" element={<ContactDetails/>}/>
+        <Route path="/aidetector" element={<AiDetector/>}/>
+
       </Routes>
     </Router>
   );
