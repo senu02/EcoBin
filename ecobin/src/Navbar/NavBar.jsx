@@ -60,7 +60,7 @@ function Navbar() {
   return (
     <nav className="bg-white text-gray-900 shadow-md relative z-50">
       <div className="container mx-auto flex justify-between items-center px-6 py-4">
-        <Link to="/select-item" className="flex items-center space-x-3 cursor-pointer">
+        <Link to="/" className="flex items-center space-x-3 cursor-pointer">
           <img src={companyLogo} alt="Waste Management Logo" className="h-12 w-12 rounded-full" />
           <span className="text-2xl font-bold tracking-wide hover:text-green-600 transition-all">
             Waste Management

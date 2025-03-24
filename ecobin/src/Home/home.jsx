@@ -57,19 +57,19 @@ const Home = () => {
   const reviews = [
     {
       id: 1,
-      name: "John Doe",
+      name: "Tharush De Silva",
       review: "Great service! Very efficient and eco-friendly.",
       rating: 5,
     },
     {
       id: 2,
-      name: "Jane Smith",
+      name: "Janaki Sooriyaarachchi",
       review: "Highly recommend their dumpster rental service.",
       rating: 4,
     },
     {
       id: 3,
-      name: "Alice Johnson",
+      name: "Sampath Perera",
       review: "Excellent customer support and timely service.",
       rating: 5,
     },
@@ -408,7 +408,7 @@ const Home = () => {
               value={name}
               onChange={(e) => onInputChange(e)}
               className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-              placeholder="John Doe"
+              placeholder="Name"
               required
             />
           </div>
@@ -463,13 +463,13 @@ const Home = () => {
           <h3 className="text-xl font-bold text-gray-800 mb-4">Contact Information</h3>
           <div className="space-y-3">
             <div className="flex items-center">
-              <p className="text-gray-600">456 Eco Park Road, Green Valley, Earth</p>
+              <p className="text-gray-600">456 Eco Park Road, Kohuwala, Nugegoda</p>
             </div>
             <div className="flex items-center">
-              <p className="text-gray-600">+1 (987) 654-3210</p>
+              <p className="text-gray-600">+94 771687613</p>
             </div>
             <div className="flex items-center">
-              <p className="text-gray-600">contact@ecowaste.com</p>
+              <p className="text-gray-600">contact@ecobin.com</p>
             </div>
           </div>
         </div>
@@ -538,10 +538,10 @@ const Home = () => {
             <div>
               <h3 className="text-lg font-bold mb-4">Contact Us</h3>
               <ul className="space-y-2">
-                <li>123 Waste Management St.</li>
-                <li>City, State, ZIP</li>
-                <li>Email: info@ecobin.com</li>
-                <li>Phone: +1 (123) 456-7890</li>
+                <li>456 Eco Park Road,</li>
+                <li>Kohuwala, Nugegoda</li>
+                <li>Email: contact@ecobin.com</li>
+                <li>Phone: +94 771687613</li>
               </ul>
             </div>
 

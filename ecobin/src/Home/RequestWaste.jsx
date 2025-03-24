@@ -279,16 +279,17 @@ export default function WastePickupRequest() {
                       </ul>
                     </div>
         
-                    {/* Contact Information */}
-                    <div>
-                      <h3 className="text-lg font-bold mb-4">Contact Us</h3>
-                      <ul className="space-y-2">
-                        <li>123 Waste Management St.</li>
-                        <li>City, State, ZIP</li>
-                        <li>Email: info@ecobin.com</li>
-                        <li>Phone: +1 (123) 456-7890</li>
-                      </ul>
-                    </div>
+             {/* Contact Information */}
+             <div>
+              <h3 className="text-lg font-bold mb-4">Contact Us</h3>
+              <ul className="space-y-2">
+                <li>456 Eco Park Road,</li>
+                <li>Kohuwala, Nugegoda</li>
+                <li>Email: contact@ecobin.com</li>
+                <li>Phone: +94 771687613</li>
+              </ul>
+            </div>
+
         
                     {/* Social Media Links */}
                     <div>
