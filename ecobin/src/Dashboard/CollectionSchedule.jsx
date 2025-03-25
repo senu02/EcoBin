@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AiOutlineCheckCircle } from "react-icons/ai";
-import { FaRegHourglass, FaSyncAlt, FaCheckCircle } from "react-icons/fa"; // Icons for status
+import { FaRegHourglass, FaSyncAlt, FaCheckCircle } from "react-icons/fa";
 import UserService from "../Home/UserService";
 
 export default function WasteTrackDashboard() {
   const [truckImage, setTruckImage] = useState(null);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [minDate, setMinDate] = useState("");
   let navigate = useNavigate();
 
   const [collectionSchedule, setCollectionSchedule] = useState({
@@ -35,30 +37,31 @@ export default function WasteTrackDashboard() {
   });
 
   useEffect(() => {
-    // Fetch schedules from the API
+    // Set minimum date to today (format: YYYY-MM-DDTHH:MM)
+    const today = new Date();
+    const offset = today.getTimezoneOffset();
+    today.setMinutes(today.getMinutes() - offset); // Adjust for timezone
+    setMinDate(today.toISOString().slice(0, 16));
+
     const fetchSchedules = async () => {
       try {
         const response = await axios.get("http://localhost:8080/public/getAllSchedule");
         const schedules = response.data;
 
-        // Count waste types
         const wasteCounts = { plastic: 0, paper: 0, metal: 0, organic: 0 };
         const statusCounts = { pending: 0, inProgress: 0, completed: 0 };
 
         schedules.forEach((schedule) => {
-          // Count waste type
           if (schedule.wasteType === "Plastic") wasteCounts.plastic++;
           if (schedule.wasteType === "Paper") wasteCounts.paper++;
           if (schedule.wasteType === "Metal") wasteCounts.metal++;
           if (schedule.wasteType === "Organic") wasteCounts.organic++;
 
-          // Count status
           if (schedule.status === "Pending") statusCounts.pending++;
           if (schedule.status === "In Progress") statusCounts.inProgress++;
           if (schedule.status === "Completed") statusCounts.completed++;
         });
 
-        // Set counts in state
         setWasteTypeCount(wasteCounts);
         setStatusCount(statusCounts);
       } catch (error) {
@@ -69,13 +72,74 @@ export default function WasteTrackDashboard() {
     fetchSchedules();
   }, []);
 
+  const validateForm = () => {
+    const newErrors = {};
+    const nameRegex = /^[A-Za-z\s]+$/;
+    const locationRegex = /^[A-Za-z\s,]+$/;
+
+    // Required fields validation
+    if (!collectionSchedule.driverName.trim()) {
+      newErrors.driverName = "Driver name is required";
+    } else if (!nameRegex.test(collectionSchedule.driverName)) {
+      newErrors.driverName = "Only letters are allowed";
+    }
+
+    if (!collectionSchedule.location.trim()) {
+      newErrors.location = "Location is required";
+    } else if (!locationRegex.test(collectionSchedule.location)) {
+      newErrors.location = "Only letters and commas are allowed";
+    }
+
+    if (!collectionSchedule.wasteType) {
+      newErrors.wasteType = "Waste type is required";
+    }
+
+    if (!collectionSchedule.status) {
+      newErrors.status = "Status is required";
+    }
+
+    if (!collectionSchedule.collectionDate) {
+      newErrors.collectionDate = "Collection date is required";
+    } else {
+      // Validate date is not in the past
+      const selectedDate = new Date(collectionSchedule.collectionDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      if (selectedDate < today) {
+        newErrors.collectionDate = "Date cannot be in the past";
+      }
+    }
+
+    if (!collectionSchedule.truckImage) {
+      newErrors.truckImage = "Truck image is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const onInputChange = (e) => {
     const { name, value, files, type } = e.target;
 
     if (type === "file") {
       setCollectionSchedule({ ...collectionSchedule, [name]: files[0] });
+      if (files[0]) {
+        setErrors({ ...errors, truckImage: null });
+      }
     } else {
-      setCollectionSchedule({ ...collectionSchedule, [name]: value });
+      // Special handling for driver name to only allow letters
+      if (name === "driverName") {
+        const lettersOnly = value.replace(/[^A-Za-z\s]/g, '');
+        setCollectionSchedule({ ...collectionSchedule, [name]: lettersOnly });
+      } else {
+        setCollectionSchedule({ ...collectionSchedule, [name]: value });
+      }
+      
+      // Clear error when user starts typing
+      if (errors[name]) {
+        setErrors({ ...errors, [name]: null });
+      }
     }
   };
 
@@ -85,11 +149,16 @@ export default function WasteTrackDashboard() {
     if (file) {
       setTruckImage(URL.createObjectURL(file));
       setCollectionSchedule({ ...collectionSchedule, truckImage: file });
+      setErrors({ ...errors, truckImage: null });
     }
   };
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
 
     try {
       const formData = new FormData();
@@ -145,7 +214,7 @@ export default function WasteTrackDashboard() {
       {/* Main Content */}
       <main className="flex-1 p-6">
         {/* Dashboard Header */}
-        <h1 className="text-4xl font-extrabold  bg-clip-text mb-6 shadow-lg transform transition-all text-center">
+        <h1 className="text-4xl font-extrabold bg-clip-text mb-6 shadow-lg transform transition-all text-center">
           WasteTrack Dashboard
         </h1>
 
@@ -247,31 +316,98 @@ export default function WasteTrackDashboard() {
                   </div>
                 )}
               </label>
+              {errors.truckImage && <p className="text-red-500 text-sm mt-2">{errors.truckImage}</p>}
             </div>
 
             {/* Input Fields */}
             <div className="grid grid-cols-2 gap-4 mt-4">
-              <input type="text" placeholder="📍 Enter location" className="p-3 border rounded-md w-full bg-gray-100" name="location" value={collectionSchedule.location} onChange={onInputChange} />
-              <select className="p-3 border rounded-md w-full bg-gray-100" name="wasteType" value={collectionSchedule.wasteType} onChange={onInputChange}>
-                <option>---Collection Type---</option>
-                <option value="Plastic">🛍️ Plastic</option>
-                <option value="Paper">📄 Paper</option>
-                <option value="Metal">🔩 Metal</option>
-                <option value="Organic">🍃 Organic</option>
-              </select>
-              <select className="p-3 border rounded-md w-full bg-gray-100" name="status" value={collectionSchedule.status} onChange={onInputChange}>
-                <option>---Status---</option>
-                <option value="Pending">⏳ Pending</option>
-                <option value="In Progress">🔄 In Progress</option>
-                <option value="Completed">✅ Completed</option>
-              </select>
-              <input type="text" placeholder="👤 Driver Name" className="p-3 border rounded-md w-full bg-gray-100" name="driverName" value={collectionSchedule.driverName} onChange={onInputChange} />
-              <input type="datetime-local" className="p-3 border rounded-md w-full bg-gray-100" name="collectionDate" value={collectionSchedule.collectionDate} onChange={onInputChange} />
-              <input type="text" className="p-3 border rounded-md w-full bg-gray-100" placeholder="💬 Remarks" name="remark" value={collectionSchedule.remark} onChange={onInputChange} />
+              <div>
+                <input 
+                  type="text" 
+                  placeholder="📍 Enter location" 
+                  className={`p-3 border rounded-md w-full ${errors.location ? 'border-red-500 bg-red-50' : 'bg-gray-100'}`} 
+                  name="location" 
+                  value={collectionSchedule.location} 
+                  onChange={onInputChange} 
+                />
+                {errors.location && <p className="text-red-500 text-sm mt-1">{errors.location}</p>}
+              </div>
+              
+              <div>
+                <select 
+                  className={`p-3 border rounded-md w-full ${errors.wasteType ? 'border-red-500 bg-red-50' : 'bg-gray-100'}`} 
+                  name="wasteType" 
+                  value={collectionSchedule.wasteType} 
+                  onChange={onInputChange}
+                >
+                  <option value="">---Collection Type---</option>
+                  <option value="Plastic">🛍️ Plastic</option>
+                  <option value="Paper">📄 Paper</option>
+                  <option value="Metal">🔩 Metal</option>
+                  <option value="Organic">🍃 Organic</option>
+                </select>
+                {errors.wasteType && <p className="text-red-500 text-sm mt-1">{errors.wasteType}</p>}
+              </div>
+              
+              <div>
+                <select 
+                  className={`p-3 border rounded-md w-full ${errors.status ? 'border-red-500 bg-red-50' : 'bg-gray-100'}`} 
+                  name="status" 
+                  value={collectionSchedule.status} 
+                  onChange={onInputChange}
+                >
+                  <option value="">---Status---</option>
+                  <option value="Pending">⏳ Pending</option>
+                  <option value="In Progress">🔄 In Progress</option>
+                  <option value="Completed">✅ Completed</option>
+                </select>
+                {errors.status && <p className="text-red-500 text-sm mt-1">{errors.status}</p>}
+              </div>
+              
+              <div>
+                <input 
+                  type="text" 
+                  placeholder="👤 Driver Name" 
+                  className={`p-3 border rounded-md w-full ${errors.driverName ? 'border-red-500 bg-red-50' : 'bg-gray-100'}`} 
+                  name="driverName" 
+                  value={collectionSchedule.driverName} 
+                  onChange={onInputChange} 
+                />
+                {errors.driverName && <p className="text-red-500 text-sm mt-1">{errors.driverName}</p>}
+              </div>
+              
+              <div>
+                <input 
+                  type="datetime-local" 
+                  className={`p-3 border rounded-md w-full ${errors.collectionDate ? 'border-red-500 bg-red-50' : 'bg-gray-100'}`} 
+                  name="collectionDate" 
+                  value={collectionSchedule.collectionDate} 
+                  onChange={onInputChange}
+                  min={minDate}
+                />
+                {errors.collectionDate && <p className="text-red-500 text-sm mt-1">{errors.collectionDate}</p>}
+              </div>
+              
+              <div>
+                <input 
+                  type="text" 
+                  className="p-3 border rounded-md w-full bg-gray-100" 
+                  placeholder="💬 Remarks" 
+                  name="remark" 
+                  value={collectionSchedule.remark} 
+                  onChange={onInputChange} 
+                />
+              </div>
+              
             </div>
 
             {/* Submit Button */}
-            <button className="mt-4 bg-green-500 text-white p-3 rounded-md w-full hover:bg-green-600">Create</button>
+            <button 
+              type="submit"
+              className="mt-4 bg-green-500 text-white p-3 rounded-md w-full hover:bg-green-600"
+            >
+              Create
+            </button>
           </div>
         </form>
       </main>

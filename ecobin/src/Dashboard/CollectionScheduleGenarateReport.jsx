@@ -2,16 +2,19 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import jsPDF from "jspdf";
 import { Link } from "react-router-dom";
-import logo from "../Home/images/Logo.png"; // Import your logo
+import logo from "../Home/images/Logo.png";
 import UserService from "../Home/UserService";
+import QRCode from "qrcode";
 
 function CollectionScheduleGenerateReport() {
     const [collectionSchedule, setCollectionSchedule] = useState([]);
-    const [loading, setLoading] = useState(true); // Loading state
+    const [loading, setLoading] = useState(true);
+    const [qrCodeDataURL, setQRCodeDataURL] = useState("");
 
     useEffect(() => {
-        setTimeout(() => { // Delay for loading effect
+        setTimeout(() => {
             loadSchedule();
+            generateQRCode();
         }, 1500);
     }, []);
 
@@ -19,10 +22,28 @@ function CollectionScheduleGenerateReport() {
         try {
             const result = await axios.get(`${UserService.BASE_URL}/public/getAllSchedule`);
             setCollectionSchedule(result.data);
-            setLoading(false); // Stop loading
+            setLoading(false);
         } catch (error) {
             console.error("Error fetching data:", error);
             setLoading(false);
+        }
+    };
+
+    const generateQRCode = async () => {
+        try {
+            // You can customize what data to include in the QR code
+            const qrData = `WasteTrack Collection Schedule Report\nGenerated on: ${new Date().toLocaleString()}`;
+            const url = await QRCode.toDataURL(qrData, {
+                width: 150,
+                margin: 2,
+                color: {
+                    dark: '#000000',  // Black dots
+                    light: '#ffffff' // White background
+                }
+            });
+            setQRCodeDataURL(url);
+        } catch (err) {
+            console.error("Error generating QR code:", err);
         }
     };
 
@@ -34,13 +55,13 @@ function CollectionScheduleGenerateReport() {
         const img = new Image();
         img.src = logo;
 
-        img.onload = () => {
+        img.onload = async () => {
             // Add Logo
             doc.addImage(img, "PNG", 75, 5, 60, 20);
 
             // Report Title
             doc.setFontSize(20);
-            doc.setTextColor(34, 139, 34); // Green color
+            doc.setTextColor(34, 139, 34);
             doc.text("Waste Collection Schedule Report", 14, 35);
 
             // Date and Time
@@ -52,7 +73,7 @@ function CollectionScheduleGenerateReport() {
 
             collectionSchedule.forEach((schedule, index) => {
                 doc.setFontSize(14);
-                doc.setTextColor(0, 0, 128); // Blue color
+                doc.setTextColor(0, 0, 128);
                 doc.text(`Schedule ${index + 1}`, 14, yPosition);
 
                 doc.setFontSize(12);
@@ -63,13 +84,23 @@ function CollectionScheduleGenerateReport() {
                 doc.text(`Collection Date: ${schedule.collectionDate}`, 14, yPosition + 32);
                 doc.text(`Status: ${schedule.status}`, 14, yPosition + 40);
 
-                yPosition += 55; // Move to next entry
+                yPosition += 55;
 
-                if (yPosition > 270) { // Prevent page overflow
+                if (yPosition > 270) {
                     doc.addPage();
                     yPosition = 20;
                 }
             });
+
+            // Add QR Code to the PDF
+            if (qrCodeDataURL) {
+                // Position the QR code at the bottom right
+                const qrSize = 40;
+                const pageWidth = doc.internal.pageSize.getWidth();
+                doc.addImage(qrCodeDataURL, 'PNG', pageWidth - qrSize - 20, yPosition + 20, qrSize, qrSize);
+                doc.setFontSize(10);
+                doc.text("Scan to verify this report", pageWidth - qrSize - 20, yPosition + 20 + qrSize + 5);
+            }
 
             // Signature Space
             doc.text("Signature: __________________", 14, yPosition + 20);
@@ -95,7 +126,6 @@ function CollectionScheduleGenerateReport() {
                     Stay informed with the latest collection schedules and waste management updates.
                 </p>
 
-                {/* Show loading while fetching data */}
                 {loading ? (
                     <p className="text-center text-gray-500 text-lg animate-pulse">
                         Fetching data... Please wait ⏳
