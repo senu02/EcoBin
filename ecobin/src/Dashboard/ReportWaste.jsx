@@ -191,29 +191,27 @@ const AutoGenerateReport = () => {
 
         {/* Stacked Small Cards Layout */}
         <div className="space-y-4">
-          {filteredReports.map((report) => (
-            <div
-              key={report.id}
-              className="bg-white shadow-md rounded-md p-3 border-l-4 border-green-500 hover:shadow-lg transition text-sm"
-            >
-              <div className="flex justify-between items-center">
-                <h2 className="font-semibold text-gray-800 text-sm">
-                  {report.wasteTitle}
-                </h2>
-                <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
-                  {report.date}
-                </span>
-              </div>
+  {filteredReports.map((report) => (
+    <div
+      key={report.id}
+      className="bg-gradient-to-r from-green-600 to-black text-white shadow-md rounded-md p-3 border-l-4 border-green-300 hover:shadow-lg transition text-sm"
+    >
+      <div className="flex justify-between items-center">
+        <h2 className="font-semibold text-white text-sm">{report.wasteTitle}</h2>
+        <span className="text-xs bg-white text-green-700 px-2 py-1 rounded-full">
+          {report.date}
+        </span>
+      </div>
 
-              <p className="text-gray-600 mt-1">
-                <strong>Description:</strong> {report.description}
-              </p>
-              <p className="text-gray-600 mt-1">
-                <strong>Location:</strong> {report.wasteLocation}
-              </p>
-              <p className="text-gray-600 mt-1">
-                <strong>Weight:</strong> {report.wasteWeight} kg
-              </p>
+      <p className="text-gray-200 mt-1">
+        <strong>Description:</strong> {report.description}
+      </p>
+      <p className="text-gray-200 mt-1">
+        <strong>Location:</strong> {report.wasteLocation}
+      </p>
+      <p className="text-gray-200 mt-1">
+        <strong>Weight:</strong> {report.wasteWeight} kg
+      </p>
 
               {/* Download Report Button */}
               <div className="mt-3 flex space-x-2">

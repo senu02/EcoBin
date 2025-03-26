@@ -27,7 +27,7 @@ const ContactDetails = () => {
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
-      <aside className="w-64 bg-green-500 p-6 text-white flex flex-col justify-between">
+      <aside className="w-64 bg-gradient-to-b from-green-600 to-black p-6 text-white flex flex-col justify-between">
         <div>
           {/* Logo */}
           <div className="flex justify-center mb-4">
@@ -67,7 +67,7 @@ const ContactDetails = () => {
             <p>No contact details available</p>
           ) : (
             contactDetails.map(contact => (
-              <div key={contact.id} className="bg-white p-6 rounded-md shadow-md">
+              <div key={contact.id} className="bg-gradient-to-r from-green-600 to-black p-6 rounded-md shadow-md text-white">
                 <h2 className="text-xl font-semibold">{contact.name}</h2>
                 <p><strong>Email:</strong> {contact.email}</p>
                 <p><strong>Message:</strong> {contact.message}</p>

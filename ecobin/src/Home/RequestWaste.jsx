@@ -263,82 +263,81 @@ export default function WastePickupRequest() {
         </div>
        
       </main>
-       {/* Footer */}
-       <footer className="bg-green-500 text-white py-12">
-                <div className="container mx-auto px-4">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    {/* Quick Links */}
-                    <div>
-                      <h3 className="text-lg font-bold mb-4">Quick Links</h3>
-                      <ul className="space-y-2">
-                        <li><a href="#home" className="hover:text-green-500">Home</a></li>
-                        <li><a href="#services" className="hover:text-green-500">Services</a></li>
-                        <li><a href="#recycling" className="hover:text-green-500">Recycling</a></li>
-                        <li><a href="#about" className="hover:text-green-500">About Us</a></li>
-                        <li><a href="#contact" className="hover:text-green-500">Contact</a></li>
-                      </ul>
-                    </div>
-        
-             {/* Contact Information */}
-             <div>
-              <h3 className="text-lg font-bold mb-4">Contact Us</h3>
-              <ul className="space-y-2">
-                <li>456 Eco Park Road,</li>
-                <li>Kohuwala, Nugegoda</li>
-                <li>Email: contact@ecobin.com</li>
-                <li>Phone: +94 771687613</li>
-              </ul>
-            </div>
+      <footer className="bg-gradient-to-r from-green-600 to-black text-white py-12">
+  <div className="container mx-auto px-4">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      {/* Quick Links */}
+      <div>
+        <h3 className="text-lg font-bold mb-4">Quick Links</h3>
+        <ul className="space-y-2">
+          <li><a href="#home" className="hover:text-green-300">Home</a></li>
+          <li><a href="#services" className="hover:text-green-300">Services</a></li>
+          <li><a href="#recycling" className="hover:text-green-300">Recycling</a></li>
+          <li><a href="#about" className="hover:text-green-300">About Us</a></li>
+          <li><a href="#contact" className="hover:text-green-300">Contact</a></li>
+        </ul>
+      </div>
 
-        
-                    {/* Social Media Links */}
-                    <div>
-                      <h3 className="text-lg font-bold mb-4">Follow Us</h3>
-                      <ul className="flex space-x-4">
-                        <li>
-                          <a href="#" className="text-white hover:text-green-500">
-                            <FontAwesomeIcon icon={faFacebook} className="w-6 h-6" />
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="text-white hover:text-green-500">
-                            <FontAwesomeIcon icon={faTwitter} className="w-6 h-6" />
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="text-white hover:text-green-500">
-                            <FontAwesomeIcon icon={faLinkedin} className="w-6 h-6" />
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-        
-                    {/* Newsletter Subscription */}
-                    <div>
-                      <h3 className="text-lg font-bold mb-4">Subscribe</h3>
-                      <p className="mb-4">Subscribe to our newsletter for updates and offers.</p>
-                      <form className="flex">
-                        <input
-                          type="email"
-                          placeholder="Your email"
-                          className="p-2 rounded-l-lg focus:outline-none text-black"
-                        />
-                        <button
-                          type="submit"
-                          className="bg-green-600 text-white p-2 rounded-r-lg hover:bg-green-700"
-                        >
-                          Subscribe
-                        </button>
-                      </form>
-                    </div>
-                  </div>
-        
-                  {/* Copyright Notice */}
-                  <div className="border-t border-gray-800 mt-8 pt-8 text-center">
-                    <p>&copy; 2025 Ecobin. All rights reserved.</p>
-                  </div>
-                </div>
-              </footer>
+      {/* Contact Information */}
+      <div>
+        <h3 className="text-lg font-bold mb-4">Contact Us</h3>
+        <ul className="space-y-2">
+          <li>456 Eco Park Road,</li>
+          <li>Kohuwala, Nugegoda</li>
+          <li>Email: contact@ecobin.com</li>
+          <li>Phone: +94 771687613</li>
+        </ul>
+      </div>
+
+      {/* Social Media Links */}
+      <div>
+        <h3 className="text-lg font-bold mb-4">Follow Us</h3>
+        <ul className="flex space-x-4">
+          <li>
+            <a href="#" className="text-white hover:text-green-300">
+              <FontAwesomeIcon icon={faFacebook} className="w-6 h-6" />
+            </a>
+          </li>
+          <li>
+            <a href="#" className="text-white hover:text-green-300">
+              <FontAwesomeIcon icon={faTwitter} className="w-6 h-6" />
+            </a>
+          </li>
+          <li>
+            <a href="#" className="text-white hover:text-green-300">
+              <FontAwesomeIcon icon={faLinkedin} className="w-6 h-6" />
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      {/* Newsletter Subscription */}
+      <div>
+        <h3 className="text-lg font-bold mb-4">Subscribe</h3>
+        <p className="mb-4">Subscribe to our newsletter for updates and offers.</p>
+        <form className="flex">
+          <input
+            type="email"
+            placeholder="Your email"
+            className="p-2 rounded-l-lg focus:outline-none text-black"
+          />
+          <button
+            type="submit"
+            className="bg-green-700 text-white p-2 rounded-r-lg hover:bg-green-800"
+          >
+            Subscribe
+          </button>
+        </form>
+      </div>
+    </div>
+
+    {/* Copyright Notice */}
+    <div className="border-t border-gray-700 mt-8 pt-8 text-center">
+      <p>&copy; 2025 Ecobin. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
     </div>
   );
 }

@@ -1,20 +1,19 @@
 import { useState } from "react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import companyLogo from "../Home/images/Logo.png"; 
-import { useNavigate } from 'react-router-dom';
+import companyLogo from "../Home/images/Logo.png";
+import { useNavigate } from "react-router-dom";
 import UserService from "./UserService";
 
 export default function LoginForm() {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); 
+    setLoading(true);
 
     setTimeout(async () => {
       try {
@@ -22,10 +21,10 @@ export default function LoginForm() {
         console.log(userData);
 
         if (userData.token) {
-          localStorage.setItem('token', userData.token);
-          localStorage.setItem('role', userData.role);
+          localStorage.setItem("token", userData.token);
+          localStorage.setItem("role", userData.role);
           localStorage.setItem("name", userData.name);
-          localStorage.setItem('email', userData.email);
+          localStorage.setItem("email", userData.email);
 
           if (userData.role === "USER") {
             navigate("/");
@@ -38,16 +37,14 @@ export default function LoginForm() {
       } catch (error) {
         setError("An error occurred while logging in. Please try again.");
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
-    }, 2000); 
+    }, 2000);
   };
 
- 
   const handleGoogleSuccess = (response) => {
     console.log("Google Login Success:", response);
   };
-
 
   const handleGoogleFailure = (error) => {
     console.log("Google Login Failed:", error);
@@ -55,7 +52,7 @@ export default function LoginForm() {
 
   return (
     <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
-      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-green-600 to-black">
         <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
           {/* Company Logo */}
           <div className="flex justify-center mb-4">
@@ -67,7 +64,6 @@ export default function LoginForm() {
           </h2>
           <p className="text-center text-gray-600 mb-5">Login to your account</p>
 
-         
           {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -97,9 +93,9 @@ export default function LoginForm() {
             <button
               type="submit"
               className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
-              disabled={loading} 
+              disabled={loading}
             >
-              {loading ? "Logging in..." : "Login"} 
+              {loading ? "Logging in..." : "Login"}
             </button>
           </form>
 

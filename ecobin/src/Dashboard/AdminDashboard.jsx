@@ -23,7 +23,7 @@ export default function WasteManagementDashboard() {
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
-      <aside className="w-64 bg-green-500 p-6 text-white flex flex-col justify-between">
+      <aside className="w-64 bg-gradient-to-b from-green-600 to-black p-6 text-white flex flex-col justify-between">
         <div>
           {/* Logo */}
           <div className="flex justify-center mb-4">
