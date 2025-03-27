@@ -39,38 +39,41 @@ const AiDetector = () => {
 
         
       {/* Sidebar */}
-      <aside className="w-full sm:w-64 bg-green-500 p-6 text-white flex flex-col justify-between">
-        {/* Navigation Menu */}
-        <nav className="space-y-4">
-            <div className="flex justify-center mb-4">
-                <div className="bg-white p-4 rounded-full">
+            <aside className="w-64 bg-gradient-to-b from-green-600 to-black p-6 text-white flex flex-col justify-between">
+              <div>
+                {/* Logo */}
+                <div className="flex justify-center mb-4">
+                  <div className="bg-white p-4 rounded-full">
                     <img
-                        src={logo}
-                        alt="Waste Management Logo"
-                        className="w-20 h-20 object-contain"
+                      src={logo}
+                      alt="Waste Management Logo"
+                      className="w-20 h-20 object-contain"
                     />
+                  </div>
                 </div>
-            </div>
-          <Link to="/WasteManagementDashboard" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
-            <FaHome className="mr-2" /> Dashboard
+      
+                {/* Navigation Menu with Links */}
+                <nav className="space-y-4">
+                <Link to="/WasteManagementDashboard" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
+            <FaHome className="mr-2" />Admin Dashboard
           </Link>
-          <Link to="/account" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
-            <FaUser className="mr-2" /> Your Account
-          </Link>
-          <Link to="/settings" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
-            <FaCog className="mr-2" /> Settings
-          </Link>
-          <Link to="/help" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
-            <FaQuestionCircle className="mr-2" /> Help
-          </Link>
-          
-        </nav>
-
-        {/* Sign Out Button */}
-        <button className="flex items-center bg-black text-white p-2 rounded-md mt-6">
-          <FaSignOutAlt className="mr-2" /> Sign out
-        </button>
-      </aside>
+                  <Link to="/account" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
+                    <FaUser className="mr-2" /> Your Account
+                  </Link>
+                  <Link to="/settings" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
+                    <FaCog className="mr-2" /> Settings
+                  </Link>
+                  <Link to="/help" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
+                    <FaQuestionCircle className="mr-2" /> Help
+                  </Link>
+                </nav>
+              </div>
+      
+              {/* Sign Out Button */}
+              <button className="flex items-center bg-black text-white p-2 rounded-md">
+                <FaSignOutAlt className="mr-2" /> Sign out
+              </button>
+            </aside>
 
       {/* Main Content */}
       <main className="flex-1 p-6 sm:p-10 flex flex-col items-center justify-center">

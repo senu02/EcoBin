@@ -3,7 +3,7 @@ import heroImage from '../Home/images/home5.jpg';
 import Icon from '../Home/images/recycle-bin.png'; 
 import Image from '../Home/images/home4.jpeg'; 
 import Image1 from '../Home/images/Logo.png';
-import BannerImage from '../Home/images/praveen2.png';
+import BannerImage from '../Home/images/b2.png';
 import heroVideo from "../Home/images/video1.mp4";  // Replace with the actual path to your image
 import { IoSearchOutline, IoMenuOutline, IoCloseOutline } from 'react-icons/io5';
 import { FaFacebook, FaTwitter, FaPinterest, FaLinkedin } from 'react-icons/fa';
@@ -141,7 +141,7 @@ const Home = () => {
       transition={{ duration: 0.6 }}
       className="text-center mb-8"
     >
-      <p className="text-green-500 uppercase text-sm tracking-wider">What We're Offering</p>
+      <p className=" text-green-500 uppercase  text-2xl  tracking-wider ">What We're Offering</p>
       <h2 className="text-3xl font-light mt-2 text-green-500">The Services We're Providing</h2>
     </motion.div>
           {/* Service Cards */}
@@ -162,7 +162,9 @@ const Home = () => {
                 </svg>
               </div>
               <h3 className="text-lg font-medium mb-2">Zero Waste</h3>
-              <p className="text-sm text-gray-500">Lorem ipsum dolor sit amet, adipisci do.</p>
+              <p className="text-sm text-gray-500">We help businesses and communities achieve zero waste by implementing waste reduction strategies, composting, and sustainable recycling practices. Our goal is to minimize landfill waste and promote environmental responsibility.
+
+</p>
             </motion.div>
 
             {/* Dumpster Rental Card */}
@@ -180,7 +182,9 @@ const Home = () => {
                 </svg>
               </div>
               <h3 className="text-lg font-medium mb-2">Dumpster Rental</h3>
-              <p className="text-sm text-gray-500">Lorem ipsum dolor sit amet, adipisci do.</p>
+              <p className="text-sm text-gray-500">We provide a variety of dumpster sizes for residential, commercial, and construction needs. Whether you're cleaning out your home, managing a construction site, or handling business waste, we have a dumpster solution for you.
+
+</p>
             </motion.div>
 
             {/* Portable Toilet Card */}
@@ -199,7 +203,9 @@ const Home = () => {
                 </svg>
               </div>
               <h3 className="text-lg font-medium mb-2">Portable Toilet</h3>
-              <p className="text-sm text-gray-500">Lorem ipsum dolor sit amet, adipisci do.</p>
+              <p className="text-sm text-gray-500">Our high-quality portable toilet rentals are perfect for outdoor events, construction sites, and other temporary locations. We offer clean, well-maintained, and hygienic facilities with regular servicing.
+
+</p>
             </motion.div>
 
             {/* Recycling Service Card */}
@@ -217,7 +223,16 @@ const Home = () => {
                 </svg>
               </div>
               <h3 className="text-lg font-medium mb-2">Recycling Service</h3>
-              <p className="text-sm text-gray-500">Lorem ipsum dolor sit amet, adipisci do.</p>
+              <p className="text-sm text-gray-500">We offer comprehensive recycling solutions to help you responsibly dispose of paper, plastic, metal, and electronic waste. Our service ensures that recyclable materials are processed properly, reducing environmental impact.
+
+
+
+
+
+
+
+
+</p>
             </motion.div>
           </div>
         </div>
@@ -295,7 +310,7 @@ const Home = () => {
     <p className="mt-6 text-gray-700 text-lg">
       For companies collecting valuable materials, it is the volume that matters the most.
       As these commodities usually have a very irregular filling cycle, deployment of smart
-      fill-level monitoring <span className="text-green-600 font-semibold">sensors</span>
+      fill-level monitoring <span className="text-green-600 font-semibold">sensors </span>
       might completely avoid blind driving and ensure you are able to collect the volumes
       you need fast.
     </p>
@@ -356,7 +371,7 @@ const Home = () => {
 
       {/* Banner Section */}
       <section
-        className="relative bg-cover bg-center h-72"
+        className="relative bg-cover bg-center h-[450px]"
         style={{ backgroundImage: `url(${BannerImage})` }}
       >
         <div className="absolute inset-0 bg-black bg-opacity-40"></div>

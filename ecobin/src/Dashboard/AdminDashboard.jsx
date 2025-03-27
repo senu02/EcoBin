@@ -39,7 +39,7 @@ export default function WasteManagementDashboard() {
           {/* Navigation Menu with Links */}
           <nav className="space-y-4">
             <Link to="/" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
-              <FaHome className="mr-2" /> Dashboard
+              <FaHome className="mr-2" /> Home Page
             </Link>
             <Link to="/account" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
               <FaUser className="mr-2" /> Your Account
