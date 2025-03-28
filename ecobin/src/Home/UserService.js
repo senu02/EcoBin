@@ -96,6 +96,9 @@ class UserService{
     static logout(){
         localStorage.removeItem("token");
         localStorage.removeItem("role");
+        localStorage.removeItem("name");
+        localStorage.removeItem("age");
+        localStorage.removeItem("email");
     }
 
     static isAuthentication(){

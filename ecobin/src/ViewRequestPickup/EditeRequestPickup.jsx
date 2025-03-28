@@ -82,9 +82,9 @@ export default function EditRequestPickup() {
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-y-auto">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-semibold text-green-900">Update Waste Pickup Request</h1>
-        </div>
+        <div className="flex justify-center items-center mb-8"> {/* Changed justify-between to justify-center */}
+  <h1 className="text-3xl font-semibold text-green-900">Update Waste Pickup Request</h1>
+</div>
 
         {/* Form */}
         <div className="bg-white shadow-lg rounded-lg p-8 max-w-3xl mx-auto">
