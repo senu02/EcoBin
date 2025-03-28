@@ -26,6 +26,7 @@ import EditeRequestPickup from './ViewRequestPickup/EditeRequestPickup';
 
 import ContactDetails from './Dashboard/Contact';
 import AiDetector from './AiDetecter/AiDetector';
+import UserService from './Home/UserService';
 
 export default function App() {
   return (
@@ -59,27 +60,31 @@ export default function App() {
         <Route path="/SignupForm" element={<SignupForm/>}/>
         <Route path="/Login" element={<Login/>}/>
         <Route path="/WasteReport" element={<WasteReport/>}/>
-        <Route path="/WasteManagementDashboard" element={<WasteManagementDashboard/>}/>
-        <Route path="/WasteTrackDashboard" element={<WasteTrackDashboard/>}/>
-        <Route path="/Leaderboard" element={<Leaderboard/>}/>
-        <Route path="/AnalyzePage" element={<AnalyzePage/>}/>
-        <Route path="/WasteReportingTable" element={<WasteReportingTable/>}/>
-        <Route path="/AutoGenerateReport" element={<AutoGenerateReport/>}/>
-        
-        <Route path="/collectionreport" element={<CollectionSchduleReport/>}/>
-        <Route path="/collectionview/:id" element={<CollectionScheduleView/>}/>
-        <Route path="/collectionupdate/:id" element={<CollectionScheduleUpdate/>}/>
-        <Route path="/Collectionanalythics" element={<CollectionScheduleAnalytics/>}/>
-        <Route path="/CollectionGenarateReport" element={<CollectionScheduleGenarateReport/>}/>
-
-
+       
         <Route path="/WastePickupRequest"  element={<WastePickupRequest/>}/>
         <Route path="/ViewPickup"  element={<ViewRequestPickup/>}/>
         <Route path="/editepickup/:id"  element={<EditeRequestPickup/>}/>
         <Route path="/ProfileHeader" element={<ProfileHeader/>}/>
 
         <Route path="/ContactDetails" element={<ContactDetails/>}/>
-        <Route path="/aidetector" element={<AiDetector/>}/>
+        
+
+        {UserService.adminOnly() && (
+              <>
+                  <Route path="/WasteManagementDashboard" element={<WasteManagementDashboard/>}/>
+                  <Route path="/WasteTrackDashboard" element={<WasteTrackDashboard/>}/>
+                  <Route path="/Leaderboard" element={<Leaderboard/>}/>
+                  <Route path="/AnalyzePage" element={<AnalyzePage/>}/>
+                  <Route path="/WasteReportingTable" element={<WasteReportingTable/>}/>
+                  <Route path="/AutoGenerateReport" element={<AutoGenerateReport/>}/>
+                  <Route path="/collectionreport" element={<CollectionSchduleReport/>}/>
+                  <Route path="/collectionview/:id" element={<CollectionScheduleView/>}/>
+                  <Route path="/collectionupdate/:id" element={<CollectionScheduleUpdate/>}/>
+                  <Route path="/Collectionanalythics" element={<CollectionScheduleAnalytics/>}/>
+                  <Route path="/CollectionGenarateReport" element={<CollectionScheduleGenarateReport/>}/>
+                  <Route path="/aidetector" element={<AiDetector/>}/>
+              </>
+            )}
 
       </Routes>
     </Router>
