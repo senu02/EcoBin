@@ -41,7 +41,7 @@ export default function WasteManagementDashboard() {
             <Link to="/" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
               <FaHome className="mr-2" /> Home Page
             </Link>
-            <Link to="/account" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
+            <Link to="/ProfileHeader" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
               <FaUser className="mr-2" /> Your Account
             </Link>
             <Link to="/settings" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">

@@ -194,7 +194,7 @@ export default function WasteTrackDashboard() {
           <span>♻️ WasteTrack</span>
         </h1>
         <nav className="mt-8">
-          <Link to="/WasteTrackDashboard">
+          <Link to="/WasteManagementDashboard">
             <button className="w-full text-left p-2 bg-green-500 text-white rounded-md hover:bg-green-600">📊 Dashboard</button>
           </Link>
 
@@ -215,7 +215,7 @@ export default function WasteTrackDashboard() {
       <main className="flex-1 p-6">
         {/* Dashboard Header */}
         <h1 className="text-4xl font-extrabold bg-clip-text mb-6 shadow-lg transform transition-all text-center">
-          WasteTrack Dashboard
+          Collection schedule Dashboard
         </h1>
 
         {/* Display Waste Type Count Boxes */}
