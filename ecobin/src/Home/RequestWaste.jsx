@@ -156,6 +156,7 @@ export default function WastePickupRequest() {
                   value={name}
                   onChange={onInputChange}
                   required
+                  disabled
                 />
                 <FaUser className="absolute left-3 top-3.5 text-green-500" />
               </div>
