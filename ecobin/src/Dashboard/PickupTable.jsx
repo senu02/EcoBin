@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { PencilIcon, TrashIcon, PlusIcon } from '@heroicons/react/solid';
+import { PencilIcon, TrashIcon, PlusIcon, DocumentDownloadIcon } from '@heroicons/react/solid';
 import UserService from '../Home/UserService';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const WasteRequestTable = () => {
   const [requests, setRequests] = useState([]);
@@ -43,6 +45,67 @@ const WasteRequestTable = () => {
       setIsDeleting(false);
       setDeleteId(null);
     }
+  };
+
+  const generatePDF = () => {
+    // Create new PDF instance
+    const doc = new jsPDF();
+    
+    // Add title
+    doc.setFontSize(18);
+    doc.setTextColor(40);
+    doc.text('Waste Collection Requests', 14, 22);
+    
+    // Add date
+    doc.setFontSize(11);
+    doc.setTextColor(100);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 30);
+    
+    // Prepare data for the table
+    const tableData = requests.map(request => [
+      request.id,
+      request.name,
+      request.wasteType,
+      `${request.quantity} kg`,
+      request.address,
+      request.status || 'Pending',
+      new Date(request.collectionDate).toLocaleDateString()
+    ]);
+    
+    // Add the table using autoTable plugin
+    autoTable(doc, {
+      head: [
+        ['ID', 'Customer', 'Waste Type', 'Quantity', 'Location', 'Status', 'Collection Date']
+      ],
+      body: tableData,
+      startY: 40,
+      theme: 'grid',
+      headStyles: {
+        fillColor: [34, 139, 34], // Green color for header
+        textColor: 255
+      },
+      alternateRowStyles: {
+        fillColor: [240, 240, 240]
+      },
+      styles: {
+        fontSize: 8,
+        cellPadding: 2,
+        overflow: 'linebreak'
+      },
+      columnStyles: {
+        0: { cellWidth: 10 },
+        1: { cellWidth: 25 },
+        2: { cellWidth: 20 },
+        3: { cellWidth: 15 },
+        4: { cellWidth: 30 },
+        5: { cellWidth: 15 },
+        6: { cellWidth: 20 }
+      },
+      margin: { top: 40 }
+    });
+    
+    // Save the PDF
+    doc.save(`waste-requests-${new Date().toISOString().slice(0, 10)}.pdf`);
   };
 
   const getStatusBadge = (status) => {
@@ -106,13 +169,22 @@ const WasteRequestTable = () => {
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Waste Collection Requests</h1>
-            <Link
-              to="/add-waste-request"
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-            >
-              <PlusIcon className="-ml-1 mr-2 h-5 w-5" />
-              Add New Request
-            </Link>
+            <div className="flex space-x-2">
+              <button
+                onClick={generatePDF}
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                <DocumentDownloadIcon className="-ml-1 mr-2 h-5 w-5" />
+                Export PDF
+              </button>
+              <Link
+                to="/add-waste-request"
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+              >
+                <PlusIcon className="-ml-1 mr-2 h-5 w-5" />
+                Add New Request
+              </Link>
+            </div>
           </div>
 
           {loading ? (
