@@ -23,6 +23,9 @@ import WastePickupRequest from './Home/RequestWaste';
 import ProfileHeader from './UserProfile/UserProfile';
 import ViewRequestPickup from './ViewRequestPickup/ViewRequestPickup';
 import EditeRequestPickup from './ViewRequestPickup/EditeRequestPickup';
+import WasteRequestTable from  './Dashboard/PickupTable';
+
+
 
 import ContactDetails from './Dashboard/Contact';
 import AiDetector from './AiDetecter/AiDetector';
@@ -65,6 +68,7 @@ export default function App() {
         <Route path="/ViewPickup"  element={<ViewRequestPickup/>}/>
         <Route path="/editepickup/:id"  element={<EditeRequestPickup/>}/>
         <Route path="/ProfileHeader" element={<ProfileHeader/>}/>
+        <Route path="/WasteRequestTable" element={<WasteRequestTable/>}/>
 
         <Route path="/ContactDetails" element={<ContactDetails/>}/>
         

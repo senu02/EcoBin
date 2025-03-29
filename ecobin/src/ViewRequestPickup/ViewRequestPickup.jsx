@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { PencilIcon, TrashIcon, HomeIcon } from '@heroicons/react/solid';
+import { PencilIcon, TrashIcon, HomeIcon, SearchIcon } from '@heroicons/react/solid';
 import { motion, AnimatePresence } from "framer-motion";
 import UserService from "../Home/UserService";
 import { toast } from "react-toastify";
@@ -9,9 +9,11 @@ import "react-toastify/dist/ReactToastify.css";
 
 const RequestWasteDetails = () => {
   const [requestWasteDetails, setRequestWasteDetails] = useState([]);
+  const [filteredRequests, setFilteredRequests] = useState([]);
   const [userDetails, setUserDetails] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const { id } = useParams(); 
   const navigate = useNavigate();
 
@@ -21,6 +23,15 @@ const RequestWasteDetails = () => {
     loadWasteDetails();
   }, []);
 
+  useEffect(() => {
+    const results = requestWasteDetails.filter(request =>
+      request.wasteType?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      request.frequencyPickup?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      request.quantity?.toString().includes(searchTerm)
+    );
+    setFilteredRequests(results);
+  }, [searchTerm, requestWasteDetails]);
+
   const loadWasteDetails = async () => {
     try {
       const result = await axios.get(`${UserService.BASE_URL}/public/getAllRequest`);
@@ -28,6 +39,7 @@ const RequestWasteDetails = () => {
 
       if (filteredRequests.length > 0) {
         setRequestWasteDetails(filteredRequests);
+        setFilteredRequests(filteredRequests);
         setUserDetails(filteredRequests[0]); 
       }
     } catch (error) {
@@ -80,8 +92,8 @@ const RequestWasteDetails = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-700 via-green-800 to-black py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
-        {/* Header with Home Button */}
-        <div className="flex justify-between items-center mb-6">
+        {/* Header with Home Button and Search */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <button
             onClick={() => navigate('/')}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 backdrop-blur-sm"
@@ -89,6 +101,20 @@ const RequestWasteDetails = () => {
             <HomeIcon className="-ml-1 mr-2 h-5 w-5" />
             Home
           </button>
+          
+          {/* Search Bar */}
+          <div className="relative w-full sm:w-64">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <SearchIcon className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search requests..."
+              className="block w-full pl-10 pr-3 py-2 border border-transparent rounded-md leading-5 bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent sm:text-sm"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
 
         {/* User Profile Card */}
@@ -124,10 +150,21 @@ const RequestWasteDetails = () => {
           </div>
         </motion.div>
 
+        {/* Search Results Count */}
+        {searchTerm && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mb-4 text-white"
+          >
+            Found {filteredRequests.length} request{filteredRequests.length !== 1 ? 's' : ''} matching "{searchTerm}"
+          </motion.div>
+        )}
+
         {/* Waste Requests */}
         <div className="space-y-4">
           <AnimatePresence>
-            {requestWasteDetails.map((wasteDetail) => (
+            {filteredRequests.map((wasteDetail) => (
               <motion.div
                 key={wasteDetail.id}
                 initial={{ opacity: 0, y: 10 }}
@@ -156,11 +193,20 @@ const RequestWasteDetails = () => {
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <p className="text-gray-500">Quantity</p>
-                      <p className="font-medium text-gray-900">{wasteDetail.quantity}</p>
+                      <p className="font-medium text-gray-900">{wasteDetail.quantity} kg</p>
                     </div>
                     <div>
                       <p className="text-gray-500">Status</p>
-                      <p className="font-medium text-gray-900">Pending</p>
+                      <p className="font-medium text-gray-900">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                          wasteDetail.status === 'Completed' ? 'bg-green-100 text-green-800' :
+                          wasteDetail.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                          wasteDetail.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {wasteDetail.status || 'Pending'}
+                        </span>
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -202,7 +248,7 @@ const RequestWasteDetails = () => {
         </div>
 
         {/* Empty State */}
-        {requestWasteDetails.length === 0 && (
+        {filteredRequests.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -214,8 +260,14 @@ const RequestWasteDetails = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No Waste Requests</h3>
-            <p className="text-gray-600 mb-6">You haven't created any waste pickup requests yet.</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              {searchTerm ? "No matching requests found" : "No Waste Requests"}
+            </h3>
+            <p className="text-gray-600 mb-6">
+              {searchTerm 
+                ? "Try a different search term" 
+                : "You haven't created any waste pickup requests yet."}
+            </p>
             <Link 
               to="/request-pickup" 
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
