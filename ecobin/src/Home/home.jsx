@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import heroImage from '../Home/images/home5.jpg'; 
 import Icon from '../Home/images/recycle-bin.png'; 
 import Image from '../Home/images/home4.jpeg'; 
 import Image1 from '../Home/images/Logo.png';
 import BannerImage from '../Home/images/b2.png';
-import heroVideo from "../Home/images/video1.mp4";  // Replace with the actual path to your image
+import heroVideo from "../Home/images/video1.mp4";
 import { IoSearchOutline, IoMenuOutline, IoCloseOutline } from 'react-icons/io5';
 import { FaFacebook, FaTwitter, FaPinterest, FaLinkedin } from 'react-icons/fa';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,8 +14,9 @@ import {
   faInstagram,
   faLinkedin,
 } from "@fortawesome/free-brands-svg-icons";
-import { motion } from "framer-motion";
-import { useNavigate, Link } from 'react-router-dom'; // Added Link import
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from 'react-intersection-observer';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import UserService from './UserService';
@@ -24,6 +25,21 @@ const Home = () => {
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   let navigate = useNavigate();
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+
+  // Animation controls
+  const controls = useAnimation();
+  const [ref, inView] = useInView({
+    threshold: 0.1,
+    triggerOnce: false
+  });
+
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    } else {
+      controls.start("hidden");
+    }
+  }, [controls, inView]);
 
   const toggleNavbar = () => {
     setIsNavbarOpen(!isNavbarOpen);
@@ -44,7 +60,9 @@ const Home = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     await axios.post(`${UserService.BASE_URL}/public/addContact`, contact);
-    navigate("/");
+    setShowSuccessPopup(true);
+    setTimeout(() => setShowSuccessPopup(false), 3000);
+    setContact({ name: "", email: email, message: "" });
   };
 
   useEffect(() => {
@@ -75,8 +93,89 @@ const Home = () => {
     },
   ];
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const fadeInVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { duration: 0.8 }
+    }
+  };
+
+  const slideInLeft = {
+    hidden: { x: -100, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: { duration: 0.6 }
+    }
+  };
+
+  const slideInRight = {
+    hidden: { x: 100, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: { duration: 0.6 }
+    }
+  };
+
+  const scaleUp = {
+    hidden: { scale: 0.9, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: { duration: 0.5 }
+    }
+  };
+
+  // Create separate refs for each animated section
+  const [servicesRef, servicesInView] = useInView({ threshold: 0.1, triggerOnce: true });
+  const [infoRef, infoInView] = useInView({ threshold: 0.1, triggerOnce: true });
+  const [secondSectionRef, secondSectionInView] = useInView({ threshold: 0.1, triggerOnce: true });
+  const [aboutRef, aboutInView] = useInView({ threshold: 0.1, triggerOnce: true });
+  const [bannerRef, bannerInView] = useInView({ threshold: 0.1, triggerOnce: true });
+  const [contactRef, contactInView] = useInView({ threshold: 0.1, triggerOnce: true });
+  const [testimonialsRef, testimonialsInView] = useInView({ threshold: 0.1, triggerOnce: true });
+
   return (
     <div className="flex flex-col min-h-screen font-sans">
+      {/* Success Popup */}
+      {showSuccessPopup && (
+        <motion.div
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -50 }}
+          className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center"
+        >
+          <AiOutlineCheckCircle className="mr-2 text-xl" />
+          Message sent successfully!
+        </motion.div>
+      )}
+
       {/* Hero Section */}
       <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
         {/* Video Background */}
@@ -123,6 +222,8 @@ const Home = () => {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 1.5, type: "spring", stiffness: 100 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               className="mt-8 bg-green-500 hover:bg-green-600 text-gray-800 font-medium py-3 px-6 rounded-md"
             >
               Request Waste Pickup
@@ -132,26 +233,41 @@ const Home = () => {
       </section>
 
       {/* Services Section */}
-      <section className="py-16 bg-white">
-  <div className="container mx-auto px-4">
-    {/* Section Heading */}
-    <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="text-center mb-8"
-    >
-      <p className=" text-green-500 uppercase  text-2xl  tracking-wider ">What We're Offering</p>
-      <h2 className="text-3xl font-light mt-2 text-green-500">The Services We're Providing</h2>
-    </motion.div>
+      <section ref={servicesRef} className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          {/* Section Heading */}
+          <motion.div
+            initial="hidden"
+            animate={servicesInView ? "visible" : "hidden"}
+            variants={containerVariants}
+            className="text-center mb-8"
+          >
+            <motion.p 
+              variants={itemVariants}
+              className="text-green-500 uppercase text-2xl tracking-wider"
+            >
+              What We're Offering
+            </motion.p>
+            <motion.h2 
+              variants={itemVariants}
+              className="text-3xl font-light mt-2 text-green-500"
+            >
+              The Services We're Providing
+            </motion.h2>
+          </motion.div>
+
           {/* Service Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <motion.div
+            initial="hidden"
+            animate={servicesInView ? "visible" : "hidden"}
+            variants={containerVariants}
+            className="grid grid-cols-1 md:grid-cols-4 gap-6"
+          >
             {/* Zero Waste Card */}
             <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-gray-50 p-8 rounded-lg"
+              variants={itemVariants}
+              whileHover={{ y: -10, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+              className="bg-gray-50 p-8 rounded-lg transition-all duration-300"
             >
               <div className="bg-white p-3 rounded-lg inline-block mb-4">
                 <svg width="40" height="40" viewBox="0 0 40 40" className="fill-green-600">
@@ -162,17 +278,16 @@ const Home = () => {
                 </svg>
               </div>
               <h3 className="text-lg font-medium mb-2">Zero Waste</h3>
-              <p className="text-sm text-gray-500">We help businesses and communities achieve zero waste by implementing waste reduction strategies, composting, and sustainable recycling practices. Our goal is to minimize landfill waste and promote environmental responsibility.
-
-</p>
+              <p className="text-sm text-gray-500">
+                We help businesses and communities achieve zero waste by implementing waste reduction strategies, composting, and sustainable recycling practices.
+              </p>
             </motion.div>
 
             {/* Dumpster Rental Card */}
             <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="bg-gray-50 p-8 rounded-lg"
+              variants={itemVariants}
+              whileHover={{ y: -10, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+              className="bg-gray-50 p-8 rounded-lg transition-all duration-300"
             >
               <div className="bg-white p-3 rounded-lg inline-block mb-4">
                 <svg width="40" height="40" viewBox="0 0 40 40" className="fill-green-600">
@@ -182,17 +297,16 @@ const Home = () => {
                 </svg>
               </div>
               <h3 className="text-lg font-medium mb-2">Dumpster Rental</h3>
-              <p className="text-sm text-gray-500">We provide a variety of dumpster sizes for residential, commercial, and construction needs. Whether you're cleaning out your home, managing a construction site, or handling business waste, we have a dumpster solution for you.
-
-</p>
+              <p className="text-sm text-gray-500">
+                We provide a variety of dumpster sizes for residential, commercial, and construction needs.
+              </p>
             </motion.div>
 
             {/* Portable Toilet Card */}
             <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="bg-gray-50 p-8 rounded-lg"
+              variants={itemVariants}
+              whileHover={{ y: -10, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+              className="bg-gray-50 p-8 rounded-lg transition-all duration-300"
             >
               <div className="bg-white p-3 rounded-lg inline-block mb-4">
                 <svg width="40" height="40" viewBox="0 0 40 40" className="fill-green-600">
@@ -203,17 +317,16 @@ const Home = () => {
                 </svg>
               </div>
               <h3 className="text-lg font-medium mb-2">Portable Toilet</h3>
-              <p className="text-sm text-gray-500">Our high-quality portable toilet rentals are perfect for outdoor events, construction sites, and other temporary locations. We offer clean, well-maintained, and hygienic facilities with regular servicing.
-
-</p>
+              <p className="text-sm text-gray-500">
+                Our high-quality portable toilet rentals are perfect for outdoor events and construction sites.
+              </p>
             </motion.div>
 
             {/* Recycling Service Card */}
             <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.8 }}
-              className="bg-gray-50 p-8 rounded-lg"
+              variants={itemVariants}
+              whileHover={{ y: -10, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+              className="bg-gray-50 p-8 rounded-lg transition-all duration-300"
             >
               <div className="bg-white p-3 rounded-lg inline-block mb-4">
                 <svg width="40" height="40" viewBox="0 0 40 40" className="fill-green-600">
@@ -223,390 +336,499 @@ const Home = () => {
                 </svg>
               </div>
               <h3 className="text-lg font-medium mb-2">Recycling Service</h3>
-              <p className="text-sm text-gray-500">We offer comprehensive recycling solutions to help you responsibly dispose of paper, plastic, metal, and electronic waste. Our service ensures that recyclable materials are processed properly, reducing environmental impact.
-
-
-
-
-
-
-
-
-</p>
+              <p className="text-sm text-gray-500">
+                We offer comprehensive recycling solutions to help you responsibly dispose of waste materials.
+              </p>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
       </section>
-      
 
-<section className="bg-white px-6 py-16 text-center relative">
-  <motion.div
-    className="max-w-3xl mx-auto"
-    initial={{ opacity: 0, y: 50 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.8, ease: "easeOut" }}
-  >
-    <h1 className="text-green-600 text-4xl font-bold">
-      Ecobin smart waste solution
-    </h1>
-    <p className="mt-6 text-gray-700 text-lg">
-      The expectations from waste collection companies have remarkably grown
-      in the past years. Garbage pick-up and waste collection alone are no
-      longer enough for cities and businesses. They look for flexibility,
-      availability of on-demand waste collection, automatic service
-      verification, and easy-to-deploy Pay-as-you-throw systems.
-    </p>
-    <p className="mt-6 text-gray-700 text-lg">
-      Whether your motivation, as the waste collector or waste management
-      company, is driven by optimization and efficiency of your own
-      operations, improvement of service quality or you simply look for a
-      competitive advantage, we offer a variety of smart tools and
-      solutions that can support you.
-    </p>
-  </motion.div>
+      {/* Info Section */}
+      <section ref={infoRef} className="bg-white px-6 py-16 text-center relative overflow-hidden">
+        <motion.div
+          initial="hidden"
+          animate={infoInView ? "visible" : "hidden"}
+          variants={containerVariants}
+          className="max-w-3xl mx-auto relative z-10"
+        >
+          <motion.h1 
+            variants={itemVariants}
+            className="text-green-600 text-4xl font-bold"
+          >
+            Ecobin smart waste solution
+          </motion.h1>
+          <motion.p 
+            variants={itemVariants}
+            className="mt-6 text-gray-700 text-lg"
+          >
+            The expectations from waste collection companies have remarkably grown
+            in the past years. Garbage pick-up and waste collection alone are no
+            longer enough for cities and businesses.
+          </motion.p>
+          <motion.p 
+            variants={itemVariants}
+            className="mt-6 text-gray-700 text-lg"
+          >
+            Whether your motivation is driven by optimization and efficiency of your own
+            operations, improvement of service quality or you simply look for a
+            competitive advantage, we offer a variety of smart tools and
+            solutions that can support you.
+          </motion.p>
+        </motion.div>
 
-  {/* Background square patterns */}
-  <motion.div
-    className="absolute top-10 left-10 w-16 h-16 bg-gray-100 opacity-50"
-    initial={{ scale: 0 }}
-    animate={{ scale: 1 }}
-    transition={{ duration: 0.5, ease: "easeOut" }}
-  ></motion.div>
+        {/* Animated background elements */}
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={infoInView ? { scale: 1, opacity: 0.5 } : {}}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="absolute top-10 left-10 w-16 h-16 bg-gray-100 rounded-full"
+        ></motion.div>
 
-  <motion.div
-    className="absolute bottom-10 right-10 w-16 h-16 bg-green-100 opacity-50"
-    initial={{ scale: 0 }}
-    animate={{ scale: 1 }}
-    transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
-  ></motion.div>
-</section>
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={infoInView ? { scale: 1, opacity: 0.5 } : {}}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="absolute bottom-10 right-10 w-16 h-16 bg-green-100 rounded-full"
+        ></motion.div>
+      </section>
 
-{/* Second Section */}
-<section className="flex items-center justify-between px-10 py-16 bg-white">
-  {/* Left Content */}
-  <motion.div
-    className="max-w-2xl"
-    initial={{ opacity: 0, x: -50 }}
-    whileInView={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.8, ease: "easeOut" }}
-    viewport={{ once: true }}
-  >
-    {/* Icon */}
-    <div className="mb-4">
-      <motion.img
-        src={Icon}
-        alt="Icon"
-        className="w-12 h-12"
-        initial={{ rotate: -90, opacity: 0 }}
-        animate={{ rotate: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      />
-    </div>
-    {/* Title */}
-    <h1 className="text-green-600 text-5xl font-bold leading-tight">
-      Ability to collect more <br /> material with the same <br /> infrastructure
-    </h1>
-    {/* Description */}
-    <p className="mt-6 text-gray-700 text-lg">
-      For companies collecting valuable materials, it is the volume that matters the most.
-      As these commodities usually have a very irregular filling cycle, deployment of smart
-      fill-level monitoring <span className="text-green-600 font-semibold">sensors </span>
-      might completely avoid blind driving and ensure you are able to collect the volumes
-      you need fast.
-    </p>
-  </motion.div>
+      {/* Second Section */}
+      <section ref={secondSectionRef} className="flex items-center justify-between px-10 py-16 bg-white overflow-hidden">
+        {/* Left Content */}
+        <motion.div
+          initial="hidden"
+          animate={secondSectionInView ? "visible" : "hidden"}
+          variants={slideInLeft}
+          className="max-w-2xl"
+        >
+          {/* Icon */}
+          <motion.div 
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.8 }}
+            className="mb-4"
+          >
+            <img
+              src={Icon}
+              alt="Icon"
+              className="w-12 h-12"
+            />
+          </motion.div>
+          {/* Title */}
+          <h1 className="text-green-600 text-5xl font-bold leading-tight">
+            Ability to collect more material with the same infrastructure
+          </h1>
+          {/* Description */}
+          <p className="mt-6 text-gray-700 text-lg">
+            For companies collecting valuable materials, it is the volume that matters the most.
+            As these commodities usually have a very irregular filling cycle, deployment of smart
+            fill-level monitoring <span className="text-green-600 font-semibold">sensors </span>
+            might completely avoid blind driving and ensure you are able to collect the volumes
+            you need fast.
+          </p>
+        </motion.div>
 
-  {/* Right Image - Reduced Size */}
-  <motion.div
-    className="w-1/3 flex justify-end"
-    initial={{ opacity: 0, x: 50 }}
-    whileInView={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.8, ease: "easeOut" }}
-    viewport={{ once: true }}
-  >
-    <img src={Image} alt="Garbage Truck" className="w-3/4 rounded-lg shadow-lg" />
-  </motion.div>
-</section>
-
-
-    {/* About Section */}
-<section className="bg-gradient-to-r from-blue-50 to-purple-50 py-20">
-  <div className="container mx-auto px-4">
-    <div className="flex flex-col md:flex-row items-center">
-      {/* Image Section */}
-      <div className="md:w-1/3 mb-8 md:mb-0 relative">
-        <div className="relative overflow-hidden rounded-lg shadow-2xl transform hover:scale-105 transition-transform duration-300">
-          <img
-            src={Image1}
-            alt="About Us"
-            className="w-64 h-auto rounded-lg"
+        {/* Right Image */}
+        <motion.div
+          initial="hidden"
+          animate={secondSectionInView ? "visible" : "hidden"}
+          variants={slideInRight}
+          className="w-1/3 flex justify-end"
+        >
+          <motion.img 
+            src={Image} 
+            alt="Garbage Truck" 
+            className="w-3/4 rounded-lg shadow-lg"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
           />
-          <div className="absolute inset-0 bg-black bg-opacity-20 hover:bg-opacity-0 transition-opacity duration-300"></div>
+        </motion.div>
+      </section>
+
+      {/* About Section */}
+      <section ref={aboutRef} className="bg-gradient-to-r from-blue-50 to-purple-50 py-20 overflow-hidden">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial="hidden"
+            animate={aboutInView ? "visible" : "hidden"}
+            variants={containerVariants}
+            className="flex flex-col md:flex-row items-center"
+          >
+            {/* Image Section */}
+            <motion.div 
+              variants={itemVariants}
+              className="md:w-1/3 mb-8 md:mb-0 relative"
+            >
+              <motion.div 
+                whileHover={{ scale: 1.05 }}
+                className="relative overflow-hidden rounded-lg shadow-2xl"
+              >
+                <img
+                  src={Image1}
+                  alt="About Us"
+                  className="w-64 h-auto rounded-lg"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-20 hover:bg-opacity-0 transition-opacity duration-300"></div>
+              </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={aboutInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.5 }}
+                className="absolute -bottom-8 -right-8 bg-white p-4 rounded-lg shadow-lg"
+              >
+                <h3 className="text-lg font-semibold text-gray-800">Since 2017</h3>
+                <p className="text-sm text-gray-600">Innovating Waste Solutions</p>
+              </motion.div>
+            </motion.div>
+
+            {/* Text Section */}
+            <motion.div 
+              variants={itemVariants}
+              className="md:w-2/3 md:pl-12"
+            >
+              <h2 className="text-4xl font-bold text-green-600 mb-6">About Our Company</h2>
+              <p className="text-base text-gray-700 mb-6 font-serif">
+                Founded in 2017, Ecobin has undergone an impressive journey from a startup into a global leader in smart waste solutions.
+              </p>
+              <p className="text-base text-gray-700 mb-6 font-serif">
+                We started with one product: a waste fill-level monitoring solution that consisted of sensors measuring waste levels in bins and a smart waste management software system.
+              </p>
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300"
+              >
+                Learn More
+              </motion.button>
+            </motion.div>
+          </motion.div>
         </div>
-        <div className="absolute -bottom-8 -right-8 bg-white p-4 rounded-lg shadow-lg">
-          <h3 className="text-lg font-semibold text-gray-800">Since 2017</h3>
-          <p className="text-sm text-gray-600">Innovating Waste Solutions</p>
-        </div>
-      </div>
-
-      {/* Text Section */}
-      <div className="md:w-2/3 md:pl-12">
-        <h2 className="text-4xl font-bold text-green-600 mb-6">About Our Company</h2>
-        <p className="text-base text-gray-700 mb-6 font-serif">
-          Founded in 2017, Ecobin has undergone an impressive journey from a startup into a global leader in smart waste solutions. Our goal from the beginning has been to help cities, businesses, and countries cope with the biggest challenges of waste management – lack of efficiency and transparency.
-        </p>
-        <p className="text-base text-gray-700 mb-6 font-serif">
-          We started with one product: a waste fill-level monitoring solution that consisted of sensors measuring waste levels in bins and a smart waste management software system. Over the years, we have been expanding and perfecting our portfolio of services, which now range from waste and collection monitoring, route planning, factory waste management, to take-back systems and deposit return scheme integration.
-        </p>
-        <button className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300">
-          Learn More
-        </button>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-     
+      </section>
 
       {/* Banner Section */}
       <section
+        ref={bannerRef}
         className="relative bg-cover bg-center h-[450px]"
         style={{ backgroundImage: `url(${BannerImage})` }}
       >
         <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-        <div className="container mx-auto px-4 relative z-10 text-center text-white">
-          <h1 className="text-4xl font-bold mb-4">Welcome to EcoWaste Solutions</h1>
-          <p className="text-lg mb-6">We provide sustainable waste management solutions for a cleaner, greener world.</p>
-          <button
-            className="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300"
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={bannerInView ? { opacity: 1 } : {}}
+          transition={{ duration: 1 }}
+          className="container mx-auto px-4 relative z-10 text-center text-white h-full flex flex-col justify-center"
+        >
+          <motion.h1 
+            initial={{ y: -50 }}
+            animate={bannerInView ? { y: 0 } : {}}
+            transition={{ duration: 0.8 }}
+            className="text-4xl font-bold mb-4"
+          >
+            Welcome to EcoWaste Solutions
+          </motion.h1>
+          <motion.p 
+            initial={{ y: 50 }}
+            animate={bannerInView ? { y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-lg mb-6"
+          >
+            We provide sustainable waste management solutions for a cleaner, greener world.
+          </motion.p>
+          <motion.button
+            initial={{ scale: 0.8 }}
+            animate={bannerInView ? { scale: 1 } : {}}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300 mx-auto"
             onClick={() => window.location.href = "#learn-more"}
           >
             Learn More
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       </section>
 
       {/* Contact Us Section */}
-<section className="bg-gradient-to-r from-blue-50 to-purple-50 py-12">
-  <div className="container mx-auto px-4">
-    {/* Heading */}
-    <motion.div
-      initial={{ opacity: 0, y: -50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="text-center mb-8"
-    >
-      <h2 className="text-4xl font-bold text-green-600 mb-3">Contact Us</h2>
-      <p className="text-lg text-gray-600">
-        We'd love to hear from you! Reach out to us for any inquiries or feedback.
-      </p>
-    </motion.div>
-
-    <div className="flex flex-col md:flex-row gap-6">
-      {/* Contact Form */}
-      <motion.div
-        initial={{ opacity: 0, x: -100 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6 }}
-        className="md:w-1/2 bg-white p-6 rounded-lg shadow-lg"
-      >
-        <form onSubmit={(e) => onSubmit(e)}>
-          <div className="mb-4">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-              Your Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={name}
-              onChange={(e) => onInputChange(e)}
-              className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-              placeholder="Name"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Your Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={email}
-              readOnly
-              className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-              placeholder="johndoe@example.com"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-              Your Message
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              value={message}
-              onChange={(e) => onInputChange(e)}
-              rows="6"
-              className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-              placeholder="Write your message here..."
-              required
-            ></textarea>
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-300"
+      <section ref={contactRef} className="bg-gradient-to-r from-blue-50 to-purple-50 py-12 overflow-hidden">
+        <div className="container mx-auto px-4">
+          {/* Heading */}
+          <motion.div
+            initial="hidden"
+            animate={contactInView ? "visible" : "hidden"}
+            variants={containerVariants}
+            className="text-center mb-8"
           >
-            Send Message
-          </button>
-        </form>
-      </motion.div>
+            <motion.h2 
+              variants={itemVariants}
+              className="text-4xl font-bold text-green-600 mb-3"
+            >
+              Contact Us
+            </motion.h2>
+            <motion.p 
+              variants={itemVariants}
+              className="text-lg text-gray-600"
+            >
+              We'd love to hear from you! Reach out to us for any inquiries or feedback.
+            </motion.p>
+          </motion.div>
 
-      {/* Contact Information and Map */}
-      <motion.div
-        initial={{ opacity: 0, x: 100 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6 }}
-        className="md:w-1/2"
-      >
-        {/* Contact Information */}
-        <div className="bg-white p-6 rounded-lg shadow-lg mb-6">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">Contact Information</h3>
-          <div className="space-y-3">
-            <div className="flex items-center">
-              <p className="text-gray-600">456 Eco Park Road, Kohuwala, Nugegoda</p>
-            </div>
-            <div className="flex items-center">
-              <p className="text-gray-600">+94 771687613</p>
-            </div>
-            <div className="flex items-center">
-              <p className="text-gray-600">contact@ecobin.com</p>
-            </div>
+          <div className="flex flex-col md:flex-row gap-6">
+            {/* Contact Form */}
+            <motion.div
+              initial="hidden"
+              animate={contactInView ? "visible" : "hidden"}
+              variants={slideInLeft}
+              className="md:w-1/2 bg-white p-6 rounded-lg shadow-lg"
+            >
+              <form onSubmit={(e) => onSubmit(e)}>
+                <div className="mb-4">
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                    Your Name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={name}
+                    onChange={(e) => onInputChange(e)}
+                    className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    placeholder="Name"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    Your Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={email}
+                    readOnly
+                    className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    placeholder="johndoe@example.com"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                    Your Message
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    value={message}
+                    onChange={(e) => onInputChange(e)}
+                    rows="6"
+                    className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    placeholder="Write your message here..."
+                    required
+                  ></textarea>
+                </div>
+                <motion.button
+                  type="submit"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-300"
+                >
+                  Send Message
+                </motion.button>
+              </form>
+            </motion.div>
+
+            {/* Contact Information and Map */}
+            <motion.div
+              initial="hidden"
+              animate={contactInView ? "visible" : "hidden"}
+              variants={slideInRight}
+              className="md:w-1/2"
+            >
+              {/* Contact Information */}
+              <div className="bg-white p-6 rounded-lg shadow-lg mb-6">
+                <h3 className="text-xl font-bold text-gray-800 mb-4">Contact Information</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center">
+                    <p className="text-gray-600">456 Eco Park Road, Kohuwala, Nugegoda</p>
+                  </div>
+                  <div className="flex items-center">
+                    <p className="text-gray-600">+94 771687613</p>
+                  </div>
+                  <div className="flex items-center">
+                    <p className="text-gray-600">contact@ecobin.com</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Google Map Embed */}
+              <div className="bg-white p-6 rounded-lg shadow-lg">
+                <h3 className="text-xl font-bold text-gray-800 mb-4">Our Location</h3>
+                <motion.div 
+                  whileHover={{ scale: 1.01 }}
+                  className="overflow-hidden rounded-lg"
+                >
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.8354345093747!2d144.9537353153166!3d-37.816279742021665!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0xf577d2aabc5e2c6a!2sEcoWaste%20Solutions!5e0!3m2!1sen!2sus!4v1633023226784!5m2!1sen!2sus"
+                    width="100%"
+                    height="250"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    title="EcoWaste Solutions Location"
+                  ></iframe>
+                </motion.div>
+              </div>
+            </motion.div>
           </div>
         </div>
+      </section>
 
-        {/* Google Map Embed */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">Our Location</h3>
-          <div className="overflow-hidden rounded-lg">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.8354345093747!2d144.9537353153166!3d-37.816279742021665!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0xf577d2aabc5e2c6a!2sEcoWaste%20Solutions!5e0!3m2!1sen!2sus!4v1633023226784!5m2!1sen!2sus"
-              width="100%"
-              height="250"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              title="EcoWaste Solutions Location"
-            ></iframe>
-          </div>
-        </div>
-      </motion.div>
-    </div>
-  </div>
-</section>
-
-
- {/* Testimonials Section */}
-<section className="w-full py-12 bg-gray-100">
-  <div className="max-w-4xl mx-auto px-4">
-    <h2 className="text-3xl font-bold text-center text-green-500 mb-6">
-      What Our Customers Say
-    </h2>
-    <div className="grid md:grid-cols-3 gap-6">
-      {reviews.map((review) => (
-        <div key={review.id} className="bg-white p-6 rounded-lg shadow-md">
-          <p className="text-gray-700 mb-2">{review.review}</p>
-          <div className="flex items-center space-x-1">
-            {Array.from({ length: review.rating }).map((_, index) => (
-              <span key={index} className="text-yellow-500 text-lg">⭐</span>
+      {/* Testimonials Section */}
+      <section ref={testimonialsRef} className="w-full py-12 bg-gray-100 overflow-hidden">
+        <div className="max-w-4xl mx-auto px-4">
+          <motion.h2 
+            initial={{ opacity: 0, y: -20 }}
+            animate={testimonialsInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+            className="text-3xl font-bold text-center text-green-500 mb-6"
+          >
+            What Our Customers Say
+          </motion.h2>
+          <motion.div
+            initial="hidden"
+            animate={testimonialsInView ? "visible" : "hidden"}
+            variants={containerVariants}
+            className="grid md:grid-cols-3 gap-6"
+          >
+            {reviews.map((review) => (
+              <motion.div 
+                key={review.id} 
+                variants={itemVariants}
+                whileHover={{ y: -5 }}
+                className="bg-white p-6 rounded-lg shadow-md"
+              >
+                <p className="text-gray-700 mb-2">{review.review}</p>
+                <div className="flex items-center space-x-1">
+                  {Array.from({ length: review.rating }).map((_, index) => (
+                    <span key={index} className="text-yellow-500 text-lg">⭐</span>
+                  ))}
+                </div>
+                <p className="mt-2 font-semibold text-gray-800">- {review.name}</p>
+              </motion.div>
             ))}
-          </div>
-          <p className="mt-2 font-semibold text-gray-800">- {review.name}</p>
+          </motion.div>
         </div>
-      ))}
-    </div>
-  </div>
-</section>
+      </section>
 
-<footer className="bg-gradient-to-r from-green-600 to-black text-white py-12">
-  <div className="container mx-auto px-4">
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-      {/* Quick Links */}
-      <div>
-        <h3 className="text-lg font-bold mb-4">Quick Links</h3>
-        <ul className="space-y-2">
-          <li><a href="#home" className="hover:text-green-300">Home</a></li>
-          <li><a href="#services" className="hover:text-green-300">Services</a></li>
-          <li><a href="#recycling" className="hover:text-green-300">Recycling</a></li>
-          <li><a href="#about" className="hover:text-green-300">About Us</a></li>
-          <li><a href="#contact" className="hover:text-green-300">Contact</a></li>
-        </ul>
-      </div>
+      {/* Footer */}
+      <motion.footer 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+        className="bg-gradient-to-r from-green-600 to-black text-white py-12"
+      >
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {/* Quick Links */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              <h3 className="text-lg font-bold mb-4">Quick Links</h3>
+              <ul className="space-y-2">
+                <li><a href="#home" className="hover:text-green-300">Home</a></li>
+                <li><a href="#services" className="hover:text-green-300">Services</a></li>
+                <li><a href="#recycling" className="hover:text-green-300">Recycling</a></li>
+                <li><a href="#about" className="hover:text-green-300">About Us</a></li>
+                <li><a href="#contact" className="hover:text-green-300">Contact</a></li>
+              </ul>
+            </motion.div>
 
-      {/* Contact Information */}
-      <div>
-        <h3 className="text-lg font-bold mb-4">Contact Us</h3>
-        <ul className="space-y-2">
-          <li>456 Eco Park Road,</li>
-          <li>Kohuwala, Nugegoda</li>
-          <li>Email: contact@ecobin.com</li>
-          <li>Phone: +94 771687613</li>
-        </ul>
-      </div>
+            {/* Contact Information */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              viewport={{ once: true }}
+            >
+              <h3 className="text-lg font-bold mb-4">Contact Us</h3>
+              <ul className="space-y-2">
+                <li>456 Eco Park Road,</li>
+                <li>Kohuwala, Nugegoda</li>
+                <li>Email: contact@ecobin.com</li>
+                <li>Phone: +94 771687613</li>
+              </ul>
+            </motion.div>
 
-      {/* Social Media Links */}
-      <div>
-        <h3 className="text-lg font-bold mb-4">Follow Us</h3>
-        <ul className="flex space-x-4">
-          <li>
-            <a href="#" className="text-white hover:text-green-300">
-              <FontAwesomeIcon icon={faFacebook} className="w-6 h-6" />
-            </a>
-          </li>
-          <li>
-            <a href="#" className="text-white hover:text-green-300">
-              <FontAwesomeIcon icon={faTwitter} className="w-6 h-6" />
-            </a>
-          </li>
-          <li>
-            <a href="#" className="text-white hover:text-green-300">
-              <FontAwesomeIcon icon={faLinkedin} className="w-6 h-6" />
-            </a>
-          </li>
-        </ul>
-      </div>
+            {/* Social Media Links */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <h3 className="text-lg font-bold mb-4">Follow Us</h3>
+              <ul className="flex space-x-4">
+                <li>
+                  <a href="#" className="text-white hover:text-green-300">
+                    <FontAwesomeIcon icon={faFacebook} className="w-6 h-6" />
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-white hover:text-green-300">
+                    <FontAwesomeIcon icon={faTwitter} className="w-6 h-6" />
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-white hover:text-green-300">
+                    <FontAwesomeIcon icon={faLinkedin} className="w-6 h-6" />
+                  </a>
+                </li>
+              </ul>
+            </motion.div>
 
-      {/* Newsletter Subscription */}
-      <div>
-        <h3 className="text-lg font-bold mb-4">Subscribe</h3>
-        <p className="mb-4">Subscribe to our newsletter for updates and offers.</p>
-        <form className="flex">
-          <input
-            type="email"
-            placeholder="Your email"
-            className="p-2 rounded-l-lg focus:outline-none text-black"
-          />
-          <button
-            type="submit"
-            className="bg-green-700 text-white p-2 rounded-r-lg hover:bg-green-800"
+            {/* Newsletter Subscription */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+              viewport={{ once: true }}
+            >
+              <h3 className="text-lg font-bold mb-4">Subscribe</h3>
+              <p className="mb-4">Subscribe to our newsletter for updates and offers.</p>
+              <form className="flex">
+                <input
+                  type="email"
+                  placeholder="Your email"
+                  className="p-2 rounded-l-lg focus:outline-none text-black"
+                />
+                <motion.button
+                  type="submit"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="bg-green-700 text-white p-2 rounded-r-lg hover:bg-green-800"
+                >
+                  Subscribe
+                </motion.button>
+              </form>
+            </motion.div>
+          </div>
+
+          {/* Copyright Notice */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+            viewport={{ once: true }}
+            className="border-t border-gray-700 mt-8 pt-8 text-center"
           >
-            Subscribe
-          </button>
-        </form>
-      </div>
-    </div>
-
-    {/* Copyright Notice */}
-    <div className="border-t border-gray-700 mt-8 pt-8 text-center">
-      <p>&copy; 2025 Ecobin. All rights reserved.</p>
-    </div>
-  </div>
-</footer>
-
+            <p>&copy; 2025 Ecobin. All rights reserved.</p>
+          </motion.div>
+        </div>
+      </motion.footer>
     </div>
   );
 };
