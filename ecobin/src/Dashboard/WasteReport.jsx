@@ -11,9 +11,18 @@ export default function WasteReport() {
   const [validationErrors, setValidationErrors] = useState({});
   let navigate = useNavigate();
 
+  // Get today's date in YYYY-MM-DD format
+  const getTodayDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const [wasteReporting, setWasteReporting] = useState({
     wasteTitle: "",
-    date: "",
+    date: getTodayDate(), // Set default to today's date
     wasteType: "",
     wasteWeight: "",
     wasteLocation: "",
@@ -26,7 +35,7 @@ export default function WasteReport() {
   // Fetch recent entries from the backend
   useEffect(() => {
     axios
-      .get(`${UserService.BASE_URL}/public/getAllReport`) // Replace with your API endpoint
+      .get(`${UserService.BASE_URL}/public/getAllReport`)
       .then((response) => {
         const sortedData = response.data
           .sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -40,7 +49,22 @@ export default function WasteReport() {
 
   const onInputChange = (e) => {
     const { name, value, files, type } = e.target;
-    if (type === "file") {
+    
+    // Special handling for customerName to prevent numbers and special characters
+    if (name === "customerName") {
+      // Only allow letters, spaces, and basic punctuation
+      const filteredValue = value.replace(/[^a-zA-Z\s.,'-]/g, '');
+      setWasteReporting({ ...wasteReporting, [name]: filteredValue });
+    } 
+    // Special handling for wasteWeight to prevent negative numbers
+    else if (name === "wasteWeight") {
+      // Remove any non-digit characters except decimal point
+      const sanitizedValue = value.replace(/[^0-9.]/g, '');
+      // Ensure the value is positive
+      const positiveValue = sanitizedValue === '' ? '' : Math.abs(parseFloat(sanitizedValue)).toString();
+      setWasteReporting({ ...wasteReporting, [name]: positiveValue });
+    }
+    else if (type === "file") {
       setWasteReporting({ ...wasteReporting, [name]: files[0] });
     } else {
       setWasteReporting({ ...wasteReporting, [name]: value });
@@ -58,14 +82,20 @@ export default function WasteReport() {
   const validateForm = () => {
     const errors = {};
     if (!wasteReporting.wasteTitle) errors.wasteTitle = "Title is required.";
-    if (!wasteReporting.date) errors.date = "Date is required.";
     if (!wasteReporting.wasteType) errors.wasteType = "Waste type is required.";
-    if (!wasteReporting.wasteWeight || isNaN(wasteReporting.wasteWeight) || wasteReporting.wasteWeight <= 0)
-      errors.wasteWeight = "Please enter a valid weight (greater than 0).";
+    if (!wasteReporting.wasteWeight || isNaN(wasteReporting.wasteWeight) || parseFloat(wasteReporting.wasteWeight) <= 0)
+      errors.wasteWeight = "Please enter a valid positive weight.";
     if (!wasteReporting.wasteLocation) errors.wasteLocation = "Location is required.";
-    if (!wasteReporting.customerName) errors.customerName = "Customer name is required.";
+    
+    // Enhanced customer name validation
+    if (!wasteReporting.customerName) {
+      errors.customerName = "Customer name is required.";
+    } else if (!/^[a-zA-Z\s.,'-]+$/.test(wasteReporting.customerName)) {
+      errors.customerName = "Name can only contain letters, spaces, and basic punctuation.";
+    }
+    
     if (!wasteReporting.reword || isNaN(wasteReporting.reword) || wasteReporting.reword < 0)
-      errors.reword = "Please enter a valid reward points (0 or more).";
+      errors.reword = "Please enter valid reward points (0 or more).";
     if (!wasteReporting.wasteImage) errors.wasteImage = "Please upload an image of the waste.";
 
     return errors;
@@ -163,31 +193,37 @@ export default function WasteReport() {
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold">Add New Waste Report</h2>
             <div className="grid grid-cols-2 gap-4 mt-4">
-              <input
-                type="text"
-                placeholder="📑 Waste Report Title"
-                className={`p-3 border rounded-md w-full bg-gray-100 ${validationErrors.wasteTitle ? 'border-red-500' : ''}`}
-                name="wasteTitle"
-                value={wasteReporting.wasteTitle}
-                onChange={onInputChange}
-              />
-              {validationErrors.wasteTitle && <span className="text-red-500 text-sm">{validationErrors.wasteTitle}</span>}
-              <input
-                type="text"
-                placeholder="📝 Description"
-                className="p-3 border rounded-md w-full bg-gray-100"
-                name="description"
-                value={wasteReporting.description}
-                onChange={onInputChange}
-              />
-              <input
-                type="date"
-                className={`p-3 border rounded-md w-full bg-gray-100 ${validationErrors.date ? 'border-red-500' : ''}`}
-                name="date"
-                value={wasteReporting.date}
-                onChange={onInputChange}
-              />
-              {validationErrors.date && <span className="text-red-500 text-sm">{validationErrors.date}</span>}
+              <div>
+                <input
+                  type="text"
+                  placeholder="📑 Waste Report Title"
+                  className={`p-3 border rounded-md w-full bg-gray-100 ${validationErrors.wasteTitle ? 'border-red-500' : ''}`}
+                  name="wasteTitle"
+                  value={wasteReporting.wasteTitle}
+                  onChange={onInputChange}
+                />
+                {validationErrors.wasteTitle && <span className="text-red-500 text-sm">{validationErrors.wasteTitle}</span>}
+              </div>
+              <div>
+                <input
+                  type="text"
+                  placeholder="📝 Description"
+                  className="p-3 border rounded-md w-full bg-gray-100"
+                  name="description"
+                  value={wasteReporting.description}
+                  onChange={onInputChange}
+                />
+              </div>
+              <div>
+                <input
+                  type="text"
+                  readOnly
+                  className="p-3 border rounded-md w-full bg-gray-200"
+                  name="date"
+                  value={wasteReporting.date}
+                />
+                <span className="text-gray-500 text-sm">Today's date (cannot be changed)</span>
+              </div>
             </div>
 
             {/* Image Upload */}
@@ -214,57 +250,74 @@ export default function WasteReport() {
 
             {/* Input Fields */}
             <div className="grid grid-cols-2 gap-4 mt-4">
-              <input
-                type="text"
-                placeholder="📍 Enter location"
-                className={`p-3 border rounded-md w-full bg-gray-100 ${validationErrors.wasteLocation ? 'border-red-500' : ''}`}
-                name="wasteLocation"
-                value={wasteReporting.wasteLocation}
-                onChange={onInputChange}
-              />
-              {validationErrors.wasteLocation && <span className="text-red-500 text-sm">{validationErrors.wasteLocation}</span>}
-              <select
-                className={`p-3 border rounded-md w-full bg-gray-100 ${validationErrors.wasteType ? 'border-red-500' : ''}`}
-                name="wasteType"
-                value={wasteReporting.wasteType}
-                onChange={onInputChange}
-              >
-                <option value="Plastic">Plastic</option>
-                <option value="Paper">Paper</option>
-                <option value="Metal">Metal</option>
-                <option value="Organic">Organic</option>
-              </select>
-              {validationErrors.wasteType && <span className="text-red-500 text-sm">{validationErrors.wasteType}</span>}
-              <input
-                type="number"
-                placeholder="Estimated Amount (kg)"
-                className={`p-3 border rounded-md w-full bg-gray-100 ${validationErrors.wasteWeight ? 'border-red-500' : ''}`}
-                name="wasteWeight"
-                value={wasteReporting.wasteWeight}
-                onChange={onInputChange}
-              />
-              {validationErrors.wasteWeight && <span className="text-red-500 text-sm">{validationErrors.wasteWeight}</span>}
-              <input
-                type="text"
-                placeholder="👤 Customer Name"
-                className={`p-3 border rounded-md w-full bg-gray-100 ${validationErrors.customerName ? 'border-red-500' : ''}`}
-                name="customerName"
-                value={wasteReporting.customerName}
-                onChange={onInputChange}
-              />
-              {validationErrors.customerName && <span className="text-red-500 text-sm">{validationErrors.customerName}</span>}
-              <input
-                type="number"
-                placeholder="💰 Points"
-                className={`p-3 border rounded-md w-full bg-gray-100 ${validationErrors.reword ? 'border-red-500' : ''}`}
-                name="reword"
-                value={wasteReporting.reword}
-                onChange={onInputChange}
-              />
-              {validationErrors.reword && <span className="text-red-500 text-sm">{validationErrors.reword}</span>}
+              <div>
+                <input
+                  type="text"
+                  placeholder="📍 Enter location"
+                  className={`p-3 border rounded-md w-full bg-gray-100 ${validationErrors.wasteLocation ? 'border-red-500' : ''}`}
+                  name="wasteLocation"
+                  value={wasteReporting.wasteLocation}
+                  onChange={onInputChange}
+                />
+                {validationErrors.wasteLocation && <span className="text-red-500 text-sm">{validationErrors.wasteLocation}</span>}
+              </div>
+              <div>
+                <select
+                  className={`p-3 border rounded-md w-full bg-gray-100 ${validationErrors.wasteType ? 'border-red-500' : ''}`}
+                  name="wasteType"
+                  value={wasteReporting.wasteType}
+                  onChange={onInputChange}
+                >
+                  <option value="">Select Waste Type</option>
+                  <option value="Plastic">Plastic</option>
+                  <option value="Paper">Paper</option>
+                  <option value="Metal">Metal</option>
+                  <option value="Organic">Organic</option>
+                </select>
+                {validationErrors.wasteType && <span className="text-red-500 text-sm">{validationErrors.wasteType}</span>}
+              </div>
+              <div>
+                <input
+                  type="number"
+                  placeholder="Estimated Amount (kg)"
+                  className={`p-3 border rounded-md w-full bg-gray-100 ${validationErrors.wasteWeight ? 'border-red-500' : ''}`}
+                  name="wasteWeight"
+                  value={wasteReporting.wasteWeight}
+                  onChange={onInputChange}
+                  min="0.01"
+                  step="0.01"
+                />
+                {validationErrors.wasteWeight && <span className="text-red-500 text-sm">{validationErrors.wasteWeight}</span>}
+              </div>
+              <div>
+                <input
+                  type="text"
+                  placeholder="👤 Customer Name"
+                  className={`p-3 border rounded-md w-full bg-gray-100 ${validationErrors.customerName ? 'border-red-500' : ''}`}
+                  name="customerName"
+                  value={wasteReporting.customerName}
+                  onChange={onInputChange}
+                />
+                {validationErrors.customerName && <span className="text-red-500 text-sm">{validationErrors.customerName}</span>}
+              </div>
+              <div>
+                <input
+                  type="number"
+                  placeholder="💰 Points"
+                  className={`p-3 border rounded-md w-full bg-gray-100 ${validationErrors.reword ? 'border-red-500' : ''}`}
+                  name="reword"
+                  value={wasteReporting.reword}
+                  onChange={onInputChange}
+                  min="0"
+                />
+                {validationErrors.reword && <span className="text-red-500 text-sm">{validationErrors.reword}</span>}
+              </div>
             </div>
 
-            <button className="mt-4 bg-gradient-to-r from-green-600 to-black hover:from-green-700 hover:to-black text-white p-3 rounded-md w-full">
+            <button 
+              type="submit"
+              className="mt-4 bg-gradient-to-r from-green-600 to-black hover:from-green-700 hover:to-black text-white p-3 rounded-md w-full"
+            >
               Submit Entry
             </button>
           </div>
