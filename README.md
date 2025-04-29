@@ -283,7 +283,7 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 ## 📬 Contact
 
 **Group:** Y3.S1.WE.IT.02.01_45  
-**Email:** [your-email@example.com](mailto:your-email@example.com)  
+**Email:** [your-email@example.com](mailto:ecobin.lk)  
 **Project Link:** [https://github.com/senu02/EcoBin](https://github.com/senu02/EcoBin)
 
 ---
