@@ -6,7 +6,7 @@ import Image1 from '../Home/images/Logo.png';
 import BannerImage from '../Home/images/b2.png';
 import heroVideo from "../Home/images/video1.mp4";
 import { IoSearchOutline, IoMenuOutline, IoCloseOutline } from 'react-icons/io5';
-import { FaFacebook, FaTwitter, FaPinterest, FaLinkedin } from 'react-icons/fa';
+import { FaFacebook, FaTwitter, FaPinterest, FaLinkedin, FaLeaf, FaRecycle, FaChartLine, FaUserFriends } from 'react-icons/fa';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFacebook,
@@ -14,12 +14,60 @@ import {
   faInstagram,
   faLinkedin,
 } from "@fortawesome/free-brands-svg-icons";
-import { motion, useAnimation } from "framer-motion";
+import { motion, useAnimation, AnimatePresence } from "framer-motion";
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import UserService from './UserService';
+
+// Animation variants
+const slideInLeft = {
+  hidden: { x: -100, opacity: 0 },
+  visible: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut"
+    }
+  }
+};
+
+const slideInRight = {
+  hidden: { x: 100, opacity: 0 },
+  visible: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut"
+    }
+  }
+};
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.3,
+      delayChildren: 0.2
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      ease: "easeOut"
+    }
+  }
+};
 
 const Home = () => {
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
@@ -93,64 +141,39 @@ const Home = () => {
     },
   ];
 
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.3,
-        delayChildren: 0.2
-      }
-    }
-  };
+  // New state for features
+  const [activeFeature, setActiveFeature] = useState(0);
+  const [showStats, setShowStats] = useState(false);
+  const [stats, setStats] = useState({
+    wasteCollected: 0,
+    users: 0,
+    locations: 0,
+    recyclingRate: 0
+  });
 
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut"
-      }
+  // Features data
+  const features = [
+    {
+      icon: <FaLeaf className="text-4xl text-green-500" />,
+      title: "Smart Waste Collection",
+      description: "AI-powered waste classification and collection scheduling"
+    },
+    {
+      icon: <FaRecycle className="text-4xl text-green-500" />,
+      title: "Eco-Friendly Solutions",
+      description: "Sustainable waste management practices and recycling programs"
+    },
+    {
+      icon: <FaChartLine className="text-4xl text-green-500" />,
+      title: "Real-time Analytics",
+      description: "Track waste collection metrics and environmental impact"
+    },
+    {
+      icon: <FaUserFriends className="text-4xl text-green-500" />,
+      title: "Community Engagement",
+      description: "Join a network of eco-conscious individuals and organizations"
     }
-  };
-
-  const fadeInVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { duration: 0.8 }
-    }
-  };
-
-  const slideInLeft = {
-    hidden: { x: -100, opacity: 0 },
-    visible: {
-      x: 0,
-      opacity: 1,
-      transition: { duration: 0.6 }
-    }
-  };
-
-  const slideInRight = {
-    hidden: { x: 100, opacity: 0 },
-    visible: {
-      x: 0,
-      opacity: 1,
-      transition: { duration: 0.6 }
-    }
-  };
-
-  const scaleUp = {
-    hidden: { scale: 0.9, opacity: 0 },
-    visible: {
-      scale: 1,
-      opacity: 1,
-      transition: { duration: 0.5 }
-    }
-  };
+  ];
 
   // Create separate refs for each animated section
   const [servicesRef, servicesInView] = useInView({ threshold: 0.1, triggerOnce: true });
@@ -177,8 +200,7 @@ const Home = () => {
       )}
 
       {/* Hero Section */}
-      <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
-        {/* Video Background */}
+      <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <video
           autoPlay
           loop
@@ -186,54 +208,127 @@ const Home = () => {
           className="absolute inset-0 w-full h-full object-cover"
         >
           <source src={heroVideo} type="video/mp4" />
-          Your browser does not support the video tag.
         </video>
-
-        {/* Dark overlay for better text visibility */}
-        <div className="absolute inset-0 bg-black opacity-40"></div>
-
-        {/* Content */}
-        <div className="container mx-auto px-4 text-center z-10">
-          {/* Heading */}
-          <motion.h1
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.5 }}
-            className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight mb-4"
-          >
-            Save costs and time
-            <br />
-            on your waste collection
-          </motion.h1>
-
-          {/* Paragraph */}
-          <motion.p
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 1 }}
-            className="text-white text-lg mb-8"
-          >
-            Efficient and eco-friendly waste management solutions tailored for you.
-          </motion.p>
-
-          {/* Link to Waste Pickup Request */}
-          <Link to="/WastePickupRequest">
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+        
+        <motion.div 
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="relative z-10 text-center text-white px-4"
+        >
+          <h1 className="text-5xl md:text-7xl font-bold mb-6">
+            Smart Waste Management
+          </h1>
+          <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto">
+            Join us in creating a cleaner, greener future through innovative waste management solutions
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/WastePickupRequest">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-green-600 text-white px-8 py-3 rounded-lg text-lg font-semibold"
+              >
+                Request Pickup
+              </motion.button>
+            </Link>
             <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 1.5, type: "spring", stiffness: 100 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="mt-8 bg-green-500 hover:bg-green-600 text-gray-800 font-medium py-3 px-6 rounded-md"
+              className="bg-white text-green-600 px-8 py-3 rounded-lg text-lg font-semibold"
+              onClick={() => setShowStats(true)}
             >
-              Request Waste Pickup
+              View Impact
             </motion.button>
-          </Link>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={containerVariants}
+            className="text-center mb-16"
+          >
+            <motion.h2 variants={itemVariants} className="text-4xl font-bold text-gray-800 mb-4">
+              Our Features
+            </motion.h2>
+            <motion.p variants={itemVariants} className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Discover how our platform can help you manage waste more efficiently
+            </motion.p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                whileHover={{ y: -10 }}
+                className="bg-gray-50 p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <div className="mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                <p className="text-gray-600">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
+      {/* Impact Stats Modal */}
+      <AnimatePresence>
+        {showStats && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            onClick={() => setShowStats(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              className="bg-white rounded-xl p-8 max-w-2xl w-full mx-4"
+              onClick={e => e.stopPropagation()}
+            >
+              <h2 className="text-3xl font-bold text-gray-800 mb-6">Our Impact</h2>
+              <div className="grid grid-cols-2 gap-6">
+                <div className="bg-green-50 p-6 rounded-lg">
+                  <h3 className="text-2xl font-bold text-green-600">{stats.wasteCollected} kg</h3>
+                  <p className="text-gray-600">Waste Collected</p>
+                </div>
+                <div className="bg-green-50 p-6 rounded-lg">
+                  <h3 className="text-2xl font-bold text-green-600">{stats.users}+</h3>
+                  <p className="text-gray-600">Active Users</p>
+                </div>
+                <div className="bg-green-50 p-6 rounded-lg">
+                  <h3 className="text-2xl font-bold text-green-600">{stats.locations}</h3>
+                  <p className="text-gray-600">Locations Served</p>
+                </div>
+                <div className="bg-green-50 p-6 rounded-lg">
+                  <h3 className="text-2xl font-bold text-green-600">{stats.recyclingRate}%</h3>
+                  <p className="text-gray-600">Recycling Rate</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowStats(false)}
+                className="mt-6 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors"
+              >
+                Close
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Services Section */}
-      <section ref={servicesRef} className="py-16 bg-white">
+      <section id="services" ref={servicesRef} className="py-16 bg-white">
         <div className="container mx-auto px-4">
           {/* Section Heading */}
           <motion.div
@@ -446,7 +541,7 @@ const Home = () => {
       </section>
 
       {/* About Section */}
-      <section ref={aboutRef} className="bg-gradient-to-r from-blue-50 to-purple-50 py-20 overflow-hidden">
+      <section id="about" ref={aboutRef} className="bg-gradient-to-r from-blue-50 to-purple-50 py-20 overflow-hidden">
         <div className="container mx-auto px-4">
           <motion.div
             initial="hidden"
@@ -549,7 +644,7 @@ const Home = () => {
       </section>
 
       {/* Contact Us Section */}
-      <section ref={contactRef} className="bg-gradient-to-r from-blue-50 to-purple-50 py-12 overflow-hidden">
+      <section id="contact" ref={contactRef} className="bg-gradient-to-r from-blue-50 to-purple-50 py-12 overflow-hidden">
         <div className="container mx-auto px-4">
           {/* Heading */}
           <motion.div
@@ -726,106 +821,179 @@ const Home = () => {
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
-        className="bg-gradient-to-r from-green-600 to-black text-white py-12"
+        className="bg-gradient-to-r from-green-600 to-black text-white py-16"
       >
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Quick Links */}
+            {/* Company Info */}
             <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
               viewport={{ once: true }}
+              className="space-y-4"
             >
-              <h3 className="text-lg font-bold mb-4">Quick Links</h3>
+              <div className="flex items-center space-x-2">
+                <img src={Image1} alt="Logo" className="w-10 h-10" />
+                <h3 className="text-xl font-bold">EcoBin</h3>
+              </div>
+              <p className="text-gray-300 text-sm">
+                Leading the way in sustainable waste management solutions for a cleaner, greener future.
+              </p>
+              <div className="flex space-x-4">
+                <motion.a
+                  whileHover={{ scale: 1.1, y: -2 }}
+                  href="#"
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
+                  <FontAwesomeIcon icon={faFacebook} className="w-5 h-5" />
+                </motion.a>
+                <motion.a
+                  whileHover={{ scale: 1.1, y: -2 }}
+                  href="#"
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
+                  <FontAwesomeIcon icon={faTwitter} className="w-5 h-5" />
+                </motion.a>
+                <motion.a
+                  whileHover={{ scale: 1.1, y: -2 }}
+                  href="#"
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
+                  <FontAwesomeIcon icon={faInstagram} className="w-5 h-5" />
+                </motion.a>
+                <motion.a
+                  whileHover={{ scale: 1.1, y: -2 }}
+                  href="#"
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
+                  <FontAwesomeIcon icon={faLinkedin} className="w-5 h-5" />
+                </motion.a>
+              </div>
+            </motion.div>
+
+            {/* Quick Links */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              viewport={{ once: true }}
+              className="space-y-4"
+            >
+              <h3 className="text-lg font-bold">Quick Links</h3>
               <ul className="space-y-2">
-                <li><a href="#home" className="hover:text-green-300">Home</a></li>
-                <li><a href="#services" className="hover:text-green-300">Services</a></li>
-                <li><a href="#recycling" className="hover:text-green-300">Recycling</a></li>
-                <li><a href="#about" className="hover:text-green-300">About Us</a></li>
-                <li><a href="#contact" className="hover:text-green-300">Contact</a></li>
+                {[
+                  { name: "Home", href: "#home" },
+                  { name: "Services", href: "#services" },
+                  { name: "About Us", href: "#about" },
+                  { name: "Contact", href: "#contact" },
+                  { name: "Blog", href: "#blog" }
+                ].map((link, index) => (
+                  <motion.li
+                    key={index}
+                    whileHover={{ x: 5 }}
+                    className="text-gray-300 hover:text-white transition-colors"
+                  >
+                    <a href={link.href} className="flex items-center">
+                      <span className="w-1 h-1 bg-green-500 rounded-full mr-2"></span>
+                      {link.name}
+                    </a>
+                  </motion.li>
+                ))}
               </ul>
             </motion.div>
 
-            {/* Contact Information */}
+            {/* Services */}
             <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
               viewport={{ once: true }}
+              className="space-y-4"
             >
-              <h3 className="text-lg font-bold mb-4">Contact Us</h3>
+              <h3 className="text-lg font-bold">Our Services</h3>
               <ul className="space-y-2">
-                <li>456 Eco Park Road,</li>
-                <li>Kohuwala, Nugegoda</li>
-                <li>Email: contact@ecobin.com</li>
-                <li>Phone: +94 771687613</li>
+                {[
+                  "Waste Collection",
+                  "Recycling Solutions",
+                  "Sustainability Consulting",
+                  "Environmental Impact Analysis",
+                  "Waste Management Training"
+                ].map((service, index) => (
+                  <motion.li
+                    key={index}
+                    whileHover={{ x: 5 }}
+                    className="text-gray-300 hover:text-white transition-colors"
+                  >
+                    <span className="flex items-center">
+                      <span className="w-1 h-1 bg-green-500 rounded-full mr-2"></span>
+                      {service}
+                    </span>
+                  </motion.li>
+                ))}
               </ul>
             </motion.div>
 
-            {/* Social Media Links */}
+            {/* Newsletter */}
             <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
               viewport={{ once: true }}
+              className="space-y-4"
             >
-              <h3 className="text-lg font-bold mb-4">Follow Us</h3>
-              <ul className="flex space-x-4">
-                <li>
-                  <a href="#" className="text-white hover:text-green-300">
-                    <FontAwesomeIcon icon={faFacebook} className="w-6 h-6" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white hover:text-green-300">
-                    <FontAwesomeIcon icon={faTwitter} className="w-6 h-6" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white hover:text-green-300">
-                    <FontAwesomeIcon icon={faLinkedin} className="w-6 h-6" />
-                  </a>
-                </li>
-              </ul>
-            </motion.div>
-
-            {/* Newsletter Subscription */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-              viewport={{ once: true }}
-            >
-              <h3 className="text-lg font-bold mb-4">Subscribe</h3>
-              <p className="mb-4">Subscribe to our newsletter for updates and offers.</p>
-              <form className="flex">
-                <input
-                  type="email"
-                  placeholder="Your email"
-                  className="p-2 rounded-l-lg focus:outline-none text-black"
-                />
-                <motion.button
-                  type="submit"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="bg-green-700 text-white p-2 rounded-r-lg hover:bg-green-800"
-                >
-                  Subscribe
-                </motion.button>
+              <h3 className="text-lg font-bold">Newsletter</h3>
+              <p className="text-gray-300 text-sm">
+                Subscribe to our newsletter for the latest updates and offers.
+              </p>
+              <form className="space-y-3">
+                <div className="relative">
+                  <input
+                    type="email"
+                    placeholder="Your email address"
+                    className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-green-500 text-white placeholder-gray-400"
+                  />
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    type="submit"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600 transition-colors"
+                  >
+                    Subscribe
+                  </motion.button>
+                </div>
               </form>
+              <div className="flex items-center space-x-2 text-gray-300 text-sm">
+                <FaLeaf className="text-green-500" />
+                <span>Join our eco-friendly community</span>
+              </div>
             </motion.div>
           </div>
 
-          {/* Copyright Notice */}
+          {/* Bottom Bar */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            transition={{ delay: 1 }}
+            transition={{ delay: 0.6 }}
             viewport={{ once: true }}
-            className="border-t border-gray-700 mt-8 pt-8 text-center"
+            className="border-t border-white/10 mt-12 pt-8"
           >
-            <p>&copy; 2025 Ecobin. All rights reserved.</p>
+            <div className="flex flex-col md:flex-row justify-between items-center">
+              <p className="text-gray-300 text-sm">
+                © {new Date().getFullYear()} EcoBin. All rights reserved.
+              </p>
+              <div className="flex space-x-6 mt-4 md:mt-0">
+                <a href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
+                  Privacy Policy
+                </a>
+                <a href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
+                  Terms of Service
+                </a>
+                <a href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
+                  Cookie Policy
+                </a>
+              </div>
+            </div>
           </motion.div>
         </div>
       </motion.footer>
