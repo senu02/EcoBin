@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, ChevronUp, Settings, LogOut,User, List } from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Menu, X, ChevronUp, Settings, LogOut, User, List } from "lucide-react";
 import companyLogo from "../Home/images/Logo.png";
 
 function Navbar() {
@@ -14,6 +14,7 @@ function Navbar() {
   const [progress, setProgress] = useState(0);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     // Get the user data from localStorage
@@ -57,6 +58,23 @@ function Navbar() {
     }, 200);
   };
 
+  const scrollToSection = (sectionId) => {
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
     <nav className="bg-white text-gray-900 shadow-md relative z-50">
       <div className="container mx-auto flex justify-between items-center px-6 py-4">
@@ -69,9 +87,24 @@ function Navbar() {
 
         <div className="hidden md:flex space-x-8 items-center">
           <NavLink to="/" label="Home" isHome />
-          <NavLink label="Services" />
-          <NavLink label="About" />
-          <NavLink label="Contact" />
+          <button 
+            onClick={() => scrollToSection('services')}
+            className="px-4 py-2 font-medium hover:text-green-600 transition-all duration-300"
+          >
+            Services
+          </button>
+          <button 
+            onClick={() => scrollToSection('about')}
+            className="px-4 py-2 font-medium hover:text-green-600 transition-all duration-300"
+          >
+            About Us
+          </button>
+          <button 
+            onClick={() => scrollToSection('contact')}
+            className="px-4 py-2 font-medium hover:text-green-600 transition-all duration-300"
+          >
+            Contact Us
+          </button>
 
           {!isLoggedIn ? (
             <>
@@ -128,6 +161,68 @@ function Navbar() {
           {isOpen ? <X size={30} /> : <Menu size={30} />}
         </button>
       </div>
+
+      {/* Mobile Menu */}
+      {isOpen && (
+        <div className="md:hidden absolute top-full left-0 right-0 bg-white shadow-lg">
+          <div className="container mx-auto px-6 py-4">
+            <div className="flex flex-col space-y-4">
+              <NavLink to="/" label="Home" isHome />
+              <button 
+                onClick={() => {
+                  scrollToSection('services');
+                  setIsOpen(false);
+                }}
+                className="px-4 py-2 font-medium hover:text-green-600 transition-all duration-300 text-left"
+              >
+                Services
+              </button>
+              <button 
+                onClick={() => {
+                  scrollToSection('about');
+                  setIsOpen(false);
+                }}
+                className="px-4 py-2 font-medium hover:text-green-600 transition-all duration-300 text-left"
+              >
+                About Us
+              </button>
+              <button 
+                onClick={() => {
+                  scrollToSection('contact');
+                  setIsOpen(false);
+                }}
+                className="px-4 py-2 font-medium hover:text-green-600 transition-all duration-300 text-left"
+              >
+                Contact Us
+              </button>
+              {!isLoggedIn ? (
+                <>
+                  <NavLink to="/login" label="Login" />
+                  <NavLink to="/SignupForm" label="SignUp" />
+                </>
+              ) : (
+                <div className="flex flex-col space-y-2">
+                  <Link to="/settings" className="px-4 py-2 font-medium hover:text-green-600 transition-all duration-300">
+                    Settings
+                  </Link>
+                  <Link to="/ProfileHeader" className="px-4 py-2 font-medium hover:text-green-600 transition-all duration-300">
+                    View Profile
+                  </Link>
+                  <Link to="/ViewPickup" className="px-4 py-2 font-medium hover:text-green-600 transition-all duration-300">
+                    View Requests
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="px-4 py-2 font-medium hover:text-green-600 transition-all duration-300 text-left"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {showBackToTop && (
         <button
