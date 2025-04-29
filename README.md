@@ -1,9 +1,9 @@
 # ♻️ ECOBIN - Smart Waste Management System 
 **AI-Powered Waste Optimization Platform | Spring Boot + React + Python**  
-*Version 3.0.0 | [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) | [![CI/CD](https://github.com/ecobin/smart-waste/actions/workflows/pipeline.yml/badge.svg)](https://github.com/ecobin/smart-waste/actions) | [![Code Quality](https://sonarcloud.io/api/project_badges/measure?project=ecobin_smart-waste&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ecobin_smart-waste)*
+*Version 3.0.0 | [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) | 
 
 <div align="center">
-  <img src="https://via.placeholder.com/1200x400?text=ECOBIN+Smart+Waste+Management" alt="EcoBin Banner"/>
+  <img src="ecobin\public\Logo.png" alt="EcoBin Banner"/>
 </div>
 
 ## 📋 Table of Contents
@@ -60,9 +60,7 @@ EcoBin is an innovative digital solution designed to revolutionize waste managem
 
 ## 🏗 System Architecture
 
-<div align="center">
-  <img src="https://via.placeholder.com/1200x600?text=ECOBIN+System+Architecture+Diagram" alt="System Architecture"/>
-</div>
+
 
 ### Three-Tier Architecture
 1. **Frontend Layer**
