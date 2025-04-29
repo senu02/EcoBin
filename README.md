@@ -3,8 +3,9 @@
 *Version 3.0.0 | [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) | 
 
 <div align="center">
-  <img src="ecobin\public\Logo.png" alt="EcoBin Banner"/>
+  <img src="ecobin/public/Logo.png" alt="EcoBin Logo" style="width: 100px; height: 100px; border-radius: 50%;" />
 </div>
+
 
 ## 📋 Table of Contents
 - [🚀 Overview](#-overview)
