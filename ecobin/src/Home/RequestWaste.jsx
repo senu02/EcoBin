@@ -2,9 +2,13 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import UserService from "./UserService";
-import { FaUser, FaHome, FaPhone } from "react-icons/fa";
-import { AiOutlineCheckCircle, AiOutlineExclamationCircle } from "react-icons/ai";
-import image from "./images/r2.png";
+import { FaUser, FaHome, FaPhone, FaCamera, FaRobot } from "react-icons/fa";
+import { AiOutlineCheckCircle, AiOutlineExclamationCircle, AiOutlineMessage } from "react-icons/ai";
+import image from "./images/BIN2.jpg";
+import photo1 from "./images/ph1.jpg";
+import photo2 from "./images/ph2.jpg";
+import photo3 from "./images/ph3.jpg";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faTwitter, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import { motion } from "framer-motion";
@@ -136,7 +140,10 @@ export default function WastePickupRequest() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 relative overflow-hidden">
+      {/* Decorative Green Circle */}
+      <div className="absolute -top-32 -left-32 w-[400px] h-[400px] bg-green-300 rounded-full opacity-30 blur-2xl z-0 pointer-events-none"></div>
+
       {/* Success Popup */}
       {showSuccessPopup && (
         <motion.div 
@@ -188,27 +195,208 @@ export default function WastePickupRequest() {
         transition={{ delay: 0.2 }}
         className="max-w-6xl mx-auto py-16 px-4"
       >
-        <h2 className="text-4xl font-bold text-gray-900 text-center mb-12">
-          Key Features and Benefits
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            Advanced Features & Benefits
+          </h2>
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            Experience our comprehensive waste management solutions designed for efficiency and sustainability
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
-            { id: "01", text: "Automated waste collection system" },
-            { id: "02", text: "Cost-effective collection solutions" },
-            { id: "03", text: "Enhanced ESG reporting capabilities" },
-            { id: "04", text: "Real-time collector supervision" },
-            { id: "05", text: "Comprehensive waste infrastructure overview" },
-            { id: "06", text: "Complete waste flow tracking system" },
-          ].map((item) => (
+            {
+              id: "01",
+              icon: <FaRobot className="text-3xl text-green-500" />,
+              title: "Smart Collection System",
+              description: "AI-powered waste collection scheduling and route optimization for maximum efficiency",
+              benefits: ["Real-time tracking", "Automated scheduling", "Route optimization"]
+            },
+            {
+              id: "02",
+              icon: <FaHome className="text-3xl text-green-500" />,
+              title: "Cost-Effective Solutions",
+              description: "Optimized waste management strategies to reduce operational costs",
+              benefits: ["Reduced fuel consumption", "Lower maintenance costs", "Efficient resource allocation"]
+            },
+            {
+              id: "03",
+              icon: <AiOutlineCheckCircle className="text-3xl text-green-500" />,
+              title: "ESG Reporting",
+              description: "Comprehensive environmental, social, and governance reporting capabilities",
+              benefits: ["Carbon footprint tracking", "Sustainability metrics", "Compliance reporting"]
+            },
+            {
+              id: "04",
+              icon: <FaCamera className="text-3xl text-green-500" />,
+              title: "Real-time Monitoring",
+              description: "Live tracking and supervision of waste collection operations",
+              benefits: ["GPS tracking", "Live updates", "Performance analytics"]
+            },
+            {
+              id: "05",
+              icon: <FaHome className="text-3xl text-green-500" />,
+              title: "Infrastructure Overview",
+              description: "Complete visibility into waste management infrastructure",
+              benefits: ["Asset management", "Capacity planning", "Maintenance scheduling"]
+            },
+            {
+              id: "06",
+              icon: <AiOutlineMessage className="text-3xl text-green-500" />,
+              title: "Waste Flow Tracking",
+              description: "End-to-end tracking of waste from collection to disposal",
+              benefits: ["Traceability", "Quality control", "Process optimization"]
+            }
+          ].map((feature) => (
             <motion.div 
-              key={item.id}
-              whileHover={{ scale: 1.05 }}
-              className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+              key={feature.id}
+              whileHover={{ scale: 1.05, y: -10 }}
+              className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              <span className="bg-green-100 text-green-600 font-bold text-lg px-4 py-2 rounded-lg inline-block mb-4">
-                {item.id}
-              </span>
-              <p className="text-gray-700 text-lg">{item.text}</p>
+              <div className="flex items-center justify-between mb-6">
+                <span className="bg-green-100 text-green-600 font-bold text-lg px-4 py-2 rounded-lg">
+                  {feature.id}
+                </span>
+                <div className="bg-green-50 p-3 rounded-full">
+                  {feature.icon}
+                </div>
+              </div>
+              
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                {feature.title}
+              </h3>
+              
+              <p className="text-gray-600 mb-4">
+                {feature.description}
+              </p>
+              
+              <ul className="space-y-2">
+                {feature.benefits.map((benefit, index) => (
+                  <li key={index} className="flex items-center text-gray-700">
+                    <AiOutlineCheckCircle className="text-green-500 mr-2" />
+                    {benefit}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Feature Stats */}
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+          {[
+            { number: "98%", label: "Customer Satisfaction", icon: <AiOutlineCheckCircle className="text-3xl text-green-500" /> },
+            { number: "24/7", label: "Support Available", icon: <FaPhone className="text-3xl text-green-500" /> },
+            { number: "100%", label: "Eco-Friendly", icon: <FaHome className="text-3xl text-green-500" /> }
+          ].map((stat, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 + index * 0.1 }}
+              className="bg-white rounded-xl p-6 shadow-lg text-center"
+            >
+              <div className="flex justify-center mb-4">
+                {stat.icon}
+              </div>
+              <h3 className="text-4xl font-bold text-green-600 mb-2">{stat.number}</h3>
+              <p className="text-gray-600">{stat.label}</p>
+            </motion.div>
+          ))}
+        </div>
+      </motion.section>
+
+      {/* Photo Gallery Section */}
+      <motion.section 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        className="max-w-7xl mx-auto py-20 px-4"
+      >
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            Our Waste Management Journey
+          </h2>
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            Discover how we're making a difference in waste management and environmental conservation
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[
+            { 
+              src: photo1, 
+              alt: "Waste Collection Process",
+              description: "Efficient waste collection systems in action",
+              category: "Collection"
+            },
+            { 
+              src: photo2, 
+              alt: "Recycling Facility",
+              description: "State-of-the-art recycling facilities",
+              category: "Recycling"
+            },
+            { 
+              src: photo3, 
+              alt: "Eco-friendly Solutions",
+              description: "Sustainable waste management practices",
+              category: "Sustainability"
+            },
+          
+          ].map((photo, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ y: -10 }}
+              className="group relative overflow-hidden rounded-2xl shadow-xl"
+            >
+              <div className="aspect-w-4 aspect-h-3">
+                <img
+                  src={photo.src}
+                  alt={photo.alt}
+                  className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                />
+              </div>
+              
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <span className="inline-block px-3 py-1 bg-green-500 text-white text-sm font-semibold rounded-full mb-3">
+                    {photo.category}
+                  </span>
+                  <h3 className="text-white text-xl font-bold mb-2">{photo.alt}</h3>
+                  <p className="text-gray-200 text-sm">{photo.description}</p>
+                </div>
+              </div>
+
+              {/* Decorative Elements */}
+              <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                  <FaCamera className="text-white text-xl" />
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Gallery Stats */}
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+          {[
+            { number: "500+", label: "Tons of Waste Recycled" },
+            { number: "1000+", label: "Happy Customers" },
+            { number: "50+", label: "Communities Served" }
+          ].map((stat, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 + index * 0.1 }}
+              className="bg-white rounded-xl p-6 shadow-lg text-center"
+            >
+              <h3 className="text-4xl font-bold text-green-600 mb-2">{stat.number}</h3>
+              <p className="text-gray-600">{stat.label}</p>
             </motion.div>
           ))}
         </div>
@@ -386,76 +574,210 @@ export default function WastePickupRequest() {
         </div>
       </motion.main>
 
-      {/* Footer */}
-      <footer className="bg-gradient-to-r from-green-800 to-green-900 text-white py-16 mt-16">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-            <div>
-              <h3 className="text-xl font-bold mb-6">Quick Links</h3>
-              <ul className="space-y-3">
-                <li><a href="#home" className="hover:text-green-300 transition-colors">Home</a></li>
-                <li><a href="#services" className="hover:text-green-300 transition-colors">Services</a></li>
-                <li><a href="#recycling" className="hover:text-green-300 transition-colors">Recycling</a></li>
-                <li><a href="#about" className="hover:text-green-300 transition-colors">About Us</a></li>
-                <li><a href="#contact" className="hover:text-green-300 transition-colors">Contact</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold mb-6">Contact Us</h3>
-              <ul className="space-y-3">
-                <li className="flex items-center space-x-2">
-                  <FaHome className="text-green-300" />
-                  <span>456 Eco Park Road, Kohuwala, Nugegoda</span>
-                </li>
-                <li className="flex items-center space-x-2">
-                  <FaPhone className="text-green-300" />
-                  <span>+94 771687613</span>
-                </li>
-                <li className="flex items-center space-x-2">
-                  <FaUser className="text-green-300" />
-                  <span>contact@ecobin.com</span>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold mb-6">Follow Us</h3>
-              <div className="flex space-x-6">
-                <a href="#" className="text-white hover:text-green-300 transition-colors">
-                  <FontAwesomeIcon icon={faFacebook} className="w-6 h-6" />
-                </a>
-                <a href="#" className="text-white hover:text-green-300 transition-colors">
-                  <FontAwesomeIcon icon={faTwitter} className="w-6 h-6" />
-                </a>
-                <a href="#" className="text-white hover:text-green-300 transition-colors">
-                  <FontAwesomeIcon icon={faLinkedin} className="w-6 h-6" />
-                </a>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold mb-6">Newsletter</h3>
-              <p className="mb-4">Subscribe to our newsletter for updates and offers.</p>
-              <form className="flex">
-                <input
-                  type="email"
-                  placeholder="Your email"
-                  className="flex-1 p-3 rounded-l-lg focus:outline-none text-gray-900"
-                  required
-                />
-                <button
-                  type="submit"
-                  className="bg-green-600 text-white px-6 py-3 rounded-r-lg hover:bg-green-700 transition-colors"
-                >
-                  Subscribe
-                </button>
-              </form>
-            </div>
+      {/* AI Chatbot Button */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        className="fixed bottom-8 right-8 z-50"
+      >
+        <motion.button
+          className="relative group"
+          whileHover={{ y: -5 }}
+        >
+          {/* Main Button */}
+          <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-full shadow-lg flex items-center justify-center relative overflow-hidden">
+            <FaRobot className="text-white text-2xl" />
+            
+            {/* Pulse Animation */}
+            <motion.div
+              className="absolute inset-0 rounded-full"
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.5, 0, 0.5],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <div className="w-full h-full bg-green-400 rounded-full"></div>
+            </motion.div>
           </div>
 
-          <div className="border-t border-green-700 mt-12 pt-8 text-center">
-            <p>&copy; {new Date().getFullYear()} Ecobin. All rights reserved.</p>
+          {/* Tooltip */}
+          <div className="absolute right-20 top-1/2 transform -translate-y-1/2 bg-white px-4 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+            <p className="text-gray-800 font-medium">Chat with AI Assistant</p>
+            <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 rotate-45 w-2 h-2 bg-white"></div>
+          </div>
+
+          {/* Notification Badge */}
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold"
+          >
+            1
+          </motion.div>
+        </motion.button>
+      </motion.div>
+
+      {/* Advanced Footer */}
+      <footer className="bg-gradient-to-r from-green-800 to-green-900 text-white relative overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 via-green-300 to-green-400"></div>
+        <div className="absolute -top-32 -right-32 w-64 h-64 bg-green-400 rounded-full opacity-10 blur-3xl"></div>
+        <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-green-400 rounded-full opacity-10 blur-3xl"></div>
+
+        <div className="max-w-7xl mx-auto px-4 py-20 relative">
+          {/* Main Footer Content */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+            {/* Company Info */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="space-y-6"
+            >
+              <h3 className="text-2xl font-bold mb-6 flex items-center">
+                <span className="bg-green-500 p-2 rounded-lg mr-3">
+                  <FaHome className="text-xl" />
+                </span>
+                EcoBin
+              </h3>
+              <p className="text-gray-300 leading-relaxed">
+                Leading the way in sustainable waste management solutions for a cleaner, greener future.
+              </p>
+              <div className="flex space-x-4">
+                <motion.a
+                  whileHover={{ scale: 1.1, y: -5 }}
+                  href="#"
+                  className="w-10 h-10 bg-green-700 rounded-full flex items-center justify-center hover:bg-green-600 transition-colors"
+                >
+                  <FontAwesomeIcon icon={faFacebook} className="text-white" />
+                </motion.a>
+                <motion.a
+                  whileHover={{ scale: 1.1, y: -5 }}
+                  href="#"
+                  className="w-10 h-10 bg-green-700 rounded-full flex items-center justify-center hover:bg-green-600 transition-colors"
+                >
+                  <FontAwesomeIcon icon={faTwitter} className="text-white" />
+                </motion.a>
+                <motion.a
+                  whileHover={{ scale: 1.1, y: -5 }}
+                  href="#"
+                  className="w-10 h-10 bg-green-700 rounded-full flex items-center justify-center hover:bg-green-600 transition-colors"
+                >
+                  <FontAwesomeIcon icon={faLinkedin} className="text-white" />
+                </motion.a>
+              </div>
+            </motion.div>
+
+            {/* Quick Links */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <h3 className="text-xl font-bold mb-6">Quick Links</h3>
+              <ul className="space-y-4">
+                {[
+                  { name: "Home", href: "#home" },
+                  { name: "Services", href: "#services" },
+                  { name: "About Us", href: "#about" },
+                  { name: "Contact", href: "#contact" },
+                  { name: "Blog", href: "#blog" }
+                ].map((link, index) => (
+                  <motion.li
+                    key={index}
+                    whileHover={{ x: 10 }}
+                    className="flex items-center"
+                  >
+                    <span className="w-2 h-2 bg-green-400 rounded-full mr-3"></span>
+                    <a href={link.href} className="text-gray-300 hover:text-white transition-colors">
+                      {link.name}
+                    </a>
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
+
+            {/* Contact Info */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <h3 className="text-xl font-bold mb-6">Contact Us</h3>
+              <ul className="space-y-4">
+                <motion.li
+                  whileHover={{ x: 10 }}
+                  className="flex items-center space-x-3"
+                >
+                  <FaHome className="text-green-400" />
+                  <span className="text-gray-300">456 Eco Park Road, Kohuwala, Nugegoda</span>
+                </motion.li>
+                <motion.li
+                  whileHover={{ x: 10 }}
+                  className="flex items-center space-x-3"
+                >
+                  <FaPhone className="text-green-400" />
+                  <span className="text-gray-300">+94 771687613</span>
+                </motion.li>
+                <motion.li
+                  whileHover={{ x: 10 }}
+                  className="flex items-center space-x-3"
+                >
+                  <FaUser className="text-green-400" />
+                  <span className="text-gray-300">contact@ecobin.com</span>
+                </motion.li>
+              </ul>
+            </motion.div>
+
+            {/* Newsletter */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <h3 className="text-xl font-bold mb-6">Newsletter</h3>
+              <p className="text-gray-300 mb-4">Subscribe to our newsletter for updates and offers.</p>
+              <form className="space-y-4">
+                <div className="relative">
+                  <input
+                    type="email"
+                    placeholder="Your email"
+                    className="w-full p-4 pl-12 bg-green-900/50 border border-green-700 rounded-lg focus:outline-none focus:border-green-500 text-white placeholder-gray-400"
+                    required
+                  />
+                  <FaUser className="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-400" />
+                </div>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  className="w-full bg-green-500 text-white py-4 rounded-lg font-semibold hover:bg-green-600 transition-colors"
+                >
+                  Subscribe Now
+                </motion.button>
+              </form>
+            </motion.div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="border-t border-green-700 pt-8">
+            <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+              <p className="text-gray-300">
+                &copy; {new Date().getFullYear()} EcoBin. All rights reserved.
+              </p>
+              <div className="flex space-x-6">
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">Privacy Policy</a>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">Terms of Service</a>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">Cookie Policy</a>
+              </div>
+            </div>
           </div>
         </div>
       </footer>

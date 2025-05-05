@@ -3,10 +3,10 @@ import heroImage from '../Home/images/home5.jpg';
 import Icon from '../Home/images/recycle-bin.png'; 
 import Image from '../Home/images/home4.jpeg'; 
 import Image1 from '../Home/images/Logo.png';
-import BannerImage from '../Home/images/b2.png';
+import BannerImage from '../Home/images/Bin.jpg';
 import heroVideo from "../Home/images/video1.mp4";
 import { IoSearchOutline, IoMenuOutline, IoCloseOutline } from 'react-icons/io5';
-import { FaFacebook, FaTwitter, FaPinterest, FaLinkedin, FaLeaf, FaRecycle, FaChartLine, FaUserFriends } from 'react-icons/fa';
+import { FaFacebook, FaTwitter, FaPinterest, FaLinkedin, FaLeaf, FaRecycle, FaChartLine, FaUserFriends, FaRobot } from 'react-icons/fa';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFacebook,
@@ -185,7 +185,14 @@ const Home = () => {
   const [testimonialsRef, testimonialsInView] = useInView({ threshold: 0.1, triggerOnce: true });
 
   return (
-    <div className="flex flex-col min-h-screen font-sans">
+    <div className="flex flex-col min-h-screen font-sans relative overflow-hidden">
+      {/* Decorative Background Elements */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] bg-green-300 rounded-full opacity-20 blur-3xl"></div>
+        <div className="absolute bottom-1/4 -right-32 w-[600px] h-[600px] bg-blue-300 rounded-full opacity-20 blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-300 rounded-full opacity-10 blur-3xl"></div>
+      </div>
+
       {/* Success Popup */}
       {showSuccessPopup && (
         <motion.div
@@ -217,36 +224,76 @@ const Home = () => {
           transition={{ duration: 0.8 }}
           className="relative z-10 text-center text-white px-4"
         >
-          <h1 className="text-5xl md:text-7xl font-bold mb-6">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500"
+          >
             Smart Waste Management
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto">
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto"
+          >
             Join us in creating a cleaner, greener future through innovative waste management solutions
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          </motion.p>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+          >
             <Link to="/WastePickupRequest">
               <motion.button
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(0,0,0,0.2)" }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-green-600 text-white px-8 py-3 rounded-lg text-lg font-semibold"
+                className="bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-3 rounded-lg text-lg font-semibold"
               >
                 Request Pickup
               </motion.button>
             </Link>
             <motion.button
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(0,0,0,0.2)" }}
               whileTap={{ scale: 0.95 }}
               className="bg-white text-green-600 px-8 py-3 rounded-lg text-lg font-semibold"
               onClick={() => setShowStats(true)}
             >
               View Impact
             </motion.button>
-          </div>
+          </motion.div>
         </motion.div>
+
+        {/* Floating Elements */}
+        <div className="absolute inset-0 pointer-events-none">
+          {[...Array(5)].map((_, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ 
+                opacity: [0.3, 0.6, 0.3],
+                y: [0, -20, 0],
+                x: [0, Math.random() * 100 - 50, 0]
+              }}
+              transition={{
+                duration: 5 + i,
+                repeat: Infinity,
+                delay: i * 0.5
+              }}
+              className="absolute w-4 h-4 bg-white rounded-full"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`
+              }}
+            />
+          ))}
+        </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white relative">
         <div className="container mx-auto px-4">
           <motion.div
             initial="hidden"
@@ -255,10 +302,16 @@ const Home = () => {
             variants={containerVariants}
             className="text-center mb-16"
           >
-            <motion.h2 variants={itemVariants} className="text-4xl font-bold text-gray-800 mb-4">
+            <motion.h2 
+              variants={itemVariants} 
+              className="text-4xl font-bold text-gray-800 mb-4 bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-blue-500"
+            >
               Our Features
             </motion.h2>
-            <motion.p variants={itemVariants} className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <motion.p 
+              variants={itemVariants} 
+              className="text-xl text-gray-600 max-w-2xl mx-auto"
+            >
               Discover how our platform can help you manage waste more efficiently
             </motion.p>
           </motion.div>
@@ -268,11 +321,20 @@ const Home = () => {
               <motion.div
                 key={index}
                 variants={itemVariants}
-                whileHover={{ y: -10 }}
-                className="bg-gray-50 p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+                whileHover={{ 
+                  y: -10,
+                  boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+                }}
+                className="bg-gradient-to-br from-white to-gray-50 p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
               >
-                <div className="mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                <motion.div 
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.8 }}
+                  className="mb-4"
+                >
+                  {feature.icon}
+                </motion.div>
+                <h3 className="text-xl font-semibold mb-2 text-gray-800">{feature.title}</h3>
                 <p className="text-gray-600">{feature.description}</p>
               </motion.div>
             ))}
@@ -328,113 +390,180 @@ const Home = () => {
       </AnimatePresence>
 
       {/* Services Section */}
-      <section id="services" ref={servicesRef} className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          {/* Section Heading */}
+      <section id="services" ref={servicesRef} className="py-20 bg-gradient-to-br from-white to-green-50 relative overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-8 left-20 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+        </div>
+
+        <div className="container mx-auto px-4 relative">
+          {/* Section Header */}
           <motion.div
             initial="hidden"
             animate={servicesInView ? "visible" : "hidden"}
             variants={containerVariants}
-            className="text-center mb-8"
+            className="text-center mb-16"
           >
-            <motion.p 
+            <motion.span 
               variants={itemVariants}
-              className="text-green-500 uppercase text-2xl tracking-wider"
+              className="text-green-500 font-semibold tracking-wider uppercase text-sm"
             >
-              What We're Offering
-            </motion.p>
+              Our Services
+            </motion.span>
             <motion.h2 
               variants={itemVariants}
-              className="text-3xl font-light mt-2 text-green-500"
+              className="text-4xl md:text-5xl font-bold mt-4 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600"
             >
-              The Services We're Providing
+              Comprehensive Waste Solutions
             </motion.h2>
+            <motion.p 
+              variants={itemVariants}
+              className="text-gray-600 mt-4 max-w-2xl mx-auto text-lg"
+            >
+              Discover our range of innovative waste management services designed to make your life easier and our planet cleaner
+            </motion.p>
           </motion.div>
 
-          {/* Service Cards */}
+          {/* Service Cards Grid */}
           <motion.div
             initial="hidden"
             animate={servicesInView ? "visible" : "hidden"}
             variants={containerVariants}
-            className="grid grid-cols-1 md:grid-cols-4 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
           >
-            {/* Zero Waste Card */}
+            {/* Zero Waste Service */}
             <motion.div
               variants={itemVariants}
-              whileHover={{ y: -10, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
-              className="bg-gray-50 p-8 rounded-lg transition-all duration-300"
+              whileHover={{ y: -10, scale: 1.02 }}
+              className="group relative bg-white rounded-2xl shadow-xl overflow-hidden"
             >
-              <div className="bg-white p-3 rounded-lg inline-block mb-4">
-                <svg width="40" height="40" viewBox="0 0 40 40" className="fill-green-600">
-                  <circle cx="20" cy="25" r="10" className="fill-yellow-400 opacity-40" />
-                  <path d="M18,15 L22,15 L23,18 L17,18 Z" />
-                  <path d="M16,18 L24,18 L26,22 L14,22 Z" />
-                  <path d="M10,22 L30,22 L28,30 L12,30 Z" />
-                </svg>
+              <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-green-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative p-8">
+                <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mb-6 group-hover:bg-white/20 transition-colors duration-300">
+                  <svg className="w-8 h-8 text-green-600 group-hover:text-white transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-gray-800 group-hover:text-white transition-colors duration-300">Zero Waste</h3>
+                <p className="text-gray-600 group-hover:text-white/90 transition-colors duration-300">
+                  Comprehensive waste reduction strategies and sustainable recycling practices for businesses and communities.
+                </p>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="mt-6 px-6 py-2 bg-green-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  Learn More
+                </motion.button>
               </div>
-              <h3 className="text-lg font-medium mb-2">Zero Waste</h3>
-              <p className="text-sm text-gray-500">
-                We help businesses and communities achieve zero waste by implementing waste reduction strategies, composting, and sustainable recycling practices.
-              </p>
             </motion.div>
 
-            {/* Dumpster Rental Card */}
+            {/* Dumpster Rental Service */}
             <motion.div
               variants={itemVariants}
-              whileHover={{ y: -10, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
-              className="bg-gray-50 p-8 rounded-lg transition-all duration-300"
+              whileHover={{ y: -10, scale: 1.02 }}
+              className="group relative bg-white rounded-2xl shadow-xl overflow-hidden"
             >
-              <div className="bg-white p-3 rounded-lg inline-block mb-4">
-                <svg width="40" height="40" viewBox="0 0 40 40" className="fill-green-600">
-                  <path d="M15,15 L25,15 L30,25 L10,25 Z" />
-                  <rect x="15" y="25" width="10" height="8" />
-                  <path d="M18,15 L22,15 L22,10 L18,10 Z" />
-                </svg>
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative p-8">
+                <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mb-6 group-hover:bg-white/20 transition-colors duration-300">
+                  <svg className="w-8 h-8 text-blue-600 group-hover:text-white transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-gray-800 group-hover:text-white transition-colors duration-300">Dumpster Rental</h3>
+                <p className="text-gray-600 group-hover:text-white/90 transition-colors duration-300">
+                  Flexible dumpster rental solutions for residential, commercial, and construction needs.
+                </p>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="mt-6 px-6 py-2 bg-blue-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  Learn More
+                </motion.button>
               </div>
-              <h3 className="text-lg font-medium mb-2">Dumpster Rental</h3>
-              <p className="text-sm text-gray-500">
-                We provide a variety of dumpster sizes for residential, commercial, and construction needs.
-              </p>
             </motion.div>
 
-            {/* Portable Toilet Card */}
+            {/* Portable Toilet Service */}
             <motion.div
               variants={itemVariants}
-              whileHover={{ y: -10, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
-              className="bg-gray-50 p-8 rounded-lg transition-all duration-300"
+              whileHover={{ y: -10, scale: 1.02 }}
+              className="group relative bg-white rounded-2xl shadow-xl overflow-hidden"
             >
-              <div className="bg-white p-3 rounded-lg inline-block mb-4">
-                <svg width="40" height="40" viewBox="0 0 40 40" className="fill-green-600">
-                  <rect x="12" y="15" width="16" height="15" rx="2" />
-                  <rect x="15" y="17" width="4" height="6" rx="1" />
-                  <rect x="21" y="17" width="4" height="6" rx="1" />
-                  <path d="M16,10 L24,10 L26,15 L14,15 Z" />
-                </svg>
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative p-8">
+                <div className="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center mb-6 group-hover:bg-white/20 transition-colors duration-300">
+                  <svg className="w-8 h-8 text-purple-600 group-hover:text-white transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-gray-800 group-hover:text-white transition-colors duration-300">Portable Toilet</h3>
+                <p className="text-gray-600 group-hover:text-white/90 transition-colors duration-300">
+                  High-quality portable toilet rentals for events, construction sites, and outdoor activities.
+                </p>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="mt-6 px-6 py-2 bg-purple-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  Learn More
+                </motion.button>
               </div>
-              <h3 className="text-lg font-medium mb-2">Portable Toilet</h3>
-              <p className="text-sm text-gray-500">
-                Our high-quality portable toilet rentals are perfect for outdoor events and construction sites.
-              </p>
             </motion.div>
 
-            {/* Recycling Service Card */}
+            {/* Recycling Service */}
             <motion.div
               variants={itemVariants}
-              whileHover={{ y: -10, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
-              className="bg-gray-50 p-8 rounded-lg transition-all duration-300"
+              whileHover={{ y: -10, scale: 1.02 }}
+              className="group relative bg-white rounded-2xl shadow-xl overflow-hidden"
             >
-              <div className="bg-white p-3 rounded-lg inline-block mb-4">
-                <svg width="40" height="40" viewBox="0 0 40 40" className="fill-green-600">
-                  <path d="M20,10 L30,20 L25,25 L20,20 L15,25 L10,20 Z" />
-                  <path d="M20,20 L20,30" strokeWidth="2" />
-                  <path d="M15,25 L25,25" strokeWidth="2" />
-                </svg>
+              <div className="absolute inset-0 bg-gradient-to-br from-teal-500 to-teal-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative p-8">
+                <div className="w-16 h-16 bg-teal-100 rounded-xl flex items-center justify-center mb-6 group-hover:bg-white/20 transition-colors duration-300">
+                  <svg className="w-8 h-8 text-teal-600 group-hover:text-white transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-gray-800 group-hover:text-white transition-colors duration-300">Recycling Service</h3>
+                <p className="text-gray-600 group-hover:text-white/90 transition-colors duration-300">
+                  Comprehensive recycling solutions for responsible waste disposal and environmental conservation.
+                </p>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="mt-6 px-6 py-2 bg-teal-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  Learn More
+                </motion.button>
               </div>
-              <h3 className="text-lg font-medium mb-2">Recycling Service</h3>
-              <p className="text-sm text-gray-500">
-                We offer comprehensive recycling solutions to help you responsibly dispose of waste materials.
-              </p>
             </motion.div>
+          </motion.div>
+
+          {/* Service Stats */}
+          <motion.div
+            initial="hidden"
+            animate={servicesInView ? "visible" : "hidden"}
+            variants={containerVariants}
+            className="mt-20 grid grid-cols-1 md:grid-cols-4 gap-8"
+          >
+            {[
+              { number: "500+", label: "Active Clients", color: "green" },
+              { number: "1000+", label: "Projects Completed", color: "blue" },
+              { number: "50+", label: "Expert Team", color: "purple" },
+              { number: "24/7", label: "Support Available", color: "teal" }
+            ].map((stat, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                className="bg-white rounded-xl p-6 shadow-lg text-center transform hover:scale-105 transition-transform duration-300"
+              >
+                <h3 className={`text-4xl font-bold text-${stat.color}-600 mb-2`}>{stat.number}</h3>
+                <p className="text-gray-600">{stat.label}</p>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
@@ -815,15 +944,71 @@ const Home = () => {
         </div>
       </section>
 
+      {/* AI Chatbot Button */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        className="fixed bottom-8 right-8 z-50"
+      >
+        <motion.button
+          className="relative group"
+          whileHover={{ y: -5 }}
+        >
+          {/* Main Button */}
+          <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-full shadow-lg flex items-center justify-center relative overflow-hidden">
+            <FaRobot className="text-white text-2xl" />
+            
+            {/* Pulse Animation */}
+            <motion.div
+              className="absolute inset-0 rounded-full"
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.5, 0, 0.5],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <div className="w-full h-full bg-green-400 rounded-full"></div>
+            </motion.div>
+          </div>
+
+          {/* Tooltip */}
+          <div className="absolute right-20 top-1/2 transform -translate-y-1/2 bg-white px-4 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+            <p className="text-gray-800 font-medium">Chat with AI Assistant</p>
+            <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 rotate-45 w-2 h-2 bg-white"></div>
+          </div>
+
+          {/* Notification Badge */}
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold"
+          >
+            1
+          </motion.div>
+        </motion.button>
+      </motion.div>
+
       {/* Footer */}
       <motion.footer 
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
-        className="bg-gradient-to-r from-green-600 to-black text-white py-16"
+        className="bg-gradient-to-r from-green-600 to-black text-white py-16 relative overflow-hidden"
       >
-        <div className="container mx-auto px-4">
+        {/* Footer background decoration */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-blue-500"></div>
+          <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-green-400"></div>
+        </div>
+
+        <div className="container mx-auto px-4 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Company Info */}
             <motion.div
