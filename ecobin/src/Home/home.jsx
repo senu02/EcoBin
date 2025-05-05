@@ -945,54 +945,57 @@ const Home = () => {
       </section>
 
       {/* AI Chatbot Button */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        className="fixed bottom-8 right-8 z-50"
-      >
-        <motion.button
-          className="relative group"
-          whileHover={{ y: -5 }}
+{/* AI Chatbot Button */}
+<motion.div
+  initial={{ opacity: 0, scale: 0.8 }}
+  animate={{ opacity: 1, scale: 1 }}
+  whileHover={{ scale: 1.1 }}
+  whileTap={{ scale: 0.9 }}
+  className="fixed bottom-8 right-8 z-50"
+>
+  <Link to="/bot"> {/* Add this Link component */}
+    <motion.button
+      className="relative group"
+      whileHover={{ y: -5 }}
+    >
+      {/* Main Button */}
+      <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-full shadow-lg flex items-center justify-center relative overflow-hidden">
+        <FaRobot className="text-white text-2xl" />
+        
+        {/* Pulse Animation */}
+        <motion.div
+          className="absolute inset-0 rounded-full"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.5, 0, 0.5],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
         >
-          {/* Main Button */}
-          <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-full shadow-lg flex items-center justify-center relative overflow-hidden">
-            <FaRobot className="text-white text-2xl" />
-            
-            {/* Pulse Animation */}
-            <motion.div
-              className="absolute inset-0 rounded-full"
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.5, 0, 0.5],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            >
-              <div className="w-full h-full bg-green-400 rounded-full"></div>
-            </motion.div>
-          </div>
+          <div className="w-full h-full bg-green-400 rounded-full"></div>
+        </motion.div>
+      </div>
 
-          {/* Tooltip */}
-          <div className="absolute right-20 top-1/2 transform -translate-y-1/2 bg-white px-4 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-            <p className="text-gray-800 font-medium">Chat with AI Assistant</p>
-            <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 rotate-45 w-2 h-2 bg-white"></div>
-          </div>
+      {/* Tooltip */}
+      <div className="absolute right-20 top-1/2 transform -translate-y-1/2 bg-white px-4 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+        <p className="text-gray-800 font-medium">Chat with AI Assistant</p>
+        <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 rotate-45 w-2 h-2 bg-white"></div>
+      </div>
 
-          {/* Notification Badge */}
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold"
-          >
-            1
-          </motion.div>
-        </motion.button>
+      {/* Notification Badge */}
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold"
+      >
+        1
       </motion.div>
+    </motion.button>
+  </Link>
+</motion.div>
 
       {/* Footer */}
       <motion.footer 
