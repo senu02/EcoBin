@@ -1,36 +1,42 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRobot, faComment, faTimes, faMinus, faExpand, faTrash, faRecycle, faLeaf } from '@fortawesome/free-solid-svg-icons';
+import { faComment, faTimes, faMinus, faExpand, faTrash, faRecycle, faLeaf } from '@fortawesome/free-solid-svg-icons';
 import ChatForm from './ChatForm';
 import ChatMessage from './ChatMessage';
 import Logo from '../Home/images/Logo.png';
 
 const Chatbot = () => {
+  // Configuration
+  const API_URL ='';
+  
+  // State management
   const [chatHistory, setChatHistory] = useState([]);
   const [showChatbot, setShowChatbot] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isBotTyping, setIsBotTyping] = useState(false);
+  const [apiError, setApiError] = useState(null);
+  
+  // Refs
   const chatBodyRef = useRef();
   const popupRef = useRef();
 
-  
+  // Color scheme
   const primaryColor = 'from-emerald-600';
   const secondaryColor = 'to-teal-600';
-  const accentColor = 'bg-emerald-500';
   const lightAccent = 'bg-emerald-50';
-  const darkAccent = 'bg-emerald-700';
   const textColor = 'text-emerald-800';
   const wasteGreen = 'bg-green-600';
   const wasteBlue = 'bg-blue-500';
   const wasteBrown = 'bg-amber-700';
   
+  // Animation styles
   const vibrateStyle = {
     animation: 'vibrate 2s infinite ease-in-out',
     transformOrigin: 'center'
   };
 
-  // Add custom animations
+  // Setup animations
   useEffect(() => {
     const style = document.createElement('style');
     style.innerHTML = `
@@ -58,13 +64,22 @@ const Chatbot = () => {
         0%, 100% { transform: translateY(0) rotate(0deg); }
         50% { transform: translateY(-15px) rotate(5deg); }
       }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fade-in {
+        animation: fadeIn 0.3s ease-out forwards;
+      }
     `;
     document.head.appendChild(style);
     return () => document.head.removeChild(style);
   }, []);
 
+  // Generate bot response
   const generateBotResponse = async (history) => {
     setIsBotTyping(true);
+    setApiError(null);
     
     const updateHistory = (text) => {
       setChatHistory(prev => [
@@ -81,14 +96,20 @@ const Chatbot = () => {
     updateHistory("Thinking...");
 
     try {
-      history = history.map(({ role, text }) => ({ role, parts: [{ text }] }));
-      const requestOptions = {
+      if (!API_URL) {
+        throw new Error("API endpoint is not configured. Please set VITE_API_URL in your environment variables.");
+      }
+
+      const formattedHistory = history.map(({ role, text }) => ({ 
+        role, 
+        parts: [{ text }] 
+      }));
+
+      const response = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: history })
-      };
-
-      const response = await fetch(import.meta.env.VITE_API_URL, requestOptions);
+        body: JSON.stringify({ contents: formattedHistory })
+      });
       
       if (!response.ok) {
         throw new Error(`API request failed with status ${response.status}`);
@@ -96,18 +117,23 @@ const Chatbot = () => {
 
       const data = await response.json();
 
-      if (!data.candidates || !data.candidates[0]?.content?.parts[0]?.text) {
-        throw new Error("Invalid response format from API");
+      if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
+        throw new Error("Received unexpected response format from API");
       }
 
-      const apiResponseText = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, "$1").trim();
+      const apiResponseText = data.candidates[0].content.parts[0].text
+        .replace(/\*\*(.*?)\*\*/g, "$1")
+        .trim();
+      
       updateHistory(apiResponseText);
     } catch (error) {
       console.error("Chatbot API Error:", error);
-      updateHistory("Sorry, I'm having trouble connecting. Please try again later.");
+      setApiError(error.message);
+      updateHistory("I'm having trouble connecting right now. Please try again later or check your internet connection.");
     }
   };
 
+  // Auto-scroll chat
   useEffect(() => {
     if (chatBodyRef.current) {
       chatBodyRef.current.scrollTo({
@@ -117,6 +143,7 @@ const Chatbot = () => {
     }
   }, [chatHistory]);
 
+  // Adjust popup height
   useEffect(() => {
     if (showChatbot && popupRef.current) {
       const popup = popupRef.current;
@@ -129,9 +156,11 @@ const Chatbot = () => {
     }
   }, [showChatbot]);
 
+  // Chatbot visibility controls
   const toggleChatbot = () => {
     setShowChatbot(!showChatbot);
     setIsMinimized(false);
+    setApiError(null);
   };
 
   const minimizeChatbot = () => {
@@ -150,26 +179,14 @@ const Chatbot = () => {
         <div className={`fixed inset-0 flex items-center justify-center z-50 bg-gradient-to-br ${primaryColor} ${secondaryColor}`}>
           <div className="absolute inset-0 overflow-hidden">
             {/* Animated floating waste items */}
-            <div className="absolute top-1/4 left-1/5">
-              <FontAwesomeIcon 
-                icon={faTrash} 
-                className="text-3xl text-white/30 animate-leafFloat" 
-                style={{ animationDuration: '8s' }}
-              />
+            <div className="absolute top-1/4 left-1/5 animate-leafFloat" style={{ animationDuration: '8s' }}>
+              <FontAwesomeIcon icon={faTrash} className="text-3xl text-white/30" />
             </div>
-            <div className="absolute top-1/3 right-1/4">
-              <FontAwesomeIcon 
-                icon={faRecycle} 
-                className="text-4xl text-white/20 animate-leafFloat" 
-                style={{ animationDuration: '10s', animationDelay: '1s' }}
-              />
+            <div className="absolute top-1/3 right-1/4 animate-leafFloat" style={{ animationDuration: '10s', animationDelay: '1s' }}>
+              <FontAwesomeIcon icon={faRecycle} className="text-4xl text-white/20" />
             </div>
-            <div className="absolute bottom-1/4 left-1/3">
-              <FontAwesomeIcon 
-                icon={faLeaf} 
-                className="text-5xl text-white/15 animate-leafFloat" 
-                style={{ animationDuration: '12s', animationDelay: '2s' }}
-              />
+            <div className="absolute bottom-1/4 left-1/3 animate-leafFloat" style={{ animationDuration: '12s', animationDelay: '2s' }}>
+              <FontAwesomeIcon icon={faLeaf} className="text-5xl text-white/15" />
             </div>
           </div>
           
@@ -316,6 +333,26 @@ const Chatbot = () => {
                   <div className="text-xs text-gray-400 mt-1 ml-1">Just now</div>
                 </div>
               </div>
+
+              {/* Error Message */}
+              {apiError && (
+                <div className="flex gap-3 items-start">
+                  <div className={`flex-shrink-0 h-10 w-10 flex items-center justify-center bg-gradient-to-br ${primaryColor} ${secondaryColor} rounded-full shadow-sm`}>
+                    <img 
+                      src={Logo} 
+                      alt="Company Logo" 
+                      className="h-8 w-8 rounded-full object-cover" 
+                    />
+                  </div>
+                  <div className="max-w-[80%]">
+                    <div className={`px-4 py-3 bg-red-50 rounded-xl rounded-tl-none text-sm text-red-800 shadow-sm border border-red-100`}>
+                      <p className="font-medium">Connection Error</p>
+                      <p className="mt-1 text-xs">{apiError}</p>
+                      <p className="mt-2 text-xs">Please check your connection or try again later.</p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Chat Messages */}
               {chatHistory.map((chat, index) => (
