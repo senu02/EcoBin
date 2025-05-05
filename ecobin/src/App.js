@@ -30,6 +30,7 @@ import WasteRequestTable from  './Dashboard/PickupTable';
 import ContactDetails from './Dashboard/Contact';
 import AiDetector from './AiDetecter/AiDetector';
 import UserService from './Home/UserService';
+import Chatbot from './ChatBot/Chatbot';
 
 export default function App() {
   return (
@@ -71,6 +72,7 @@ export default function App() {
         <Route path="/WasteRequestTable" element={<WasteRequestTable/>}/>
 
         <Route path="/ContactDetails" element={<ContactDetails/>}/>
+        <Route path="/bot" element={<Chatbot/>}/>
         
 
         {UserService.adminOnly() && (
@@ -87,6 +89,7 @@ export default function App() {
                   <Route path="/Collectionanalythics" element={<CollectionScheduleAnalytics/>}/>
                   <Route path="/CollectionGenarateReport" element={<CollectionScheduleGenarateReport/>}/>
                   <Route path="/aidetector" element={<AiDetector/>}/>
+                  
               </>
             )}
 
