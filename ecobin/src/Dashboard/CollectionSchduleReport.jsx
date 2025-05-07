@@ -1,12 +1,14 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { FaEye, FaEdit, FaTrash, FaSearch } from 'react-icons/fa';  // Importing the search icon
+import { FaEye, FaEdit, FaTrash, FaSearch } from 'react-icons/fa';
 import { Link, useParams } from 'react-router-dom';
 import UserService from '../Home/UserService';
 
 function CollectionSchduleReport() {
     const [collectionSchedule, setCollectionSchedule] = useState([]);
-    const [searchQuery, setSearchQuery] = useState("");  // State for search query
+    const [searchQuery, setSearchQuery] = useState("");
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [scheduleToDelete, setScheduleToDelete] = useState(null);
     const { id } = useParams();
 
     useEffect(() => {
@@ -18,35 +20,71 @@ function CollectionSchduleReport() {
         setCollectionSchedule(result.data);
     };
 
-    const deleteCollectionSchedule = async (id) => {
-        await axios.delete(`${UserService.BASE_URL}/public/deleteSchedule/${id}`);
-        loadSchedule();
-    }
+    const handleDeleteClick = (schedule) => {
+        setScheduleToDelete(schedule);
+        setShowDeleteModal(true);
+    };
 
-    // Function to get the appropriate Tailwind color class based on status
+    const confirmDelete = async () => {
+        if (scheduleToDelete) {
+            await axios.delete(`${UserService.BASE_URL}/public/deleteSchedule/${scheduleToDelete.id}`);
+            loadSchedule();
+        }
+        setShowDeleteModal(false);
+        setScheduleToDelete(null);
+    };
+
+    const cancelDelete = () => {
+        setShowDeleteModal(false);
+        setScheduleToDelete(null);
+    };
+
     const getStatusColor = (status) => {
         switch (status) {
             case 'Pending':
-                return 'bg-yellow-500'; // Yellow for Pending
+                return 'bg-yellow-500';
             case 'Completed':
-                return 'bg-green-500'; // Green for Complete
+                return 'bg-green-500';
             case 'In Progress':
-                return 'bg-blue-500'; // Blue for In Progress
+                return 'bg-blue-500';
             default:
-                return 'bg-gray-500'; // Gray for any other status
+                return 'bg-gray-500';
         }
     };
 
-    // Filter collectionSchedule based on search query
     const filteredSchedules = collectionSchedule.filter(schedule => 
-        schedule.id.toString().includes(searchQuery) ||  // Search by Truck ID
-        schedule.driverName.toLowerCase().includes(searchQuery.toLowerCase()) ||  // Search by Driver Name
-        schedule.wasteType.toLowerCase().includes(searchQuery.toLowerCase()) ||  // Search by Waste Type
-        schedule.collectionDate.toLowerCase().includes(searchQuery.toLowerCase())  // Search by Collection Date
+        schedule.id.toString().includes(searchQuery) || 
+        schedule.driverName.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        schedule.wasteType.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        schedule.collectionDate.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
         <div>
+            {/* Delete Confirmation Modal */}
+            {showDeleteModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+                        <h2 className="text-xl font-bold mb-4">Confirm Delete</h2>
+                        <p className="mb-6">Are you sure you want to delete the schedule for truck ID: {scheduleToDelete?.id}?</p>
+                        <div className="flex justify-end space-x-4">
+                            <button 
+                                onClick={cancelDelete}
+                                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                onClick={confirmDelete}
+                                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className="flex min-h-screen bg-gray-100">
                 {/* Sidebar */}
                 <aside className="w-64 bg-white p-6 shadow-md">
@@ -127,7 +165,6 @@ function CollectionSchduleReport() {
                                         </td>
 
                                         <td className="py-3 px-6 text-center">
-                                            {/* Centering Image */}
                                             {schedule.truckImage && (
                                                 <div className="flex justify-center items-center">
                                                     <img
@@ -140,7 +177,6 @@ function CollectionSchduleReport() {
                                         </td>
 
                                         <td className="py-3 px-6 text-center">
-                                            {/* Centering Action Icons */}
                                             <div className="flex justify-center space-x-3">
                                                 <Link to={`/collectionview/${schedule.id}`} className="bg-blue-500 p-3 rounded-full text-white cursor-pointer hover:bg-blue-600 transition-colors">
                                                     <FaEye />
@@ -148,7 +184,10 @@ function CollectionSchduleReport() {
                                                 <Link to={`/collectionupdate/${schedule.id}`} className="bg-yellow-500 p-3 rounded-full text-white cursor-pointer hover:bg-yellow-600 transition-colors">
                                                     <FaEdit />
                                                 </Link>
-                                                <button className="bg-red-500 p-3 rounded-full text-white cursor-pointer hover:bg-red-600 transition-colors" onClick={() => deleteCollectionSchedule(schedule.id)}>
+                                                <button 
+                                                    className="bg-red-500 p-3 rounded-full text-white cursor-pointer hover:bg-red-600 transition-colors" 
+                                                    onClick={() => handleDeleteClick(schedule)}
+                                                >
                                                     <FaTrash />
                                                 </button>
                                             </div>
