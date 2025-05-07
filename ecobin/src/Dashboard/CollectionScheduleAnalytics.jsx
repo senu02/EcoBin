@@ -39,94 +39,159 @@ export default function CollectionScheduleAnalytics() {
   }, {});
   const statusChart = Object.keys(statusData).map((key) => ({ name: key, value: statusData[key] }));
 
+  // Color palette for charts
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
+
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white p-6 shadow-md">
-        <h1 className="text-xl font-bold flex items-center space-x-2">
+    <div className="flex min-h-screen bg-gray-50 overflow-hidden">
+      {/* Fixed Sidebar */}
+      <aside className="w-64 bg-gradient-to-b from-emerald-800 to-emerald-900 p-6 shadow-lg fixed h-full">
+        <h1 className="text-xl font-bold flex items-center space-x-2 text-white">
           <span>♻️ WasteTrack</span>
         </h1>
-        <nav className="mt-6">
-            <Link to="/WasteTrackDashboard">
-              <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📊 Dashboard</button>
-            </Link>
-            
-            {/* Add custom margin here to increase space between the two buttons */}
-            <Link to="/collectionreport">
-              <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📄 Schedule Report</button>
-            </Link>
-            
-            <Link to="/Collectionanalythics">
-              <button className="w-full text-left p-2 bg-green-500 text-white rounded-md hover:bg-green-600 mt-5">📈 Analytics</button>
-            </Link>
-            <Link to="/CollectionGenarateReport">
-              <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📝 Generate PDF Report</button>
-            </Link>
+        <nav className="mt-8">
+          <Link to="/WasteTrackDashboard">
+            <button className="w-full text-left p-3 rounded-md hover:bg-emerald-700 hover:text-white mt-4 transition-all duration-300 flex items-center gap-2 text-white">
+              <span className="text-lg">📊</span> Dashboard
+            </button>
+          </Link>
+          <Link to="/collectionreport">
+            <button className="w-full text-left p-3 rounded-md hover:bg-emerald-700 hover:text-white mt-4 transition-all duration-300 flex items-center gap-2 text-white">
+              <span className="text-lg">📄</span> Schedule Report
+            </button>
+          </Link>
+          <Link to="/Collectionanalythics">
+            <button className="w-full text-left p-3 rounded-md bg-emerald-700 text-white mt-4 transition-all duration-300 flex items-center gap-2">
+              <span className="text-lg">📈</span> Analytics
+            </button>
+          </Link>
+          <Link to="/CollectionGenarateReport">
+            <button className="w-full text-left p-3 rounded-md hover:bg-emerald-700 hover:text-white mt-4 transition-all duration-300 flex items-center gap-2 text-white">
+              <span className="text-lg">📝</span> Generate PDF
+            </button>
+          </Link>
         </nav>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 p-6">
-      <h1 className="text-4xl font-extrabold  bg-clip-text mb-6 shadow-lg transform transition-all hover:scale-105 hover:text-red-800 text-center">
-  Schedule Report
-</h1>
+      {/* Scrollable Main Content */}
+      <main className="flex-1 p-6 ml-64 overflow-y-auto">
+        <h1 className="text-4xl font-extrabold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-emerald-900">
+          Collection Analytics Dashboard
+        </h1>
 
-
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Waste Type Chart */}
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h2 className="font-semibold text-lg">Waste Type Distribution</h2>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie data={wasteTypeChart} dataKey="value" nameKey="name" fill="#8884d8" label>
-                  {wasteTypeChart.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={"#" + ((Math.random() * 0xffffff) << 0).toString(16)} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Collection Date Chart */}
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h2 className="font-semibold text-lg">Collection Date Trends</h2>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={collectionDateChart}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="value" fill="#82ca9d" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Location Chart */}
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h2 className="font-semibold text-lg">Collection by Location</h2>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={locationChart}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="value" fill="#ffc658" />
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+            <h2 className="font-semibold text-xl mb-4 text-emerald-800">Waste Type Distribution</h2>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie 
+                    data={wasteTypeChart} 
+                    dataKey="value" 
+                    nameKey="name" 
+                    cx="50%" 
+                    cy="50%" 
+                    outerRadius={80}
+                    fill="#8884d8" 
+                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  >
+                    {wasteTypeChart.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    formatter={(value, name, props) => [
+                      value, 
+                      `${name}: ${(props.payload.percent * 100).toFixed(1)}%`
+                    ]}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
 
           {/* Status Chart */}
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h2 className="font-semibold text-lg">Collection Status Overview</h2>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie data={statusChart} dataKey="value" nameKey="name" fill="#8884d8" label>
-                  {statusChart.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={"#" + ((Math.random() * 0xffffff) << 0).toString(16)} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+          <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+            <h2 className="font-semibold text-xl mb-4 text-emerald-800">Collection Status Overview</h2>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={statusChart}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    fill="#8884d8"
+                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  >
+                    {statusChart.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    formatter={(value, name, props) => [
+                      value, 
+                      `${name}: ${(props.payload.percent * 100).toFixed(1)}%`
+                    ]}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Collection Date Chart */}
+          <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+            <h2 className="font-semibold text-xl mb-4 text-emerald-800">Collection Date Trends</h2>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={collectionDateChart}>
+                  <XAxis 
+                    dataKey="name" 
+                    tick={{ fontSize: 12 }}
+                    angle={-45}
+                    textAnchor="end"
+                    height={60}
+                  />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar 
+                    dataKey="value" 
+                    fill="#82ca9d" 
+                    radius={[4, 4, 0, 0]}
+                    animationDuration={1500}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Location Chart */}
+          <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+            <h2 className="font-semibold text-xl mb-4 text-emerald-800">Collection by Location</h2>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={locationChart}>
+                  <XAxis 
+                    dataKey="name" 
+                    tick={{ fontSize: 12 }}
+                    angle={-45}
+                    textAnchor="end"
+                    height={60}
+                  />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar 
+                    dataKey="value" 
+                    fill="#ffc658" 
+                    radius={[4, 4, 0, 0]}
+                    animationDuration={1500}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
       </main>

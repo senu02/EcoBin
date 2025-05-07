@@ -60,7 +60,7 @@ function CollectionSchduleReport() {
     );
 
     return (
-        <div>
+        <div className="flex min-h-screen bg-gray-50 overflow-hidden">
             {/* Delete Confirmation Modal */}
             {showDeleteModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -85,120 +85,124 @@ function CollectionSchduleReport() {
                 </div>
             )}
 
-            <div className="flex min-h-screen bg-gray-100">
-                {/* Sidebar */}
-                <aside className="w-64 bg-white p-6 shadow-md">
-                    <h1 className="text-xl font-bold flex items-center space-x-2">
-                        <span>♻️ WasteTrack</span>
-                    </h1>
-                    <nav className="mt-6">
-                        <Link to="/WasteTrackDashboard">
-                            <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📊 Dashboard</button>
-                        </Link>
+            {/* Fixed Sidebar */}
+            <aside className="w-64 bg-gradient-to-b from-emerald-800 to-emerald-900 p-6 shadow-lg fixed h-full">
+                <h1 className="text-xl font-bold flex items-center space-x-2 text-white">
+                    <span>♻️ WasteTrack</span>
+                </h1>
+                <nav className="mt-8">
+                    <Link to="/WasteTrackDashboard">
+                        <button className="w-full text-left p-3 rounded-md hover:bg-emerald-700 hover:text-white mt-4 transition-all duration-300 flex items-center gap-2 text-white">
+                            <span className="text-lg">📊</span> Dashboard
+                        </button>
+                    </Link>
+                    <Link to="/collectionreport">
+                        <button className="w-full text-left p-3 rounded-md bg-emerald-700 text-white mt-4 transition-all duration-300 flex items-center gap-2">
+                            <span className="text-lg">📄</span> Schedule Report
+                        </button>
+                    </Link>
+                    <Link to="/Collectionanalythics">
+                        <button className="w-full text-left p-3 rounded-md hover:bg-emerald-700 hover:text-white mt-4 transition-all duration-300 flex items-center gap-2 text-white">
+                            <span className="text-lg">📈</span> Analytics
+                        </button>
+                    </Link>
+                    <Link to="/CollectionGenarateReport">
+                        <button className="w-full text-left p-3 rounded-md hover:bg-emerald-700 hover:text-white mt-4 transition-all duration-300 flex items-center gap-2 text-white">
+                            <span className="text-lg">📝</span> Generate PDF
+                        </button>
+                    </Link>
+                </nav>
+            </aside>
 
-                        <Link to="/collectionreport">
-                            <button className="w-full text-left p-2 bg-green-500 text-white rounded-md hover:bg-green-600 mt-5">📄 Schedule Report</button>
-                        </Link>
+            {/* Scrollable Main Content */}
+            <main className="flex-1 p-6 ml-64 overflow-y-auto">
+                {/* Dashboard Header */}
+                <h1 className="text-4xl font-extrabold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-emerald-900">
+                    WasteTrack Record
+                </h1>
 
-                        <Link to="/Collectionanalythics">
-                            <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📈 Analytics</button>
-                        </Link>
-                        <Link to="/CollectionGenarateReport">
-                            <button className="w-full text-left p-2 rounded-md hover:bg-green-500 hover:text-white mt-5">📝 Generate PDF Report</button>
-                        </Link>
-                    </nav>
-                </aside>
+                <p className="text-lg text-gray-500 mb-6 text-center">
+                    Track the progress of all waste management activities, schedules, and status updates in one place.
+                </p>
 
-                {/* Main Content */}
-                <main className="flex-1 p-6">
-                    {/* Dashboard Header */}
-                    <h1 className="text-5xl font-extrabold  bg-clip-text mb-8 text-center shadow-xl transform transition-all">
-                        WasteTrack Record
-                    </h1>
-
-                    <p className="text-lg text-gray-500 mb-6 text-center">
-                        Track the progress of all waste management activities, schedules, and status updates in one place.
-                    </p>
-
-                    {/* Search Bar with Icon */}
-                    <div className="mb-6 flex justify-center">
-                        <div className="relative w-80">
-                            <input
-                                type="text"
-                                className="w-full p-3 pl-10 pr-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
-                                placeholder="Search by Truck ID, Driver Name, Waste Type, or Date"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                            <FaSearch 
-                                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
-                                size={20} 
-                            />
-                        </div>
+                {/* Search Bar with Icon */}
+                <div className="mb-6 flex justify-center">
+                    <div className="relative w-80">
+                        <input
+                            type="text"
+                            className="w-full p-3 pl-10 pr-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            placeholder="Search by Truck ID, Driver Name, Waste Type, or Date"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                        <FaSearch 
+                            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
+                            size={20} 
+                        />
                     </div>
+                </div>
 
-                    {/* Table Section */}
-                    <div className="overflow-x-auto rounded-lg shadow-lg bg-white">
-                        <table className="min-w-full bg-white">
-                            <thead className="bg-green-500 text-white">
-                                <tr>
-                                    <th className="py-4 px-6 text-center">Truck ID</th>
-                                    <th className="py-4 px-6 text-center">D.Name</th>
-                                    <th className="py-4 px-6 text-center">Waste Type</th>
-                                    <th className="py-4 px-6 text-center">C.Date</th>
-                                    <th className="py-4 px-6 text-center">Status</th>
-                                    <th className="py-4 px-6 text-center">Image</th>
-                                    <th className="py-4 px-6 text-center">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredSchedules.map((schedule) => (
-                                    <tr key={schedule.id} className="hover:bg-gray-200 cursor-pointer">
-                                        <td className="py-3 px-6 text-center">{schedule.id}</td>
-                                        <td className="py-3 px-6 text-center">{schedule.driverName}</td>
-                                        <td className="py-3 px-6 text-center">{schedule.wasteType}</td>
-                                        <td className="py-3 px-6 text-center">{schedule.collectionDate}</td>
-                                        <td className="py-3 px-6 text-center">
-                                            <span className={`text-white py-1 px-3 rounded-full ${getStatusColor(schedule.status)}`}>
-                                                {schedule.status}
-                                            </span>
-                                        </td>
+                {/* Table Section */}
+                <div className="overflow-x-auto rounded-xl shadow-lg bg-white border border-gray-100">
+                    <table className="min-w-full bg-white">
+                        <thead className="bg-gradient-to-r from-emerald-600 to-emerald-800 text-white">
+                            <tr>
+                                <th className="py-4 px-6 text-center">Truck ID</th>
+                                <th className="py-4 px-6 text-center">D.Name</th>
+                                <th className="py-4 px-6 text-center">Waste Type</th>
+                                <th className="py-4 px-6 text-center">C.Date</th>
+                                <th className="py-4 px-6 text-center">Status</th>
+                                <th className="py-4 px-6 text-center">Image</th>
+                                <th className="py-4 px-6 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredSchedules.map((schedule) => (
+                                <tr key={schedule.id} className="hover:bg-gray-50 cursor-pointer border-b border-gray-100">
+                                    <td className="py-3 px-6 text-center">{schedule.id}</td>
+                                    <td className="py-3 px-6 text-center">{schedule.driverName}</td>
+                                    <td className="py-3 px-6 text-center">{schedule.wasteType}</td>
+                                    <td className="py-3 px-6 text-center">{schedule.collectionDate}</td>
+                                    <td className="py-3 px-6 text-center">
+                                        <span className={`text-white py-1 px-3 rounded-full ${getStatusColor(schedule.status)}`}>
+                                            {schedule.status}
+                                        </span>
+                                    </td>
 
-                                        <td className="py-3 px-6 text-center">
-                                            {schedule.truckImage && (
-                                                <div className="flex justify-center items-center">
-                                                    <img
-                                                        src={`data:image/jpeg;base64,${schedule.truckImage}`}
-                                                        alt="Truck"
-                                                        style={{ width: '50px', height: '50px' }}
-                                                    />
-                                                </div>
-                                            )}
-                                        </td>
-
-                                        <td className="py-3 px-6 text-center">
-                                            <div className="flex justify-center space-x-3">
-                                                <Link to={`/collectionview/${schedule.id}`} className="bg-blue-500 p-3 rounded-full text-white cursor-pointer hover:bg-blue-600 transition-colors">
-                                                    <FaEye />
-                                                </Link>
-                                                <Link to={`/collectionupdate/${schedule.id}`} className="bg-yellow-500 p-3 rounded-full text-white cursor-pointer hover:bg-yellow-600 transition-colors">
-                                                    <FaEdit />
-                                                </Link>
-                                                <button 
-                                                    className="bg-red-500 p-3 rounded-full text-white cursor-pointer hover:bg-red-600 transition-colors" 
-                                                    onClick={() => handleDeleteClick(schedule)}
-                                                >
-                                                    <FaTrash />
-                                                </button>
+                                    <td className="py-3 px-6 text-center">
+                                        {schedule.truckImage && (
+                                            <div className="flex justify-center items-center">
+                                                <img
+                                                    src={`data:image/jpeg;base64,${schedule.truckImage}`}
+                                                    alt="Truck"
+                                                    className="w-12 h-12 object-cover rounded-md"
+                                                />
                                             </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </main>
-            </div>
+                                        )}
+                                    </td>
+
+                                    <td className="py-3 px-6 text-center">
+                                        <div className="flex justify-center space-x-3">
+                                            <Link to={`/collectionview/${schedule.id}`} className="bg-blue-500 p-3 rounded-full text-white cursor-pointer hover:bg-blue-600 transition-colors">
+                                                <FaEye />
+                                            </Link>
+                                            <Link to={`/collectionupdate/${schedule.id}`} className="bg-yellow-500 p-3 rounded-full text-white cursor-pointer hover:bg-yellow-600 transition-colors">
+                                                <FaEdit />
+                                            </Link>
+                                            <button 
+                                                className="bg-red-500 p-3 rounded-full text-white cursor-pointer hover:bg-red-600 transition-colors" 
+                                                onClick={() => handleDeleteClick(schedule)}
+                                            >
+                                                <FaTrash />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </main>
         </div>
     );
 }
