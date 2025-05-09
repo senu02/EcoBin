@@ -25,38 +25,38 @@ const ContactDetails = () => {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <aside className="w-64 bg-gradient-to-b from-green-600 to-black p-6 text-white flex flex-col justify-between">
-        <div>
-          {/* Logo */}
-          <div className="flex justify-center mb-4">
-            <div className="bg-white p-4 rounded-full">
-              <img src={logo} alt="Waste Management Logo" className="w-20 h-20 object-contain" />
-            </div>
-          </div>
-
-          {/* Navigation Menu with Links */}
-          <nav className="space-y-4">
-            <Link to="/WasteManagementDashboard" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
-              <FaHome className="mr-2" /> Dashboard
-            </Link>
-            <Link to="/account" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
-              <FaUser className="mr-2" /> Your Account
-            </Link>
-            <Link to="/settings" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
-              <FaCog className="mr-2" /> Settings
-            </Link>
-            <Link to="/help" className="flex items-center w-full text-left bg-white text-black p-2 rounded-md">
-              <FaQuestionCircle className="mr-2" /> Help
-            </Link>
-          </nav>
-        </div>
-
-        {/* Sign Out Button */}
-        <button className="flex items-center bg-black text-white p-2 rounded-md">
-          <FaSignOutAlt className="mr-2" /> Sign out
-        </button>
+      <aside className="w-64 bg-white text-black p-6 shadow-md">
+        <h1 className="text-xl font-bold flex items-center space-x-2">
+          ♻ <span>WasteTrack</span>
+        </h1>
+        <nav className="mt-6 space-y-4">
+          <a
+            href="/WasteManagementDashboard"
+            className="w-full text-left p-3 bg-green-600 text-white rounded-md flex items-center space-x-2"
+          >
+            📊 <span>Dashboard</span>
+          </a>
+          <a
+            href="/AnalyzePage"
+            className="w-full text-left p-3 rounded-md hover:bg-green-600 hover:text-white flex items-center space-x-2"
+          >
+            📶 <span>Analyze</span>
+          </a>
+          <a
+            href="/Leaderboard"
+            className="w-full text-left p-3 rounded-md hover:bg-green-600 hover:text-white flex items-center space-x-2"
+          >
+            🏆 <span>Rewards</span>
+          </a>
+          <a
+            href="/WasteReportingTable"
+            className="w-full text-left p-3 rounded-md hover:bg-green-600 hover:text-white flex items-center space-x-2"
+          >
+            📋 <span>Report Data</span>
+          </a>
+        </nav>
       </aside>
 
       {/* Main Content Section */}
@@ -67,10 +67,12 @@ const ContactDetails = () => {
             <p>No contact details available</p>
           ) : (
             contactDetails.map(contact => (
-              <div key={contact.id} className="bg-gradient-to-r from-green-600 to-black p-6 rounded-md shadow-md text-white">
-                <h2 className="text-xl font-semibold">{contact.name}</h2>
-                <p><strong>Email:</strong> {contact.email}</p>
-                <p><strong>Message:</strong> {contact.message}</p>
+              <div key={contact.id} className="bg-white p-6 rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+                <h2 className="text-2xl font-semibold text-green-600 mb-3">{contact.name}</h2>
+                <div className="space-y-2">
+                  <p className="text-gray-700"><span className="font-medium text-gray-900">Email:</span> {contact.email}</p>
+                  <p className="text-gray-700"><span className="font-medium text-gray-900">Message:</span> {contact.message}</p>
+                </div>
               </div>
             ))
           )}

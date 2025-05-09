@@ -70,16 +70,13 @@ const AutoGenerateReport = () => {
 
   // Function to generate and download QR code with waste details
   const generateQRCode = (report) => {
-    // Create a string with the waste details
-    const wasteDetails = `
-      Waste Details
-      -------------
-      Title: ${report.wasteTitle}
-      Description: ${report.description}
-      Date: ${report.date}
-      Location: ${report.wasteLocation}
-      Weight: ${report.wasteWeight} kg
-    `;
+    // Create a string with only the essential waste details
+    const wasteDetails = `Report ID: ${report.id}
+Title: ${report.wasteTitle}
+Description: ${report.description}
+Date: ${report.date}
+Location: ${report.wasteLocation}
+Weight: ${report.wasteWeight} kg`;
 
     // Generate QR code as a data URL
     QRCode.toDataURL(wasteDetails, { width: 300, margin: 2 }, (err, url) => {
@@ -194,22 +191,22 @@ const AutoGenerateReport = () => {
   {filteredReports.map((report) => (
     <div
       key={report.id}
-      className="bg-gradient-to-r from-green-600 to-black text-white shadow-md rounded-md p-3 border-l-4 border-green-300 hover:shadow-lg transition text-sm"
+      className="bg-gradient-to-r from-emerald-500 to-teal-700 text-white shadow-md rounded-md p-3 border-l-4 border-emerald-300 hover:shadow-lg transition text-sm"
     >
       <div className="flex justify-between items-center">
         <h2 className="font-semibold text-white text-sm">{report.wasteTitle}</h2>
-        <span className="text-xs bg-white text-green-700 px-2 py-1 rounded-full">
+        <span className="text-xs bg-white text-emerald-700 px-2 py-1 rounded-full">
           {report.date}
         </span>
       </div>
 
-      <p className="text-gray-200 mt-1">
+      <p className="text-gray-100 mt-1">
         <strong>Description:</strong> {report.description}
       </p>
-      <p className="text-gray-200 mt-1">
+      <p className="text-gray-100 mt-1">
         <strong>Location:</strong> {report.wasteLocation}
       </p>
-      <p className="text-gray-200 mt-1">
+      <p className="text-gray-100 mt-1">
         <strong>Weight:</strong> {report.wasteWeight} kg
       </p>
 

@@ -151,6 +151,32 @@ const Home = () => {
     recyclingRate: 0
   });
 
+  // Add useEffect to load stats data
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const response = await axios.get(`${UserService.BASE_URL}/public/getStats`);
+        if (response.data) {
+          setStats({
+            wasteCollected: response.data.wasteCollected || 2500,
+            users: response.data.users || 1500,
+            locations: response.data.locations || 25,
+            recyclingRate: response.data.recyclingRate || 85
+          });
+        }
+      } catch (error) {
+        // Fallback to default values if API call fails
+        setStats({
+          wasteCollected: 2500,
+          users: 1500,
+          locations: 25,
+          recyclingRate: 85
+        });
+      }
+    };
+    loadStats();
+  }, []);
+
   // Features data
   const features = [
     {
@@ -676,54 +702,106 @@ const Home = () => {
             initial="hidden"
             animate={aboutInView ? "visible" : "hidden"}
             variants={containerVariants}
-            className="flex flex-col md:flex-row items-center"
+            className="flex flex-col md:flex-row items-center gap-12"
           >
             {/* Image Section */}
             <motion.div 
               variants={itemVariants}
-              className="md:w-1/3 mb-8 md:mb-0 relative"
+              className="md:w-1/2 mb-8 md:mb-0 relative"
             >
               <motion.div 
                 whileHover={{ scale: 1.05 }}
-                className="relative overflow-hidden rounded-lg shadow-2xl"
+                className="relative overflow-hidden rounded-2xl shadow-2xl max-w-md mx-auto"
               >
                 <img
                   src={Image1}
                   alt="About Us"
-                  className="w-64 h-auto rounded-lg"
+                  className="w-full h-[400px] object-cover rounded-2xl"
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-20 hover:bg-opacity-0 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
               </motion.div>
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={aboutInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.5 }}
-                className="absolute -bottom-8 -right-8 bg-white p-4 rounded-lg shadow-lg"
-              >
-                <h3 className="text-lg font-semibold text-gray-800">Since 2017</h3>
-                <p className="text-sm text-gray-600">Innovating Waste Solutions</p>
-              </motion.div>
+              
+              {/* Achievement Cards */}
+              <div className="grid grid-cols-2 gap-4 mt-6 max-w-md mx-auto">
+                <motion.div 
+                  whileHover={{ y: -5 }}
+                  className="bg-white p-4 rounded-xl shadow-lg"
+                >
+                  <h4 className="text-2xl font-bold text-green-600">500+</h4>
+                  <p className="text-gray-600">Active Clients</p>
+                </motion.div>
+                <motion.div 
+                  whileHover={{ y: -5 }}
+                  className="bg-white p-4 rounded-xl shadow-lg"
+                >
+                  <h4 className="text-2xl font-bold text-green-600">50+</h4>
+                  <p className="text-gray-600">Cities Served</p>
+                </motion.div>
+              </div>
             </motion.div>
 
             {/* Text Section */}
             <motion.div 
               variants={itemVariants}
-              className="md:w-2/3 md:pl-12"
+              className="md:w-1/2"
             >
               <h2 className="text-4xl font-bold text-green-600 mb-6">About Our Company</h2>
-              <p className="text-base text-gray-700 mb-6 font-serif">
-                Founded in 2017, Ecobin has undergone an impressive journey from a startup into a global leader in smart waste solutions.
+              <p className="text-base text-gray-700 mb-6">
+                Founded in 2017, Ecobin has evolved from a startup into a global leader in smart waste solutions. Our journey began with a simple yet powerful idea: to revolutionize waste management through technology and innovation.
               </p>
-              <p className="text-base text-gray-700 mb-6 font-serif">
-                We started with one product: a waste fill-level monitoring solution that consisted of sensors measuring waste levels in bins and a smart waste management software system.
-              </p>
-              <motion.button 
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300"
-              >
-                Learn More
-              </motion.button>
+              
+              <div className="space-y-4 mb-8">
+                <div className="flex items-start space-x-3">
+                  <div className="flex-shrink-0 w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                    <FaLeaf className="text-green-600" />
+                  </div>
+                  <p className="text-gray-700">
+                    We pioneered smart waste monitoring solutions that combine IoT sensors with advanced analytics to optimize waste collection routes and reduce environmental impact.
+                  </p>
+                </div>
+                
+                <div className="flex items-start space-x-3">
+                  <div className="flex-shrink-0 w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                    <FaRecycle className="text-green-600" />
+                  </div>
+                  <p className="text-gray-700">
+                    Our comprehensive recycling programs have helped divert thousands of tons of waste from landfills, contributing to a more sustainable future.
+                  </p>
+                </div>
+                
+                <div className="flex items-start space-x-3">
+                  <div className="flex-shrink-0 w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                    <FaChartLine className="text-green-600" />
+                  </div>
+                  <p className="text-gray-700">
+                    Through data-driven insights and real-time monitoring, we help businesses and municipalities optimize their waste management operations.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white p-6 rounded-xl shadow-lg mb-8">
+                <h3 className="text-xl font-bold text-gray-800 mb-4">Our Mission</h3>
+                <p className="text-gray-700">
+                  To transform waste management through innovative technology, making it more efficient, sustainable, and environmentally friendly. We strive to create a world where waste is managed intelligently and resources are conserved for future generations.
+                </p>
+              </div>
+
+              <div className="flex space-x-4">
+                <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300"
+                >
+                  Learn More
+                </motion.button>
+                <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="border-2 border-green-600 text-green-600 px-6 py-3 rounded-lg hover:bg-green-50 transition-colors duration-300"
+                >
+                  Contact Us
+                </motion.button>
+              </div>
             </motion.div>
           </motion.div>
         </div>
@@ -945,57 +1023,56 @@ const Home = () => {
       </section>
 
       {/* AI Chatbot Button */}
-{/* AI Chatbot Button */}
-<motion.div
-  initial={{ opacity: 0, scale: 0.8 }}
-  animate={{ opacity: 1, scale: 1 }}
-  whileHover={{ scale: 1.1 }}
-  whileTap={{ scale: 0.9 }}
-  className="fixed bottom-8 right-8 z-50"
->
-  <Link to="/bot"> {/* Add this Link component */}
-    <motion.button
-      className="relative group"
-      whileHover={{ y: -5 }}
-    >
-      {/* Main Button */}
-      <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-full shadow-lg flex items-center justify-center relative overflow-hidden">
-        <FaRobot className="text-white text-2xl" />
-        
-        {/* Pulse Animation */}
-        <motion.div
-          className="absolute inset-0 rounded-full"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.5, 0, 0.5],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        >
-          <div className="w-full h-full bg-green-400 rounded-full"></div>
-        </motion.div>
-      </div>
-
-      {/* Tooltip */}
-      <div className="absolute right-20 top-1/2 transform -translate-y-1/2 bg-white px-4 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-        <p className="text-gray-800 font-medium">Chat with AI Assistant</p>
-        <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 rotate-45 w-2 h-2 bg-white"></div>
-      </div>
-
-      {/* Notification Badge */}
       <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        className="fixed bottom-8 right-8 z-50"
       >
-        1
+        <Link to="/bot">
+          <motion.button
+            className="relative group"
+            whileHover={{ y: -5 }}
+          >
+            {/* Main Button */}
+            <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-full shadow-lg flex items-center justify-center relative overflow-hidden">
+              <FaRobot className="text-white text-2xl" />
+              
+              {/* Pulse Animation */}
+              <motion.div
+                className="absolute inset-0 rounded-full"
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.5, 0, 0.5],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <div className="w-full h-full bg-green-400 rounded-full"></div>
+              </motion.div>
+            </div>
+
+            {/* Tooltip */}
+            <div className="absolute right-20 top-1/2 transform -translate-y-1/2 bg-white px-4 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+              <p className="text-gray-800 font-medium">Chat with AI Assistant</p>
+              <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 rotate-45 w-2 h-2 bg-white"></div>
+            </div>
+
+            {/* Notification Badge */}
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold"
+            >
+              1
+            </motion.div>
+          </motion.button>
+        </Link>
       </motion.div>
-    </motion.button>
-  </Link>
-</motion.div>
 
       {/* Footer */}
       <motion.footer 
@@ -1003,60 +1080,49 @@ const Home = () => {
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
-        className="bg-gradient-to-r from-green-600 to-black text-white py-16 relative overflow-hidden"
+        className="bg-gradient-to-br from-green-900 via-green-800 to-black text-white py-20 relative overflow-hidden"
       >
         {/* Footer background decoration */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-blue-500"></div>
           <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-green-400"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-green-400 rounded-full opacity-5 blur-3xl"></div>
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Main Footer Content */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
             {/* Company Info */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
               viewport={{ once: true }}
-              className="space-y-4"
+              className="space-y-6"
             >
-              <div className="flex items-center space-x-2">
-                <img src={Image1} alt="Logo" className="w-10 h-10" />
-                <h3 className="text-xl font-bold">EcoBin</h3>
+              <div className="flex items-center space-x-3">
+                <img src={Image1} alt="Logo" className="w-12 h-12" />
+                <h3 className="text-2xl font-bold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">EcoBin</h3>
               </div>
-              <p className="text-gray-300 text-sm">
-                Leading the way in sustainable waste management solutions for a cleaner, greener future.
+              <p className="text-gray-300 text-sm leading-relaxed">
+                Leading the way in sustainable waste management solutions for a cleaner, greener future. Join us in our mission to transform waste management through innovation.
               </p>
               <div className="flex space-x-4">
-                <motion.a
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  href="#"
-                  className="text-gray-300 hover:text-white transition-colors"
-                >
-                  <FontAwesomeIcon icon={faFacebook} className="w-5 h-5" />
-                </motion.a>
-                <motion.a
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  href="#"
-                  className="text-gray-300 hover:text-white transition-colors"
-                >
-                  <FontAwesomeIcon icon={faTwitter} className="w-5 h-5" />
-                </motion.a>
-                <motion.a
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  href="#"
-                  className="text-gray-300 hover:text-white transition-colors"
-                >
-                  <FontAwesomeIcon icon={faInstagram} className="w-5 h-5" />
-                </motion.a>
-                <motion.a
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  href="#"
-                  className="text-gray-300 hover:text-white transition-colors"
-                >
-                  <FontAwesomeIcon icon={faLinkedin} className="w-5 h-5" />
-                </motion.a>
+                {[
+                  { icon: faFacebook, color: "hover:text-blue-400" },
+                  { icon: faTwitter, color: "hover:text-blue-300" },
+                  { icon: faInstagram, color: "hover:text-pink-400" },
+                  { icon: faLinkedin, color: "hover:text-blue-500" }
+                ].map((social, index) => (
+                  <motion.a
+                    key={index}
+                    whileHover={{ scale: 1.2, y: -2 }}
+                    href="#"
+                    className={`text-gray-300 ${social.color} transition-colors duration-300`}
+                  >
+                    <FontAwesomeIcon icon={social.icon} className="w-5 h-5" />
+                  </motion.a>
+                ))}
               </div>
             </motion.div>
 
@@ -1066,10 +1132,10 @@ const Home = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
               viewport={{ once: true }}
-              className="space-y-4"
+              className="space-y-6"
             >
-              <h3 className="text-lg font-bold">Quick Links</h3>
-              <ul className="space-y-2">
+              <h3 className="text-xl font-bold text-white mb-4">Quick Links</h3>
+              <ul className="space-y-3">
                 {[
                   { name: "Home", href: "#home" },
                   { name: "Services", href: "#services" },
@@ -1082,8 +1148,8 @@ const Home = () => {
                     whileHover={{ x: 5 }}
                     className="text-gray-300 hover:text-white transition-colors"
                   >
-                    <a href={link.href} className="flex items-center">
-                      <span className="w-1 h-1 bg-green-500 rounded-full mr-2"></span>
+                    <a href={link.href} className="flex items-center group">
+                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full mr-3 group-hover:w-2 transition-all duration-300"></span>
                       {link.name}
                     </a>
                   </motion.li>
@@ -1097,12 +1163,12 @@ const Home = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
               viewport={{ once: true }}
-              className="space-y-4"
+              className="space-y-6"
             >
-              <h3 className="text-lg font-bold">Our Services</h3>
-              <ul className="space-y-2">
+              <h3 className="text-xl font-bold text-white mb-4">Our Services</h3>
+              <ul className="space-y-3">
                 {[
-                  "Waste Collection",
+                  "Smart Waste Collection",
                   "Recycling Solutions",
                   "Sustainability Consulting",
                   "Environmental Impact Analysis",
@@ -1113,8 +1179,8 @@ const Home = () => {
                     whileHover={{ x: 5 }}
                     className="text-gray-300 hover:text-white transition-colors"
                   >
-                    <span className="flex items-center">
-                      <span className="w-1 h-1 bg-green-500 rounded-full mr-2"></span>
+                    <span className="flex items-center group">
+                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full mr-3 group-hover:w-2 transition-all duration-300"></span>
                       {service}
                     </span>
                   </motion.li>
@@ -1128,31 +1194,31 @@ const Home = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
               viewport={{ once: true }}
-              className="space-y-4"
+              className="space-y-6"
             >
-              <h3 className="text-lg font-bold">Newsletter</h3>
+              <h3 className="text-xl font-bold text-white mb-4">Newsletter</h3>
               <p className="text-gray-300 text-sm">
                 Subscribe to our newsletter for the latest updates and offers.
               </p>
-              <form className="space-y-3">
+              <form className="space-y-4">
                 <div className="relative">
                   <input
                     type="email"
                     placeholder="Your email address"
-                    className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-green-500 text-white placeholder-gray-400"
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:border-green-500 text-white placeholder-gray-400 transition-colors duration-300"
                   />
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     type="submit"
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600 transition-colors"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-1.5 rounded-md hover:from-green-600 hover:to-green-700 transition-colors duration-300"
                   >
                     Subscribe
                   </motion.button>
                 </div>
               </form>
               <div className="flex items-center space-x-2 text-gray-300 text-sm">
-                <FaLeaf className="text-green-500" />
+                <FaLeaf className="text-green-400" />
                 <span>Join our eco-friendly community</span>
               </div>
             </motion.div>
@@ -1164,22 +1230,30 @@ const Home = () => {
             whileInView={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
             viewport={{ once: true }}
-            className="border-t border-white/10 mt-12 pt-8"
+            className="border-t border-white/10 pt-8"
           >
             <div className="flex flex-col md:flex-row justify-between items-center">
-              <p className="text-gray-300 text-sm">
-                © {new Date().getFullYear()} EcoBin. All rights reserved.
-              </p>
-              <div className="flex space-x-6 mt-4 md:mt-0">
-                <a href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
-                  Privacy Policy
-                </a>
-                <a href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
-                  Terms of Service
-                </a>
-                <a href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
-                  Cookie Policy
-                </a>
+              <div className="flex items-center space-x-2 mb-4 md:mb-0">
+                <FaLeaf className="text-green-400" />
+                <p className="text-gray-300 text-sm">
+                  © {new Date().getFullYear()} EcoBin. All rights reserved.
+                </p>
+              </div>
+              <div className="flex space-x-6">
+                {[
+                  { name: "Privacy Policy", href: "#" },
+                  { name: "Terms of Service", href: "#" },
+                  { name: "Cookie Policy", href: "#" }
+                ].map((link, index) => (
+                  <motion.a
+                    key={index}
+                    whileHover={{ y: -2 }}
+                    href={link.href}
+                    className="text-gray-300 hover:text-white text-sm transition-colors"
+                  >
+                    {link.name}
+                  </motion.a>
+                ))}
               </div>
             </div>
           </motion.div>

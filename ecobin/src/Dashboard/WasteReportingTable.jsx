@@ -17,6 +17,7 @@ const WasteReportingTable = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
     fetchReports();
@@ -77,8 +78,53 @@ const WasteReportingTable = () => {
     }
   };
 
+  const validateForm = () => {
+    const errors = {};
+    
+    if (!editReport?.wasteTitle?.trim()) {
+      errors.wasteTitle = 'Waste title is required';
+    } else if (editReport.wasteTitle.length < 3) {
+      errors.wasteTitle = 'Waste title must be at least 3 characters';
+    }
+
+    if (!editReport?.date) {
+      errors.date = 'Date is required';
+    }
+
+    if (!editReport?.wasteLocation?.trim()) {
+      errors.wasteLocation = 'Location is required';
+    }
+
+    if (!editReport?.wasteType) {
+      errors.wasteType = 'Waste type is required';
+    }
+
+    if (!editReport?.wasteWeight) {
+      errors.wasteWeight = 'Weight is required';
+    } else if (editReport.wasteWeight <= 0) {
+      errors.wasteWeight = 'Weight must be greater than 0';
+    }
+
+    if (!editReport?.customerName?.trim()) {
+      errors.customerName = 'Customer name is required';
+    }
+
+    if (!editReport?.reword) {
+      errors.reword = 'Reward points are required';
+    } else if (editReport.reword < 0) {
+      errors.reword = 'Reward points cannot be negative';
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
     
     const formData = new FormData();
     formData.append("wasteTitle", editReport.wasteTitle);
@@ -128,189 +174,255 @@ const WasteReportingTable = () => {
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <aside className="w-64 bg-white text-black p-6 shadow-md sticky top-0 h-screen">
-        <h1 className="text-xl font-bold flex items-center space-x-2">
-          ♻ <span>WasteTrack</span>
+      <aside className="w-64 bg-white text-black p-6 shadow-lg sticky top-0 h-screen">
+        <h1 className="text-2xl font-bold flex items-center space-x-2 mb-8">
+          <span className="text-green-600">♻</span>
+          <span>WasteTrack</span>
         </h1>
-        <nav className="mt-6 space-y-4">
+        <nav className="space-y-2">
           <Link
             to="/WasteManagementDashboard"
-            className="w-full text-left p-3 bg-green-600 text-white rounded-md flex items-center space-x-2"
+            className="w-full text-left p-3 bg-green-600 text-white rounded-lg flex items-center space-x-2 shadow-md hover:bg-green-700 transition-colors duration-200"
           >
-            📊 <span>Dashboard</span>
+            <span className="text-xl">📊</span>
+            <span>Dashboard</span>
           </Link>
           <Link
             to="/AnalyzePage"
-            className="w-full text-left p-3 rounded-md hover:bg-green-600 hover:text-white flex items-center space-x-2"
+            className="w-full text-left p-3 rounded-lg hover:bg-green-600 hover:text-white flex items-center space-x-2 transition-colors duration-200"
           >
-            📶 <span>Analyze</span>
+            <span className="text-xl">📶</span>
+            <span>Analyze</span>
           </Link>
           <Link
             to="/Leaderboard"
-            className="w-full text-left p-3 rounded-md hover:bg-green-600 hover:text-white flex items-center space-x-2"
+            className="w-full text-left p-3 rounded-lg hover:bg-green-600 hover:text-white flex items-center space-x-2 transition-colors duration-200"
           >
-            🏆 <span>Rewards</span>
+            <span className="text-xl">🏆</span>
+            <span>Rewards</span>
           </Link>
           <Link
             to="/WasteReportingTable"
-            className="w-full text-left p-3 rounded-md hover:bg-green-600 hover:text-white flex items-center space-x-2"
+            className="w-full text-left p-3 rounded-lg hover:bg-green-600 hover:text-white flex items-center space-x-2 transition-colors duration-200"
           >
-            📋 <span>Report Data</span>
+            <span className="text-xl">📋</span>
+            <span>Report Data</span>
           </Link>
         </nav>
       </aside>
 
       {/* Main Content */}
       <div className="flex-1 p-8">
-        <h1 className="text-2xl font-bold mb-6">Waste Reporting Data</h1>
-
-        {/* Search Bar */}
-        <div className="mb-6 relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <SearchIcon className="h-5 w-5 text-gray-400" />
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-800">Waste Reporting Data</h1>
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <SearchIcon className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search reports..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 w-64 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                />
+              </div>
+            </div>
           </div>
-          <input
-            type="text"
-            placeholder="Search reports..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
 
-        {/* Table */}
-        {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
-          </div>
-        ) : (
-          <div className="bg-white shadow overflow-hidden rounded-lg">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-green-600 text-white">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">ID</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Waste Title</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Date</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Location</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Type</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Weight (kg)</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredReports.length > 0 ? (
-                    filteredReports.map((report) => (
-                      <tr key={report.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{report.id}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{report.wasteTitle}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{report.date}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{report.wasteLocation}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{report.wasteType}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{report.wasteWeight}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadge(report.status)}`}>
-                            {report.status || 'Pending'}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex space-x-2">
-                            <button
-                              onClick={() => handleUpdate(report)}
-                              className="text-green-600 hover:text-green-900"
-                            >
-                              <PencilIcon className="h-5 w-5" />
-                            </button>
-                            <button
-                              onClick={() => handleView(report)}
-                              className="text-blue-600 hover:text-blue-900"
-                            >
-                              <EyeIcon className="h-5 w-5" />
-                            </button>
-                            <button
-                              onClick={() => handleDelete(report.id)}
-                              disabled={isDeleting}
-                              className="text-red-600 hover:text-red-900 disabled:opacity-50"
-                            >
-                              <TrashIcon className="h-5 w-5" />
-                            </button>
+          {/* Table */}
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+            </div>
+          ) : (
+            <div className="bg-white shadow-lg rounded-xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-green-600">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">ID</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Waste Title</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Date</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Location</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Type</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Weight (kg)</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {filteredReports.length > 0 ? (
+                      filteredReports.map((report) => (
+                        <tr key={report.id} className="hover:bg-gray-50 transition-colors duration-200">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{report.id}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{report.wasteTitle}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{report.date}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{report.wasteLocation}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{report.wasteType}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{report.wasteWeight}</td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadge(report.status)}`}>
+                              {report.status || 'Pending'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div className="flex space-x-3">
+                              <button
+                                onClick={() => handleUpdate(report)}
+                                className="text-green-600 hover:text-green-900 transition-colors duration-200"
+                                title="Edit"
+                              >
+                                <PencilIcon className="h-5 w-5" />
+                              </button>
+                              <button
+                                onClick={() => handleView(report)}
+                                className="text-blue-600 hover:text-blue-900 transition-colors duration-200"
+                                title="View"
+                              >
+                                <EyeIcon className="h-5 w-5" />
+                              </button>
+                              <button
+                                onClick={() => handleDelete(report.id)}
+                                disabled={isDeleting}
+                                className="text-red-600 hover:text-red-900 disabled:opacity-50 transition-colors duration-200"
+                                title="Delete"
+                              >
+                                <TrashIcon className="h-5 w-5" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="8" className="px-6 py-8 text-center text-sm text-gray-500">
+                          <div className="flex flex-col items-center justify-center">
+                            <svg className="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <p>No reports found</p>
                           </div>
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="8" className="px-6 py-4 text-center text-sm text-gray-500">
-                        No reports found
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Update Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl">
-            <h2 className="text-xl font-bold mb-4">Update Waste Report</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Waste Title</label>
+          <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-2xl transform transition-all">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">Update Waste Report</h2>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">Waste Title</label>
                   <input
                     type="text"
                     name="wasteTitle"
                     value={editReport?.wasteTitle || ''}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                    className={`w-full p-3 rounded-lg border ${formErrors.wasteTitle ? 'border-red-500 bg-red-50' : 'border-gray-300'} focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200`}
+                    placeholder="Enter waste title"
                     required
                   />
+                  {formErrors.wasteTitle && (
+                    <p className="text-sm text-red-600 mt-1 flex items-center">
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      {formErrors.wasteTitle}
+                    </p>
+                  )}
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">Date</label>
                   <input
                     type="date"
                     name="date"
                     value={editReport?.date || ''}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                    className={`w-full p-3 rounded-lg border ${formErrors.date ? 'border-red-500 bg-red-50' : 'border-gray-300'} focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200`}
                     required
                   />
+                  {formErrors.date && (
+                    <p className="text-sm text-red-600 mt-1 flex items-center">
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      {formErrors.date}
+                    </p>
+                  )}
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">Location</label>
                   <input
                     type="text"
                     name="wasteLocation"
                     value={editReport?.wasteLocation || ''}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                    className={`w-full p-3 rounded-lg border ${formErrors.wasteLocation ? 'border-red-500 bg-red-50' : 'border-gray-300'} focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200`}
+                    placeholder="Enter location"
                     required
                   />
+                  {formErrors.wasteLocation && (
+                    <p className="text-sm text-red-600 mt-1 flex items-center">
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      {formErrors.wasteLocation}
+                    </p>
+                  )}
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Waste Type</label>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">Waste Type</label>
                   <select
                     name="wasteType"
                     value={editReport?.wasteType || ''}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                    className={`w-full p-3 rounded-lg border ${formErrors.wasteType ? 'border-red-500 bg-red-50' : 'border-gray-300'} focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200`}
                     required
                   >
+                    <option value="">Select Type</option>
                     <option value="Plastic">Plastic</option>
                     <option value="Paper">Paper</option>
                     <option value="Metal">Metal</option>
                     <option value="Organic">Organic</option>
                     <option value="Glass">Glass</option>
                   </select>
+                  {formErrors.wasteType && (
+                    <p className="text-sm text-red-600 mt-1 flex items-center">
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      {formErrors.wasteType}
+                    </p>
+                  )}
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Weight (kg)</label>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">Weight (kg)</label>
                   <input
                     type="number"
                     name="wasteWeight"
@@ -318,46 +430,78 @@ const WasteReportingTable = () => {
                     onChange={handleChange}
                     min="0.1"
                     step="0.1"
-                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                    className={`w-full p-3 rounded-lg border ${formErrors.wasteWeight ? 'border-red-500 bg-red-50' : 'border-gray-300'} focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200`}
+                    placeholder="Enter weight"
                     required
                   />
+                  {formErrors.wasteWeight && (
+                    <p className="text-sm text-red-600 mt-1 flex items-center">
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      {formErrors.wasteWeight}
+                    </p>
+                  )}
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Customer Name</label>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">Customer Name</label>
                   <input
                     type="text"
                     name="customerName"
                     value={editReport?.customerName || ''}
                     onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                    className={`w-full p-3 rounded-lg border ${formErrors.customerName ? 'border-red-500 bg-red-50' : 'border-gray-300'} focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200`}
+                    placeholder="Enter customer name"
                     required
                   />
+                  {formErrors.customerName && (
+                    <p className="text-sm text-red-600 mt-1 flex items-center">
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      {formErrors.customerName}
+                    </p>
+                  )}
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Reward Points</label>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">Reward Points</label>
                   <input
                     type="number"
                     name="reword"
                     value={editReport?.reword || ''}
                     onChange={handleChange}
                     min="0"
-                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                    className={`w-full p-3 rounded-lg border ${formErrors.reword ? 'border-red-500 bg-red-50' : 'border-gray-300'} focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200`}
+                    placeholder="Enter reward points"
                     required
                   />
+                  {formErrors.reword && (
+                    <p className="text-sm text-red-600 mt-1 flex items-center">
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      {formErrors.reword}
+                    </p>
+                  )}
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">Description</label>
                   <textarea
                     name="description"
                     value={editReport?.description || ''}
                     onChange={handleChange}
                     rows="2"
-                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                    className="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                    placeholder="Enter description"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Waste Image</label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-md p-4 text-center">
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">Waste Image</label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-green-500 transition-colors duration-200">
                     <input
                       type="file"
                       id="wasteImageUpload"
@@ -374,6 +518,9 @@ const WasteReportingTable = () => {
                         />
                       ) : (
                         <div className="flex flex-col items-center justify-center text-gray-500">
+                          <svg className="w-12 h-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
                           <span>Click to upload image</span>
                           <span className="text-xs">(JPEG, PNG)</span>
                         </div>
@@ -382,17 +529,18 @@ const WasteReportingTable = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex justify-end space-x-3 mt-4">
+
+              <div className="flex justify-end space-x-4 pt-4 border-t border-gray-200">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                  className="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                  className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200"
                 >
                   Save Changes
                 </button>

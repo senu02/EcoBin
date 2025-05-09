@@ -7,7 +7,7 @@ import Logo from '../Home/images/Logo.png';
 
 const Chatbot = () => {
   // Configuration
-  const API_URL ='';
+  const API_URL ='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDjyXtMbzpuT0Hflor4TIOux5tUC47Xbg0';
   
   // State management
   const [chatHistory, setChatHistory] = useState([]);
