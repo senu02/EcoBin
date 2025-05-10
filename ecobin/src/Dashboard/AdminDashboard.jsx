@@ -133,7 +133,7 @@ export default function WasteManagementDashboard() {
 
         <div className="grid grid-cols-3 gap-6">
           {/* Waste Classification */}
-          <Link to="/aidetector">
+          <Link to="/Navigate">
             <motion.div
               className="border rounded-lg p-6 flex flex-col items-center transition-transform transform hover:scale-105 hover:shadow-lg cursor-pointer"
               initial={{ opacity: 0, scale: 0.8 }}
