@@ -31,6 +31,7 @@ import ContactDetails from './Dashboard/Contact';
 import AiDetector from './AiDetecter/AiDetector';
 import UserService from './Home/UserService';
 import Chatbot from './ChatBot/Chatbot';
+import ImageAiDitector from './AiDetecter/ImageAiDitector';
 
 export default function App() {
   return (
@@ -73,6 +74,7 @@ export default function App() {
 
         <Route path="/ContactDetails" element={<ContactDetails/>}/>
         <Route path="/bot" element={<Chatbot/>}/>
+        <Route path="/image" element={<ImageAiDitector/>}/>
         
 
         {UserService.adminOnly() && (
