@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { PencilIcon, TrashIcon, PlusIcon, DocumentDownloadIcon } from '@heroicons/react/solid';
+import { PencilIcon, TrashIcon, PlusIcon, DocumentDownloadIcon, CheckCircleIcon } from '@heroicons/react/solid';
 import UserService from '../Home/UserService';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,6 +13,17 @@ const WasteRequestTable = () => {
   const [loading, setLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [updateId, setUpdateId] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [formData, setFormData] = useState({
+    status: '',
+    wasteType: '',
+    quantity: '',
+    address: '',
+    collectionDate: ''
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,6 +55,35 @@ const WasteRequestTable = () => {
     } finally {
       setIsDeleting(false);
       setDeleteId(null);
+    }
+  };
+
+  const updateStatus = async (id) => {
+    setIsUpdating(true);
+    setUpdateId(id);
+    try {
+      const response = await axios.put(
+        `${UserService.BASE_URL}/public/updateStatus/${id}`,
+        { status: 'In Progress' }
+      );
+
+      if (response.status === 200) {
+        // Update local state
+        setRequests(prevRequests => 
+          prevRequests.map(request => 
+            request.id === id 
+              ? { ...request, status: 'In Progress' }
+              : request
+          )
+        );
+        toast.success('Status updated successfully');
+      }
+    } catch (error) {
+      console.error('Error updating status:', error);
+      toast.error('Failed to update status');
+    } finally {
+      setIsUpdating(false);
+      setUpdateId(null);
     }
   };
 
@@ -127,6 +167,54 @@ const WasteRequestTable = () => {
       Glass: 'bg-purple-500'
     };
     return typeColors[type] || 'bg-indigo-500';
+  };
+
+  const handleEdit = (request) => {
+    setSelectedRequest(request);
+    setFormData({
+      status: request.status || 'Pending',
+      wasteType: request.wasteType || '',
+      quantity: request.quantity || '',
+      address: request.address || '',
+      collectionDate: request.collectionDate || ''
+    });
+    setShowEditModal(true);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+    setIsUpdating(true);
+    try {
+      const response = await axios.put(
+        `${UserService.BASE_URL}/public/updateWasteRequest/${selectedRequest.id}`,
+        formData
+      );
+
+      if (response.status === 200) {
+        setRequests(prevRequests => 
+          prevRequests.map(request => 
+            request.id === selectedRequest.id 
+              ? { ...request, ...formData }
+              : request
+          )
+        );
+        toast.success('Request updated successfully');
+        setShowEditModal(false);
+      }
+    } catch (error) {
+      console.error('Error updating request:', error);
+      toast.error('Failed to update request');
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   return (
@@ -254,9 +342,27 @@ const WasteRequestTable = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex space-x-2">
+                            {request.status === 'Pending' && (
+                              <button
+                                onClick={() => updateStatus(request.id)}
+                                disabled={isUpdating && updateId === request.id}
+                                className="text-blue-600 hover:text-blue-900 disabled:opacity-50"
+                                title="Update Status"
+                              >
+                                {isUpdating && updateId === request.id ? (
+                                  <svg className="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                  </svg>
+                                ) : (
+                                  <CheckCircleIcon className="h-5 w-5" />
+                                )}
+                              </button>
+                            )}
                             <button
-                              onClick={() => navigate(`/edit-waste-request/${request.id}`)}
-                              className="text-green-600 hover:text-green-900"
+                              onClick={() => handleEdit(request)}
+                              className="text-green-600 hover:text-green-900 transition-colors duration-200"
+                              title="Edit Request"
                             >
                               <PencilIcon className="h-5 w-5" />
                             </button>
@@ -264,6 +370,7 @@ const WasteRequestTable = () => {
                               onClick={() => deleteRequest(request.id)}
                               disabled={isDeleting && deleteId === request.id}
                               className="text-red-600 hover:text-red-900 disabled:opacity-50"
+                              title="Delete Request"
                             >
                               {isDeleting && deleteId === request.id ? (
                                 <svg className="animate-spin h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -285,6 +392,118 @@ const WasteRequestTable = () => {
           )}
         </div>
       </main>
+
+      {/* Edit Modal */}
+      {showEditModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-gray-800">Update Waste Request</h2>
+                <button
+                  onClick={() => setShowEditModal(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <form onSubmit={handleUpdateSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Status</label>
+                  <select
+                    name="status"
+                    value={formData.status}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                    required
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Waste Type</label>
+                  <select
+                    name="wasteType"
+                    value={formData.wasteType}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                    required
+                  >
+                    <option value="">Select Type</option>
+                    <option value="Plastic">Plastic</option>
+                    <option value="Paper">Paper</option>
+                    <option value="Metal">Metal</option>
+                    <option value="Organic">Organic</option>
+                    <option value="Glass">Glass</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Quantity (kg)</label>
+                  <input
+                    type="number"
+                    name="quantity"
+                    value={formData.quantity}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                    required
+                    min="0"
+                    step="0.1"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Address</label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Collection Date</label>
+                  <input
+                    type="datetime-local"
+                    name="collectionDate"
+                    value={formData.collectionDate}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                    required
+                  />
+                </div>
+
+                <div className="flex justify-end space-x-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowEditModal(false)}
+                    className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isUpdating}
+                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
+                  >
+                    {isUpdating ? 'Updating...' : 'Update Request'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

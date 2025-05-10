@@ -81,38 +81,70 @@ const WasteReportingTable = () => {
   const validateForm = () => {
     const errors = {};
     
+    // Waste Title validation
     if (!editReport?.wasteTitle?.trim()) {
       errors.wasteTitle = 'Waste title is required';
     } else if (editReport.wasteTitle.length < 3) {
       errors.wasteTitle = 'Waste title must be at least 3 characters';
+    } else if (editReport.wasteTitle.length > 100) {
+      errors.wasteTitle = 'Waste title must be less than 100 characters';
     }
 
+    // Date validation
     if (!editReport?.date) {
       errors.date = 'Date is required';
+    } else {
+      const selectedDate = new Date(editReport.date);
+      const today = new Date();
+      if (selectedDate > today) {
+        errors.date = 'Date cannot be in the future';
+      }
     }
 
+    // Location validation
     if (!editReport?.wasteLocation?.trim()) {
       errors.wasteLocation = 'Location is required';
+    } else if (editReport.wasteLocation.length < 3) {
+      errors.wasteLocation = 'Location must be at least 3 characters';
+    } else if (editReport.wasteLocation.length > 200) {
+      errors.wasteLocation = 'Location must be less than 200 characters';
     }
 
+    // Waste Type validation
     if (!editReport?.wasteType) {
       errors.wasteType = 'Waste type is required';
     }
 
+    // Weight validation
     if (!editReport?.wasteWeight) {
       errors.wasteWeight = 'Weight is required';
-    } else if (editReport.wasteWeight <= 0) {
-      errors.wasteWeight = 'Weight must be greater than 0';
+    } else if (isNaN(editReport.wasteWeight) || editReport.wasteWeight <= 0) {
+      errors.wasteWeight = 'Weight must be a positive number';
+    } else if (editReport.wasteWeight > 1000) {
+      errors.wasteWeight = 'Weight cannot exceed 1000 kg';
     }
 
+    // Customer Name validation
     if (!editReport?.customerName?.trim()) {
       errors.customerName = 'Customer name is required';
+    } else if (editReport.customerName.length < 2) {
+      errors.customerName = 'Customer name must be at least 2 characters';
+    } else if (editReport.customerName.length > 100) {
+      errors.customerName = 'Customer name must be less than 100 characters';
     }
 
+    // Reward Points validation
     if (!editReport?.reword) {
       errors.reword = 'Reward points are required';
-    } else if (editReport.reword < 0) {
-      errors.reword = 'Reward points cannot be negative';
+    } else if (isNaN(editReport.reword) || editReport.reword < 0) {
+      errors.reword = 'Reward points must be a non-negative number';
+    } else if (editReport.reword > 1000) {
+      errors.reword = 'Reward points cannot exceed 1000';
+    }
+
+    // Description validation (optional but with length limits)
+    if (editReport?.description && editReport.description.length > 500) {
+      errors.description = 'Description must be less than 500 characters';
     }
 
     setFormErrors(errors);
