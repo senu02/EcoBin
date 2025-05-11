@@ -30,7 +30,7 @@ const AiDetector = () => {
     setLoading(true);
     try {
       // Send image to the classification API
-      const response = await axios.post("http://localhost:9090/public/classify", { image: imageSrc });
+      const response = await axios.post("http://localhost:8080/public/classify", { image: imageSrc });
       setClassification(response.data.result);
       setBoundingBox(response.data.boundingBox);
     } catch (error) {
